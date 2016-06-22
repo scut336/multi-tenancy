@@ -22,11 +22,11 @@
 		</property>
 		<property name="connection.url">
 			<![CDATA[
-				jdbc:mysql://localhost:3306/project?useUnicode=true&characterEncoding=UTF-8
+				jdbc:mysql://222.201.145.144:3366/project?useUnicode=true&characterEncoding=UTF-8
 			]]>
 		</property>
 		<property name="connection.username">root</property>
-		<property name="connection.password"></property>
+		<property name="connection.password">123</property>
 		<property name="connection.driver_class">
 			com.mysql.jdbc.Driver
 		</property>
