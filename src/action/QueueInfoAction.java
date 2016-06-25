@@ -6,24 +6,23 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import entity.QueueInfo;
 import service.QueueInfoDAO;
+import service.ResourceInfoDAO;
 import service.impl.QueueInfoDAOImpl;
+import service.impl.ResourceInfoDAOImpl;
 
-import com.opensymphony.xwork2.ModelDriven;
-
-import entity.TaskInfo;
-
-public class QueueInfoAction extends SuperAction implements ModelDriven<TaskInfo>{
+public class QueueInfoAction extends SuperAction{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private TaskInfo taskInfo = new TaskInfo();
 	private InputStream inputStream;
 	
 	public InputStream getInputStream() {
@@ -70,9 +69,42 @@ public class QueueInfoAction extends SuperAction implements ModelDriven<TaskInfo
 		return "Ajax_Success";	
 	}
 	
-	@Override
-	public TaskInfo getModel() {
-		// TODO Auto-generated method stub
-		return taskInfo;
+	//提交申请
+	public String find() throws Exception{
+		String queue = request.getParameter("queue");
+		QueueInfoDAO queueInfoDAO = new QueueInfoDAOImpl();
+		QueueInfo q = queueInfoDAO.findQueue(queue);
+		String res = q.getResourceLimit()+"|"+q.getCapacity()+"|"+q.getEnable();
+		inputStream=new ByteArrayInputStream(res.getBytes("UTF-8"));
+		return "Ajax_Success";	
+	}
+	
+	//显示申请
+	public String show() throws Exception{
+		QueueInfoDAO queueInfoDAO = new QueueInfoDAOImpl();
+		List<String> q = queueInfoDAO.showQueue();
+		String res = "";
+		for(int i=0;i<q.size();i++){
+			res+=q.get(i)+"|";
+		}
+		inputStream=new ByteArrayInputStream(res.getBytes("UTF-8"));
+		return "Ajax_Success";	
+	}
+	
+	//显示队列详情
+	public String showQueue() throws Exception{
+		if(!session.getAttribute("loginUserRole").equals("admin")){
+			inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
+			return "Ajax_Success";
+		}
+		QueueInfoDAO queueInfoDAO = new QueueInfoDAOImpl();
+		List<QueueInfo> q = queueInfoDAO.showQueues();
+		String res = "";
+		for(int i=0;i<q.size();i++){
+			res+=q.get(i).getQueueName()+","+q.get(i).getCapacity()+","+q.get(i).getEnable()+","+
+					q.get(i).getResourceLimit()+","+q.get(i).getMaxWaitingTime()+"|";
+		}
+		inputStream=new ByteArrayInputStream(res.getBytes("UTF-8"));
+		return "Ajax_Success";	
 	}
 }

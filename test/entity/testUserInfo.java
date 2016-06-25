@@ -106,21 +106,22 @@ public class testUserInfo {
 //		u5.setTaskInfos(s5);
 //		u6.setTaskInfos(s6);
 //		u7.setTaskInfos(s7);
-		UserProfile us1 = new UserProfile("HDFS1","MR1",u1);
-		UserProfile us2 = new UserProfile("HDFS2","MR2",u2);
-		UserProfile us3 = new UserProfile("HDFS3","MR3",u3);
-		UserProfile us4 = new UserProfile("HDFS4","MR4",u4);
-		UserProfile us5 = new UserProfile("HDFS5","MR5",u5);
-		UserProfile us6 = new UserProfile("HDFS6","MR6",u6);
-		UserProfile us7 = new UserProfile("HDFS7","MR7",u7);
 		
-		ResourceInfo r1 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u1);
-		ResourceInfo r2 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u2);
-		ResourceInfo r3 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u3);
-		ResourceInfo r4 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u4);
-		ResourceInfo r5 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u5);
-		ResourceInfo r6 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u6);
-		ResourceInfo r7 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u7);
+		ResourceInfo r1 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u1.getId());
+		ResourceInfo r2 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u2.getId());
+		ResourceInfo r3 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u3.getId());
+		ResourceInfo r4 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u4.getId());
+		ResourceInfo r5 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u5.getId());
+		ResourceInfo r6 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u6.getId());
+		ResourceInfo r7 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u7.getId());
+		
+		ResourceApplication ra1 = new ResourceApplication(u1.getId(),0,0,0,'F');
+		ResourceApplication ra2 = new ResourceApplication(u2.getId(),0,0,0,'F');
+		ResourceApplication ra3 = new ResourceApplication(u3.getId(),0,0,0,'F');
+		ResourceApplication ra4 = new ResourceApplication(u4.getId(),0,0,0,'F');
+		ResourceApplication ra5 = new ResourceApplication(u5.getId(),0,0,0,'F');
+		ResourceApplication ra6 = new ResourceApplication(u6.getId(),0,0,0,'F');
+		ResourceApplication ra7 = new ResourceApplication(u7.getId(),0,0,0,'F');
 //		
 //		session.save(t1);
 //		session.save(t2);
@@ -140,14 +141,6 @@ public class testUserInfo {
 		session.save(u6);
 		session.save(u7);
 		
-		session.save(us1);
-		session.save(us2);
-		session.save(us3);
-		session.save(us4);
-		session.save(us5);
-		session.save(us6);
-		session.save(us7);
-		
 		session.save(r1);
 		session.save(r2);
 		session.save(r3);
@@ -155,6 +148,14 @@ public class testUserInfo {
 		session.save(r5);
 		session.save(r6);
 		session.save(r7);
+		
+		session.save(ra1);
+		session.save(ra2);
+		session.save(ra3);
+		session.save(ra4);
+		session.save(ra5);
+		session.save(ra6);
+		session.save(ra7);
 		
 		tx.commit();
 		sessionFactory.close();

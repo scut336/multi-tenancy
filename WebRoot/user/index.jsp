@@ -255,10 +255,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        <li>
+                        <s:if test='%{#session.loginUserRole=="admin"}'>
+						<li>
                             <a href="####" onclick="page(1,this)"><i class="fa fa-sitemap fa-fw"></i> 集群管理</a>
                         </li>
-                        <s:if test='%{#session.loginUserRole=="admin"}'>
 						<li>
                             <a href="####"><i class="fa fa-male fa-fw"></i> 用户管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
@@ -285,18 +285,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         <li>
                             <a href="####"><i class="fa fa-list-alt fa-fw"></i> 资源管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
+	                            <s:if test='%{#session.loginUserRole=="admin"}'>
+	                            	<li>
+                                    	<a href="####" onclick="page(15,this)">资源审核</a>
+                                	</li>
+	                            </s:if>
+	                            <s:else>
+	                                <li>
+	                                    <a href="####" onclick="page(6,this)">资源申请</a>
+	                                </li>
+                                </s:else>
                                 <li>
-                                    <a href="####" onclick="page(6,this)">资源申请</a>
+                                    <a href="####" onclick="page(7,this)">资源概况</a>
                                 </li>
-                                <li>
-                                    <a href="####" onclick="page(7,this)">资源使用情况</a>
-                                </li>
-                                <li>
-                                    <a href="####" onclick="page(8,this)">资源队列管理</a>
-                                </li>
-                                <li>
-                                    <a href="####" onclick="page(9,this)">输入文本</a>
-                                </li>
+                                <s:if test='%{#session.loginUserRole=="admin"}'>
+	                                <li>
+	                                    <a href="####" onclick="page(8,this)">集群资源管理</a>
+	                                </li>
+                                </s:if>
                             </ul>
                         </li>
                         <li>

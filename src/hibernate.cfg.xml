@@ -39,12 +39,12 @@
 		<property name="hbm2ddl.auto">update</property>
 		<property name="hibernate.current_session_context_class">thread</property>
 		
-		<mapping class="entity.UserProfile" />
 		<mapping class="entity.TaskInfo" />
 		<mapping class="entity.ResourceInfo" />
 		<mapping class="entity.JobInfo" />
 		<mapping class="entity.UserInfo" />
 		<mapping class="entity.QueueInfo" />
+		<mapping class="entity.ResourceApplication" />
 		
 	</session-factory>
 

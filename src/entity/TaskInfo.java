@@ -1,16 +1,10 @@
 package entity;
 
 import java.util.Date;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -30,15 +24,14 @@ public class TaskInfo {
 	private String TaskID;
 	@Column(length=50)
 	private String TaskName;
-	@ManyToOne(cascade={CascadeType.ALL},fetch=FetchType.EAGER)
-	@JoinColumn(name="userID")
-	private UserInfo userInfo;
+	@Column(length=32)
+	private String userInfo;
 	
 	public TaskInfo(){}
 	
 	public TaskInfo(String id, String taskStatus, String taskLog,
 			String taskResult, String taskError, Date createDate,
-			String taskID, String taskName, UserInfo userInfo) {
+			String taskID, String taskName, String userInfo) {
 		this.id = id;
 		TaskStatus = taskStatus;
 		TaskLog = taskLog;
@@ -52,7 +45,7 @@ public class TaskInfo {
 
 	public TaskInfo(String id, String taskStatus, String taskLog,
 			String taskResult, String taskError, Date createDate,
-			String taskID, UserInfo userInfo) {
+			String taskID, String userInfo) {
 		this.id = id;
 		TaskStatus = taskStatus;
 		TaskLog = taskLog;
@@ -75,7 +68,7 @@ public class TaskInfo {
 
 	public TaskInfo(String id, String taskStatus, String taskLog,
 			String taskResult, String taskError, Date createDate,
-			UserInfo userInfo) {
+			String userInfo) {
 		this.id = id;
 		TaskStatus = taskStatus;
 		TaskLog = taskLog;
@@ -133,11 +126,11 @@ public class TaskInfo {
 		this.createDate = createDate;
 	}
 
-	public UserInfo getUserInfo() {
+	public String getUserInfo() {
 		return userInfo;
 	}
 
-	public void setUserInfo(UserInfo userInfo) {
+	public void setUserInfo(String userInfo) {
 		this.userInfo = userInfo;
 	}
 

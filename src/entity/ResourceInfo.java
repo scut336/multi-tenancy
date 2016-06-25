@@ -2,13 +2,11 @@ package entity;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 
 @Entity
 public class ResourceInfo {
@@ -27,10 +25,8 @@ public class ResourceInfo {
 	private char Expired;
 	private int SubmitJobTimes;
 	private Date LastSubmitTime;
-
-	@OneToOne(cascade={CascadeType.ALL})
-	@JoinColumn(name="userID",unique=true)
-	private UserInfo userID;
+	@Column(length=32)
+	private String userID;
 	
 	public ResourceInfo(){}
 
@@ -38,7 +34,7 @@ public class ResourceInfo {
 			String hDFSDirectory, int hDFSDirectoryQuota,
 			int hDFSDirectoryRemaining, int queue, Date createTime,
 			int createUserID, char expired, int submitJobTimes,
-			Date lastSubmitTime, UserInfo userID) {
+			Date lastSubmitTime, String userID) {
 		this.id = id;
 		AppLimit = appLimit;
 		CurrentAppCount = currentAppCount;
@@ -58,7 +54,7 @@ public class ResourceInfo {
 			String hDFSDirectory, int hDFSDirectoryQuota,
 			int hDFSDirectoryRemaining, int queue, Date createTime,
 			int createUserID, char expired, int submitJobTimes,
-			Date lastSubmitTime, UserInfo userID) {
+			Date lastSubmitTime, String userID) {
 		AppLimit = appLimit;
 		CurrentAppCount = currentAppCount;
 		HDFSDirectory = hDFSDirectory;
@@ -196,11 +192,11 @@ public class ResourceInfo {
 		LastSubmitTime = lastSubmitTime;
 	}
 
-	public UserInfo getUserID() {
+	public String getUserID() {
 		return userID;
 	}
 
-	public void setUserID(UserInfo userID) {
+	public void setUserID(String userID) {
 		this.userID = userID;
 	}
 

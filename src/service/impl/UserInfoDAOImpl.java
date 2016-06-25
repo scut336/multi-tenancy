@@ -167,6 +167,23 @@ public class UserInfoDAOImpl implements UserInfoDAO{
 			String hql = "delete from UserInfo u where u.id='"+Id+"'";
 			Query query = session.createQuery(hql);
 			query.executeUpdate();
+			session.flush();
+			tx.commit();
+			
+			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
+			tx = session.beginTransaction();
+			hql = "delete from TaskInfo t where t.userInfo='"+Id+"'";
+			query = session.createQuery(hql);
+			query.executeUpdate();
+			session.flush();
+			tx.commit();
+			
+			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
+			tx = session.beginTransaction();
+			hql = "delete from ResourceInfo r where r.userID='"+Id+"'";
+			query = session.createQuery(hql);
+			query.executeUpdate();
+			session.flush();
 			tx.commit();
 			return true;
 		}catch(Exception e){

@@ -7,24 +7,20 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
-
 import service.JobInfoDAO;
 import service.ResourceInfoDAO;
 import service.TaskInfoDAO;
 import service.impl.JobInfoDAOImpl;
 import service.impl.ResourceInfoDAOImpl;
 import service.impl.TaskInfoDAOImpl;
-
 import com.opensymphony.xwork2.ModelDriven;
-
 import db.JSONCreator;
 import entity.JobInfo;
 import entity.TaskInfo;
-import entity.UserInfo;
+import entity.TaskInfoImpl;
 
 public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>{
 
@@ -44,9 +40,7 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 		ResourceInfoDAO resourceInfoDAO = new ResourceInfoDAOImpl();
 		TaskInfoDAO taskInfoDAO = new TaskInfoDAOImpl();
 		taskInfo.setCreateDate(new Date());
-		UserInfo userInfo = new UserInfo();
-		userInfo.setId(session.getAttribute("loginUserId").toString());
-		taskInfo.setUserInfo(userInfo);
+		taskInfo.setUserInfo(session.getAttribute("loginUserId").toString());
 		//String taskid = start(taskInfo.getTaskName());
 		//if(!taskid.equals("0")){
 		resourceInfoDAO.AddResourceJobTime(session.getAttribute("loginUserId").toString());
@@ -69,7 +63,7 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 		TaskInfoDAO taskInfoDAO = new TaskInfoDAOImpl();
 		if(!session.getAttribute("loginUserRole").equals("admin")){
 			String id = (String)session.getAttribute("loginUserId");
-			List<TaskInfo> list=taskInfoDAO.findTask(id,page,10);
+			List<TaskInfoImpl> list=taskInfoDAO.findTask(id,page,10);
 			if(list!=null&&list.size()>0){
 				String reString = taskInfoDAO.pageSum() + ";0;";
 				for(int i=0;i<list.size();i++){
@@ -80,11 +74,11 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 			}else
 				inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
 		}else{
-			List<TaskInfo> list = taskInfoDAO.findTask("",page,10);
+			List<TaskInfoImpl> list = taskInfoDAO.findTask("",page,10);
 			if(list!=null&&list.size()>0){
 				String reString = taskInfoDAO.pageSum() + ";1;";
 				for(int i=0;i<list.size();i++){
-					reString += list.get(i).getId() + "," + list.get(i).getUserInfo().getName() + "," + list.get(i).getTaskStatus() + "," + list.get(i).getTaskLog() + "," + list.get(i).getTaskResult() + "," +
+					reString += list.get(i).getId() + "," + list.get(i).getUserName() + "," + list.get(i).getTaskStatus() + "," + list.get(i).getTaskLog() + "," + list.get(i).getTaskResult() + "," +
 							list.get(i).getTaskError() + "," + list.get(i).getCreateDate() + "," + list.get(i).getTaskID() + ";";
 				}
 				inputStream=new ByteArrayInputStream(reString.getBytes("UTF-8"));
@@ -234,7 +228,7 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 		String taskid = request.getParameter("id");
 		if(!session.getAttribute("loginUserRole").equals("admin")){
 			String id = (String)session.getAttribute("loginUserId");
-			TaskInfo taskInfo =taskInfoDAO.findTaskInfo(id,taskid);
+			TaskInfoImpl taskInfo =taskInfoDAO.findTaskInfo(id,taskid);
 			if(taskInfo!=null){
 				String reString = "0;";
 				reString += taskInfo.getId() + "," + taskInfo.getTaskStatus() + "," + taskInfo.getTaskLog() + "," + taskInfo.getTaskResult() + "," +
@@ -243,10 +237,10 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 			}else
 				inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
 		}else{
-			TaskInfo taskInfo =taskInfoDAO.findTaskInfo("",taskid);
+			TaskInfoImpl taskInfo =taskInfoDAO.findTaskInfo("",taskid);
 			if(taskInfo!=null){
 				String reString = "1;";
-				reString += taskInfo.getId() + "," + taskInfo.getUserInfo().getName() + "," + taskInfo.getTaskStatus() + "," + taskInfo.getTaskLog() + "," + taskInfo.getTaskResult() + "," +
+				reString += taskInfo.getId() + "," + taskInfo.getUserName() + "," + taskInfo.getTaskStatus() + "," + taskInfo.getTaskLog() + "," + taskInfo.getTaskResult() + "," +
 						taskInfo.getTaskError() + "," + taskInfo.getCreateDate() + "," + taskInfo.getTaskID() + ";";
 				inputStream=new ByteArrayInputStream(reString.getBytes("UTF-8"));
 			}else

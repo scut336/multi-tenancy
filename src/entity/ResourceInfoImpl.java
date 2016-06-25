@@ -15,12 +15,14 @@ public class ResourceInfoImpl {
 	private char Expired;
 	private int SubmitJobTimes;
 	private Date LastSubmitTime;
-	
+	private String Capacity;
+	private String resourceLimit;
+
 	public ResourceInfoImpl(int appLimit, int currentAppCount,
 			String hDFSDirectory, int hDFSDirectoryQuota,
 			int hDFSDirectoryRemaining, String queue, Date createTime,
 			int createUserID, char expired, int submitJobTimes,
-			Date lastSubmitTime) {
+			Date lastSubmitTime, String capacity, String resourceLimit) {
 		AppLimit = appLimit;
 		CurrentAppCount = currentAppCount;
 		HDFSDirectory = hDFSDirectory;
@@ -32,6 +34,8 @@ public class ResourceInfoImpl {
 		Expired = expired;
 		SubmitJobTimes = submitJobTimes;
 		LastSubmitTime = lastSubmitTime;
+		Capacity = capacity;
+		this.resourceLimit = resourceLimit;
 	}
 
 	public int getAppLimit() {
@@ -120,6 +124,22 @@ public class ResourceInfoImpl {
 
 	public void setLastSubmitTime(Date lastSubmitTime) {
 		LastSubmitTime = lastSubmitTime;
+	}
+
+	public String getCapacity() {
+		return Capacity;
+	}
+
+	public void setCapacity(String capacity) {
+		Capacity = capacity;
+	}
+
+	public String getResourceLimit() {
+		return resourceLimit;
+	}
+
+	public void setResourceLimit(String resourceLimit) {
+		this.resourceLimit = resourceLimit;
 	}
 
 }

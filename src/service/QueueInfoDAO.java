@@ -12,4 +12,9 @@ public interface QueueInfoDAO {
 	
 	public boolean updateQueueCapacity(String name,double capacity);
 	
+	public QueueInfo findQueue(String name);
+
+	public List<String> showQueue();
+	
+	public List<QueueInfo> showQueues();
 }

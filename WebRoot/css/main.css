@@ -2,6 +2,10 @@ body {
     background-color: #f8f8f8;
 }
 
+ul li{
+	list-style-type:none;
+}
+
 .operate a{
     width:100%;
     float: left;

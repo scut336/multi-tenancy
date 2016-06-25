@@ -1,28 +1,18 @@
 package action;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import org.apache.struts2.ServletActionContext;
-
 import entity.JobInfo;
 import service.JobInfoDAO;
 import service.ResourceInfoDAO;
-import service.TaskInfoDAO;
 import service.impl.JobInfoDAOImpl;
 import service.impl.ResourceInfoDAOImpl;
-import service.impl.TaskInfoDAOImpl;
 
 public class JarFileUploadAction extends SuperAction{
 

@@ -3,6 +3,7 @@ package service;
 import java.util.List;
 
 import entity.TaskInfo;
+import entity.TaskInfoImpl;
 import entity.UserInfo;
 
 public interface TaskInfoDAO {
@@ -13,7 +14,7 @@ public interface TaskInfoDAO {
 	
 	public boolean updateTask(TaskInfo oldT,TaskInfo newT);
 	
-	public List<TaskInfo> findTask(String id,int page,int num);
+	public List<TaskInfoImpl> findTask(String id,int page,int num);
 	
 	public boolean checkTaskInfoById(String id);
 	
@@ -29,5 +30,5 @@ public interface TaskInfoDAO {
 	
 	public boolean updateTaskStatus(String TaskID,String num);
 	
-	public TaskInfo findTaskInfo(String id,String taskid);
+	public TaskInfoImpl findTaskInfo(String id,String taskid);
 }

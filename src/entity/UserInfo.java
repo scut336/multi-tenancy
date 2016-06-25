@@ -1,18 +1,10 @@
 package entity;
 
 import java.util.Date;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -29,15 +21,6 @@ public class UserInfo {
 	@Column(length=32)
 	private String password;
 	private Date createTime;
-	@OneToOne(mappedBy="userID")
-	private UserProfile userProfile;
-	
-	@OneToOne(mappedBy="userID")
-	private ResourceInfo resourceInfo;
-	
-	@OneToMany(cascade={CascadeType.ALL},fetch=FetchType.LAZY)
-	@JoinColumn(name="userID")
-	private Set<TaskInfo> taskInfos;
 	
 	public UserInfo(){}
 	
@@ -103,30 +86,4 @@ public class UserInfo {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	public UserProfile getUserProfile() {
-		return userProfile;
-	}
-
-	public void setUserProfile(UserProfile userProfile) {
-		this.userProfile = userProfile;
-	}
-
-	public ResourceInfo getResourceInfo() {
-		return resourceInfo;
-	}
-
-	public void setResourceInfo(ResourceInfo resourceInfo) {
-		this.resourceInfo = resourceInfo;
-	}
-
-	public Set<TaskInfo> getTaskInfos() {
-		return taskInfos;
-	}
-
-	public void setTaskInfos(Set<TaskInfo> taskInfos) {
-		this.taskInfos = taskInfos;
-	}
-
-	
 }

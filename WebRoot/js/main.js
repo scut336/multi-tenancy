@@ -61,6 +61,7 @@ function page(pageNum,that) {
             $(that).parent().addClass("active");
             clearInterval( intervalProcess );
             taskpage = 1;
+            applyRes();
             break;
         case 7:
             clearActive();
@@ -105,8 +106,13 @@ function page(pageNum,that) {
             break;
         case 14:
             clearInterval( intervalProcess );
-            findTask();
+            findTask("");
             taskpage = 1;
+            break;
+        case 15:
+            clearInterval( intervalProcess );
+            taskpage = 1;
+            manageApply(1);
             break;
     }
 }
@@ -939,7 +945,7 @@ function showTask(page){
 	                    "</div></td>";
                     }
                     string += "<td class=\"operate\">"+
-                    "<button onclick=\"start(this)\" class=\"btn btn-primary ladda-button\" data-style=\"contract-overlay\" style=\"z-index: 1000;\" data-size=\"xs\">运行</button>"+
+                    "<button onclick=\"start(this,true)\" class=\"btn btn-primary ladda-button\" data-style=\"contract-overlay\" style=\"z-index: 1000;\" data-size=\"xs\">运行</button>"+
                 	"</td><td style=\"display:none\" class=\"taskid\">"+temp[temp.length-1]+"</td></tr>";
 				}
 				string += "</tbody>"+
@@ -1097,10 +1103,11 @@ function queryProcess(){
 				var resProcess = $('.taskid').parent().children('td.processid');
 				for(var i=0;i<resProcess.length;i++){
 					var temp = resProcessData[i].split(":");
-					$('.'+temp[0]).animate({'width': temp[1] + '%'},'slow');
-					$('.'+temp[0]).html(temp[1]+"%");
+					if(parseInt(temp[1])<100){
+						$('.'+temp[0]).animate({'width': parseInt(temp[1]) + '%'},'slow');
+						$('.'+temp[0]).html(parseInt(temp[1])+"%");
+					}
 				}
-				
 			}
 		});
     }, 2000);
@@ -1126,66 +1133,99 @@ function resourceStatus(){
             "</div>"+
         "</div>"+
         "<div class=\"col-lg-6\">"+
-        "<div class=\"panel panel-default\">"+
-            "<div class=\"panel-heading\" id=\"appHead\">应用使用情况</div>"+
-            "<div class=\"panel-body\">"+
-                "<div class=\"flot-chart\">"+
-                    "<div class=\"flot-chart-content\" id=\"flot-pie-chart2\"></div>"+
-                "</div>"+
-            "</div>"+
-        "</div>"+
+	        "<div class=\"panel panel-default\">"+
+	            "<div class=\"panel-heading\">HDFS路径</div>"+
+	            "<div class=\"panel-body\">"+
+		            "<h4>文件路径</h4>"+
+		            "<ul>"+
+		                "<li>.../Home</li>"+
+		                    "<ul>"+
+		                        "<li>/input</li>"+
+		                        "<ul class='taskinput'></ul>"+
+		                        "<li>/output</li>"+
+		                        "<ul class='taskoutput'></ul>"+
+		                        "<li>/app</li>"+
+		                        "<ul class='taskapp'></ul>"+
+		                        "<li>/tmp</li>"+
+		                        "<li>/_recovery</li>"+
+		                    "</ul>"+
+		                "</li>"+
+	            "</div>"+
+	        "</div>"+
+	    "</div>"+
     "</div>"+
+    "<div class=\"row\">"+
+    "<div class=\"col-lg-6\">"+
+	    "<div class=\"panel panel-default\">"+
+	        "<div class=\"panel-heading\" id=\"appHead\">应用使用情况</div>"+
+	        "<div class=\"panel-body\">"+
+	            "<div class=\"flot-chart\">"+
+	                "<div class=\"flot-chart-content\" id=\"flot-pie-chart2\"></div>"+
+	            "</div>"+
+	        "</div>"+
+	    "</div>"+
+	"</div>"+
+    "<div class=\"col-lg-6\">"+
+	    "<div class=\"panel panel-default\">"+
+		    "<div class=\"panel-heading\">已上传应用</div>"+
+		    "<div class=\"panel-body Allapp\"></div>"+
+	    "</div>"+
+	"</div>"+
     "</div>"+
-    "<div class=\"panel panel-default\">"+
-    	"<div class=\"panel-heading\">作业使用情况</div>"+
-    	"<div class=\"panel-body\">"+
-        	"<ul class=\"timeline\">"+
-            	"<li>"+
-                	"<div class=\"timeline-badge\"><i class=\"fa fa-check\"></i></div>"+
-                	"<div class=\"timeline-panel\">"+
-                    	"<div class=\"timeline-heading\">"+
-                        	"<h4 class=\"timeline-title\">创建作业时间</h4>"+
-                    	"</div>"+
-	                    "<div class=\"timeline-body\">"+
-	                        "<h3 id=\"createJobTime\"></h3>"+
-	                    "</div>"+
-                    "</div>"+
-                "</li>"+
-                "<li class=\"timeline-inverted\">"+
-	            	"<div class=\"timeline-badge info\"><i class=\"fa fa-rocket\"></i></div>"+
-	            	"<div class=\"timeline-panel\">"+
-	                	"<div class=\"timeline-heading\">"+
-	                    	"<h4 class=\"timeline-title\">使用队列</h4>"+
-	                    "</div>"+
-	                    "<div class=\"timeline-body\">"+
-	                        "<h3 id=\"usedQueue\"></h3>"+
-	                    "</div>"+
-	                "</div>"+
-	            "</li>"+
-                "<li>"+
-                	"<div class=\"timeline-badge warning\"><i class=\"fa fa-times\"></i></div>"+
-                	"<div class=\"timeline-panel\">"+
-                    	"<div class=\"timeline-heading\">"+
-                        	"<h4 class=\"timeline-title\">启动作业次数</h4>"+
-                        "</div>"+
-	                    "<div class=\"timeline-body\">"+
-	                        "<h3 id=\"usedTimes\"></h3>"+
-	                    "</div>"+
-                    "</div>"+
-                "</li>"+
-                "<li class=\"timeline-inverted\">"+
-	            	"<div class=\"timeline-badge danger\"><i class=\"fa fa-tags\"></i></div>"+
-	            	"<div class=\"timeline-panel\">"+
-	                	"<div class=\"timeline-heading\">"+
-	                    	"<h4 class=\"timeline-title\">最后一次启动作业的时间</h4>"+
-	                    "</div>"+
-	                    "<div class=\"timeline-body\">"+
-	                        "<h3 id=\"lastUpdateTime\"></h3>"+
-	                    "</div>"+
-	                "</div>"+
-                "</li>"+
-            "</ul>"+
-        "</div>"+
+    "<div class=\"row\">"+
+	    "<div class=\"col-lg-12\">"+
+		    "<div class=\"panel panel-default\">"+
+		    	"<div class=\"panel-heading\">作业使用情况</div>"+
+		    	"<div class=\"panel-body\">"+
+		        	"<ul class=\"timeline\">"+
+		            	"<li>"+
+		                	"<div class=\"timeline-badge\"><i class=\"fa fa-check\"></i></div>"+
+		                	"<div class=\"timeline-panel\">"+
+		                    	"<div class=\"timeline-heading\">"+
+		                        	"<h4 class=\"timeline-title\">创建作业时间</h4>"+
+		                    	"</div>"+
+			                    "<div class=\"timeline-body\">"+
+			                        "<h3 id=\"createJobTime\"></h3>"+
+			                    "</div>"+
+		                    "</div>"+
+		                "</li>"+
+		                "<li class=\"timeline-inverted\">"+
+			            	"<div class=\"timeline-badge info\"><i class=\"fa fa-rocket\"></i></div>"+
+			            	"<div class=\"timeline-panel\">"+
+			                	"<div class=\"timeline-heading\">"+
+			                    	"<h4 class=\"timeline-title\">使用队列</h4>"+
+			                    "</div>"+
+			                    "<div class=\"timeline-body\">"+
+			                        "<h3 id=\"usedQueue\"></h3>"+
+			                    "</div>"+
+			                "</div>"+
+			            "</li>"+
+		                "<li>"+
+		                	"<div class=\"timeline-badge warning\"><i class=\"fa fa-times\"></i></div>"+
+		                	"<div class=\"timeline-panel\">"+
+		                    	"<div class=\"timeline-heading\">"+
+		                        	"<h4 class=\"timeline-title\">启动作业次数</h4>"+
+		                        "</div>"+
+			                    "<div class=\"timeline-body\">"+
+			                        "<h3 id=\"usedTimes\"></h3>"+
+			                    "</div>"+
+		                    "</div>"+
+		                "</li>"+
+		                "<li class=\"timeline-inverted\">"+
+			            	"<div class=\"timeline-badge danger\"><i class=\"fa fa-tags\"></i></div>"+
+			            	"<div class=\"timeline-panel\">"+
+			                	"<div class=\"timeline-heading\">"+
+			                    	"<h4 class=\"timeline-title\">最后一次启动作业的时间</h4>"+
+			                    "</div>"+
+			                    "<div class=\"timeline-body\">"+
+			                        "<h3 id=\"lastUpdateTime\"></h3>"+
+			                    "</div>"+
+			                "</div>"+
+		                "</li>"+
+		            "</ul>"+
+		        "</div>"+
+		    "</div>"+
+	    "</div>"+
     "</div>";
 	$("#page-wrapper").append(string);
         
@@ -1202,7 +1242,7 @@ function resourceStatus(){
 					return;
 				}
 				var val = d.split(",");
-				$('#hdfsHead').html("HDFS使用情况[总共"+val[2]+"]");
+				$('#hdfsHead').html("HDFS使用情况[总共"+val[2]/1048576+"M]");
 				var data = [{
 			        label: "剩余容量",
 			        data: val[1]
@@ -1258,10 +1298,32 @@ function resourceStatus(){
 			    });
 				$('#createJobTime').html(val[8]);
 				$('#lastUpdateTime').html(val[10]);
-				$('#usedQueue').html(val[7]);
+				$('#usedQueue').html("队列名称:"+val[7]+"<br/>容量百分比:"+val[11]+"<br/>队列单元占用大小:"+val[12]+"<br/>队列单元CPU值:"+val[13]);
 				$('#usedTimes').html(val[9]);
 			}
 		});
+     $.ajax({
+ 		url:ADDRESS+'/resourceInfo/ResourceInfo_Job.action',
+ 		type:'post',
+ 		data:{},
+ 		error:function(){
+ 			alert("Error：服务器出错！");
+ 		},
+ 		success:function(data){
+ 			var arr = data.split("|");
+ 			var res = "";
+ 			var res2 = "";
+ 			for(var i=0;i<arr.length-1;i++){
+ 				var temp = arr[i].split(".");
+ 				res+="<li>/"+temp[0]+"</li>";
+ 				res2+="<div class=\"well col-lg-4\"><h4>"+temp[0]+"</h4></div>";
+ 			}
+ 			$(".taskinput").append(res);
+ 			$(".taskoutput").append(res);
+ 			$(".taskapp").append(res);
+ 			$(".Allapp").append(res2);
+ 		}
+ 	});
 }
 
 function resourceQueue(){
@@ -1269,57 +1331,37 @@ function resourceQueue(){
     var string = 
         "<div class=\"row\">"+
             "<div class=\"col-lg-12\">"+
-                "<h1 class=\"page-header\">资源队列管理</h1>"+
+                "<h1 class=\"page-header\">集群资源管理</h1>"+
             "</div>"+
         "</div>"+
         "<div class=\"row\">"+
-	        "<div class=\"col-lg-6\">"+
-	            "<div class=\"panel panel-default\">"+
-	                "<div class=\"panel-heading\" id=\"queueCapaticy\">队列容量</div>"+
-	                "<div class=\"panel-body\">"+
-	                    "<div class=\"flot-chart\">"+
-	                        "<div class=\"flot-chart-content\" id=\"flot-pie-chart3\"></div>"+
-	                    "</div>"+
-	                "</div>"+
+	        "<div class=\"panel panel-default\">"+
+		        "<div class=\"panel-heading\">队列使用情况</div>"+
+		        "<div class=\"panel-body\">"+
+			        "<div class=\"table-responsive\">"+
+	                	"<table class=\"table table-striped table-bordered table-hover\">"+
+	                    "<thead><tr><th>name</th><th>capacity</th><th>enable</th><th>cpu</th><th>memory</th><th>max_waiting_time(min)</th></tr></thead>"+
+	                    "<tbody class='queueUsage'></tbody>"+
+	                    "</table>"+
+                    "</div>"+
+                "</div>"+
+		    "</div>"+
+	    "</div>"+
+	    "<div class=\"row\">"+
+	        "<div class=\"panel panel-default\">"+
+		        "<div class=\"panel-heading\">HDFS</div>"+
+		        "<div class=\"panel-body\">"+
+			        
 	            "</div>"+
-	        "</div>"+
-	        "<div class=\"col-lg-6\">"+
-		        "<div class=\"panel panel-default\">"+
-		    	"<div class=\"panel-heading\">队列详情</div>"+
-		    	"<div class=\"panel-body\">"+
-		        	"<ul class=\"timeline\">"+
-		            	"<li>"+
-		                	"<div class=\"timeline-badge\"><i class=\"fa fa-check\"></i></div>"+
-		                	"<div class=\"timeline-panel\">"+
-		                    	"<div class=\"timeline-heading\">"+
-		                        	"<h4 class=\"timeline-title\">队列名称</h4>"+
-		                    	"</div>"+
-			                    "<div class=\"timeline-body\">"+
-			                        "<h3 id=\"queueName\"></h3>"+
-			                    "</div>"+
-		                    "</div>"+
-		                "</li>"+
-		                "<li class=\"timeline-inverted\">"+
-			            	"<div class=\"timeline-badge info\"><i class=\"fa fa-times\"></i></div>"+
-			            	"<div class=\"timeline-panel\">"+
-			                	"<div class=\"timeline-heading\">"+
-			                    	"<h4 class=\"timeline-title\">单容器占用的资源数</h4>"+
-			                    "</div>"+
-			                    "<div class=\"timeline-body\">"+
-			                        "<h3 id=\"queueLimitResource\"></h3>"+
-			                    "</div>"+
-			                "</div>"+
-			            "</li>"+
-		            "</ul>"+
-	            "</div>"+
-            "</div>"+
-          "</div>"
+		    "</div>"+
+	    "</div>"+
+	    "<div class=\"row userUsage\">"+
 	    "</div>";
                 
 	$("#page-wrapper").append(string);
-        
+	manageUserResource(1);   
      $.ajax({
-			url:ADDRESS+'/queueInfo/QueueInfo_get.action',
+			url:ADDRESS+'/queueInfo/QueueInfo_showQueue.action',
 			type:'post',
 			data:{},
 			error:function(){
@@ -1331,37 +1373,115 @@ function resourceQueue(){
 					return;
 				}
 				var val = d.split("|");
-				$('#queueCapaticy').html("队列容量[总容量"+val[2]+"]");
-				$('#queueName').html(val[3]);
-				$('#queueLimitResource').html("memory:"+val[4]+"<br/>vcore:"+val[5]);
-				var data = [{
-			        label: "剩余容量",
-			        data: val[0]
-			    }, {
-			        label: "已用容量",
-			        data: val[1]
-			    }];
-				var plotObj = $.plot($("#flot-pie-chart3"), data, {
-			        series: {
-			            pie: {
-			                show: true
-			            }
-			        },
-			        grid: {
-			            hoverable: true
-			        },
-			        tooltip: true,
-			        tooltipOpts: {
-			            content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
-			            shifts: {
-			                x: 20,
-			                y: 0
-			            },
-			            defaultTheme: false
-			        }
-			    });
+				var res = "";
+				for(var i=0;i<val.length-1;i++){
+					var temp = val[i].split(",");
+					res += "<tr><td>"+temp[0]+"</td><td>"+temp[1]+"</td><td>"+temp[2]+"</td><td>"+
+						temp[3]+"</td><td>"+temp[4]+"</td><td>"+temp[5]+"</td></tr>";
+				}
+				$('.queueUsage').append(res);
 			}
 		});
+}
+
+function manageUserResource(page){
+	$(".userUsage").empty();
+	var string = 
+        "<div class=\"row\">"+
+        	"<div class=\"panel panel-default\">"+
+        		"<div class=\"panel-heading\">用户</div>"+
+        		"<div class=\"panel-body\">";
+    $.ajax({
+		url:ADDRESS+'/resourceInfo/ResourceInfo_listResource.action',
+		type:'post',
+		data:{'page':page},
+		error:function(){
+			alert("服务器出错！");
+		},
+		success:function(data){
+			string += "<table class=\"table table-striped\">"+
+              "<thead><tr><th>用户名</th><th>队列名</th><th>hdfs</th><th>作业数</th><th>操作</th></tr></thead>"+
+              "<tbody>";
+			if(data=="0")
+				string += "<tr><td>空！</td></tr>"+
+					"</tbody>"+
+				"</table>";
+			else{
+				var res = data.split(";");
+				var pageSum = res[0];
+				for(var i=1;i<res.length-1;i++){
+					var temp = res[i].split(",");
+					string += "<tr>"+
+                    "<td>"+temp[0]+"</td>"+
+                    "<td>"+temp[1]+"</td>"+
+                    "<td>"+temp[2]+"</td>"+
+                    "<td>"+temp[3]+"</td>"+
+                    "<td class=\"operate\">"+
+                      "<a href=\"####\" onclick=\"accept(this)\">修改</a>"+
+                    "</td>"+
+                  "</tr>";
+				}
+				string += "</tbody>"+
+	              "</table>"+
+	              "<div class=\"btn-toolbar pageBtn\" role=\"toolbar\" aria-label=\"page\">"+
+	                "<div class=\"btn-group\" role=\"group\" aria-label=\"fpage\">";
+				if(page==1)
+					string += "<button type=\"button\" class=\"btn btn-default disabled\">上一页</button>";
+				else
+					string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"manageUserResource("+(page-1)+")\">上一页</button>";
+				string += "</div>"+
+                "<div class=\"btn-group\" role=\"group\" aria-label=\"spage\">";
+	            if(pageSum>7){
+					if(page<4){
+						for(var i=1;i<=5;i++){
+							if(i!=page)
+								string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"manageUserResource("+i+")\">"+i+"</button>";
+							else
+								string += "<button type=\"button\" class=\"btn btn-default disabled\">"+i+"</button>";
+						}
+						string += "<button type=\"button\" class=\"btn btn-default\">……</button>";
+						string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"manageUserResource("+pageSum+")\">"+pageSum+"</button>";
+					}else if(page>=4&&page<(pageSum-4)){
+						for(var i=page-2;i<=page+2;i++){
+							if(i!=page)
+								string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"manageUserResource("+i+")\">"+i+"</button>";
+							else
+								string += "<button type=\"button\" class=\"btn btn-default disabled\">"+i+"</button>";
+						}
+						string += "<button type=\"button\" class=\"btn btn-default\">……</button>";
+						string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"manageUserResource("+pageSum+")\">"+pageSum+"</button>";
+					}else{
+						for(var i=pageSum-6;i<=pageSum;i++){
+							if(i!=page)
+								string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"manageUserResource("+i+")\">"+i+"</button>";
+							else
+								string += "<button type=\"button\" class=\"btn btn-default disabled\">"+i+"</button>";
+						}
+					}
+	            }else{
+					for(var i=1;i<=pageSum;i++){
+						if(i!=page)
+							string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"manageUserResource("+i+")\">"+i+"</button>";
+						else
+							string += "<button type=\"button\" class=\"btn btn-default disabled\">"+i+"</button>";
+					}
+				}
+	            string += "</div>"+
+                "<div class=\"btn-group\" role=\"group\" aria-label=\"tpage\">";
+	            if(page==pageSum)
+	            	string += "<button type=\"button\" class=\"btn btn-default disabled\">下一页</button>";
+	            else
+	            	string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"manageUserResource("+(page+1)+")\">下一页</button>";
+	            string += "</div>"+
+	              "</div>"+
+		            "</div>"+
+		        "</div>"+
+		        "</div>"+
+		        "</div>";
+			}
+			$("#page-wrapper").append(string);
+		}
+	});
 }
 
 function findUser(){
@@ -1454,8 +1574,9 @@ function findUser(){
 
 }
 
-function findTask(){
-	var name = $('#findText').val();
+function findTask(name){
+	if(name=="")
+		name = $('#findText').val();
 	$("#page-wrapper").empty();
     var string = 
         "<div class=\"row\">"+
@@ -1484,45 +1605,53 @@ function findTask(){
             "<div class=\"col-lg-12\">"+
             "<table class=\"table table-striped\">";
 			if(data=="0"){
-				string += "<thead><tr><th>任务ID</th><th>任务状态</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th></tr></thead>"+
+				string += "<thead><tr><th>任务ID</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th></tr></thead>"+
 						"<tbody>"+		
-							"<tr><td>空！</td></tr>"+
+							"<tr><td colspan='6'>空！</td></tr>"+
 							"</tbody>"+
 						"</table>";
 			}
 			else if(data=="00"){
-				string += "<thead><tr><th>任务ID</th><th>用户名</th><th>任务状态</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th><th></thead>"+
+				string += "<thead><tr><th>任务ID</th><th>用户名</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th></tr></thead>"+
 							"<tbody>"+			
-							"<tr><td>空！</td></tr>"+
+							"<tr><td colspan='7'>空！</td></tr>"+
 							"</tbody>"+
 						"</table>";
 			}
 			else{
 				var res = data.split(";");
 				if(res[0]=="1"){
-					string += "<thead><tr><th>任务ID</th><th>用户名</th><th>任务状态</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th></tr></thead>"+
+					string += "<thead><tr><th>任务ID</th><th>用户名</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th></tr></thead>"+
 					"<tbody>";
 				}else{
-					string += "<thead><tr><th>任务ID</th><th>任务状态</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th></tr></thead>"+
+					string += "<thead><tr><th>任务ID</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th></tr></thead>"+
 					"<tbody>";
 				}
-				
+
 				var temp = res[1].split(",");
 				string += "<tr>";
 				for(var j=0;j<temp.length;j++){
-					if((res[0]=="1"&&j==2)||(res[0]=="0"&&j==1))
-						string += "<td class=\"processid\"><div class=\"progress progress-striped active\" style=\"margin-bottom:0\">"+
-		                        	"<div class=\"progress-bar progress-bar-info "+temp[temp.length-1]+"\" role=\"progressbar\" aria-valuenow=\"20\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: "+temp[j]+"%\">"+temp[j]+"%</div>"+
-		                        "</div></td>";
-					else if(j==temp.length-1)
-						string += "<td style=\"display:none\" class=\"taskid\">"+temp[j]+"</td>";
+					if((res[0]=="1"&&j==2)||(res[0]=="0"&&j==1)||(j==temp.length-1))
+						continue;
 					else	
 						string += "<td>"+temp[j]+"</td>";
 				}
                 string += "<td class=\"operate\">"+
-                  "<a href=\"####\" onclick=\"delTask(this)\">删除</a>"+
+                  "<button type=\"button\" class=\"btn btn-danger\" onclick=\"delTask(this)\">删除</button>"+
                 "</td>"+
               "</tr>";
+                if(res[0]=="1"){
+					string += "<tr><td style=\"display:none\">"+temp[0]+"</td><td>作业状态</td><td colspan='5' class=\"processid\"><div class=\"progress progress-striped active\" style=\"margin-bottom:0\">"+
+                    	"<div class=\"progress-bar progress-bar-info "+temp[temp.length-1]+"\" role=\"progressbar\" aria-valuenow=\"20\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: "+temp[2]+"%\">"+temp[2]+"%</div>"+
+                    "</div></td>";
+                }else if(res[0]=="0"){
+                	string += "<tr><td style=\"display:none\">"+temp[0]+"</td><td>作业状态</td><td colspan='4' class=\"processid\"><div class=\"progress progress-striped active\" style=\"margin-bottom:0\">"+
+                    	"<div class=\"progress-bar progress-bar-info "+temp[temp.length-1]+"\" role=\"progressbar\" aria-valuenow=\"20\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: "+temp[1]+"%\">"+temp[1]+"%</div>"+
+                    "</div></td>";
+                }
+                string += "<td class=\"operate\">"+
+                "<button onclick=\"start(this,false)\" class=\"btn btn-primary ladda-button\" data-style=\"contract-overlay\" style=\"z-index: 1000;\" data-size=\"xs\">运行</button>"+
+            	"</td><td style=\"display:none\" class=\"taskid\">"+temp[temp.length-1]+"</td></tr>";
 				
 				string += "</tbody>"+
 	              "</table>"+
@@ -1558,12 +1687,23 @@ function findTask(){
 		        "</div>";
 			}
 			$("#page-wrapper").append(string);
+			Ladda.bind( '.operate button', {
+		        callback: function( instance ) {
+		        		startprogress = 0;
+			  	        var interval = setInterval( function() {
+			  	          if(startprogress === 1){
+			  	            instance.stop();
+			  	            clearInterval(interval);
+			  	          }
+			  	        }, 200);
+		    	}
+		    });
 			queryProcess();
 		}
 	});
 }
 
-function start(that){
+function start(that,flag){
 	var val = $(that).parent().parent().children('td').eq(0).html();
 	var tempPro = $(that).parent().parent().children('td').eq(2).children('.progress').children('.progress-bar').html();
 	console.log(tempPro);
@@ -1582,10 +1722,315 @@ function start(that){
 		success:function(data){
 			if(data==1){
 				startprogress = 1;
-				showTask(taskpage);
+				if(flag)
+					showTask(taskpage);
+				else
+					findTask(val);
 			}else{
 				alert("启动失败");
 			}
+		}
+	});
+}
+
+function applyRes(){
+	$("#page-wrapper").empty();
+    var string = 
+        "<div class=\"row\">"+
+            "<div class=\"col-lg-12\">"+
+                "<h1 class=\"page-header\">资源申请</h1>"+
+            "</div>"+
+        "</div>"+
+        "<div class=\"row\">"+
+            "<div class=\"col-lg-12\">"+
+                "<div class=\"form-group\">"+
+                    "<label>作业队列</label>"+
+                    "<div class=\"form-group\">"+
+	                    "<select class=\"form-control\" id=\"applyQueue\" onchange=\"queueChange(this.value);\">"+
+	                        
+	                    "</select>"+
+                    "</div>"+
+                    "<p class=\"help-block queueChange\"></p>"+
+                "</div>"+
+                "<div class=\"form-group\">"+
+	                "<label>hdfs(M)</label>"+
+	                "<div class=\"form-group\">"+
+	                	"<input class=\"form-control\" placeholder=\"storage\" id=\"applyHDFS\">"+
+	                "</div>"+
+	                "<p class=\"help-block hdfsUse\"></p>"+
+                "</div>"+
+                "<div class=\"form-group\">"+
+	                "<label>应用数目</label>"+
+	                "<input class=\"form-control\" placeholder=\"appCount\" id=\"applyApp\">"+
+	                "<p class=\"help-block\">请输入一个整数</p>"+
+	            "</div>"+
+                "<div class=\"submitApply\">"+
+                    "<button class=\"btn btn-primary ladda-button\" data-style=\"expand-right\" style=\"min-width:100px\"><span class=\"ladda-label\" style=\"padding:10px 12px;line-height:24px;font-size:18px;\">提交</span></button>"+
+                "</div>"+
+            "</div>"+
+        "</div>"+
+        "<button style=\"display:none\" data-toggle=\"modal\" data-target=\"#myModal\" id=\"notifyBtn\"></button>"+
+        "<div class=\"modal fade\" id=\"myModal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">"+
+            "<div class=\"modal-dialog\">"+
+                "<div class=\"modal-content\">"+
+                    "<div class=\"modal-header\">"+
+                        "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>"+
+                        "<h4 class=\"modal-title\" id=\"myModalLabel\">添加成功</h4>"+
+                    "</div>"+
+                    "<div class=\"modal-body\">您已成功提交申请</div>"+
+                    "<div class=\"modal-footer\">"+
+                        "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>"+
+                    "</div>"+
+                "</div>"+
+            "</div>"+
+        "</div>"+
+        "<button style=\"display:none\" data-toggle=\"modal\" data-target=\"#myModal2\" id=\"notifyBtn2\"></button>"+
+        "<div class=\"modal fade\" id=\"myModal2\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">"+
+            "<div class=\"modal-dialog\">"+
+                "<div class=\"modal-content\">"+
+                    "<div class=\"modal-header\">"+
+                        "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>"+
+                        "<h4 class=\"modal-title\" id=\"myModalLabel\">提交失败！</h4>"+
+                    "</div>"+
+                    "<div class=\"modal-body\">请正确填写！</div>"+
+                    "<div class=\"modal-footer\">"+
+                        "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>"+
+                    "</div>"+
+                "</div>"+
+            "</div>"+
+        "</div>";
+          
+    $("#page-wrapper").append(string);
+    loadingApply();
+    showqueue();
+    showHDFS();
+}
+
+function showqueue(){
+	$.ajax({
+		url:ADDRESS+'/queueInfo/QueueInfo_show.action',
+		type:'post',
+		data:{},
+		error:function(){
+			alert("Error:服务器错误!");
+		},
+		success:function(data){
+			var arr = data.split("|");
+			var res = "";
+			for(var i=0;i<arr.length-1;i++){
+				res+="<option>"+arr[i]+"</option>";
+			}
+			$("#applyQueue").empty();
+			$("#applyQueue").html(res);
+			$("#applyQueue").val("default");
+			queueChange("default");
+		}
+	});
+}
+
+function showHDFS(){
+	$.ajax({
+		url:ADDRESS+'/resourceInfo/ResourceInfo_HDFS.action',
+		type:'post',
+		data:{},
+		error:function(){
+			alert("Error:服务器错误!");
+		},
+		success:function(data){
+			var arr = data.split("|");
+			var res = "当前已使用:"+parseInt(arr[1])/1048576+"M/"+parseInt(arr[0])/1048576+"M";
+			$(".hdfsUse").empty();
+			$(".hdfsUse").html(res);
+		}
+	});
+}
+
+function loadingApply(){
+    Ladda.bind( '.submitApply button', {
+      callback: function( instance ) {
+	        var progress = 0;
+	        var interval = setInterval( function() {
+	          if( progress === 1 ) {
+	            instance.stop();
+	            clearInterval( interval );
+	          }
+	        }, 200 );
+	        if($("#applyHDFS").val()!=""&&$("#applyApp").val()!=""){
+		        $.ajax({
+		    		url:ADDRESS+'/resourceInfo/ResourceInfo_apply.action',
+		    		type:'post',
+		    		data:{	"queue" : $("#applyQueue option:selected").val(),
+							"hdfs":$("#applyHDFS").val()*1048576,
+							"num": $("#applyApp").val()
+						 },
+		    		error:function(){
+		    			alert("Error:服务器错误!");
+		    		},
+		    		success:function(data){
+		    			$("#applyQueue").val("default");
+		    			$("#applyHDFS").val("");
+		    			$("#applyApp").val("");
+		    			queueChange("default");
+		    			progress = 1;
+		    			$('#notifyBtn').click();
+		    		}
+				});
+	      }else{
+	    	  progress = 1;
+	    	  $('#notifyBtn2').click();
+	      }
+      }
+    });
+}
+
+function queueChange(val){
+	$.ajax({
+		url:ADDRESS+'/queueInfo/QueueInfo_find.action',
+		type:'post',
+		data:{"queue" : val},
+		error:function(){
+			alert("Error:服务器错误!");
+		},
+		success:function(data){
+			var arr = data.split("|");
+			var res = "队列详情<br/>单容器占用的资源数:"+arr[0]+"<br/>"+"容量百分比:"+arr[1]+"<br/>"+"能否使用:"+arr[2];
+			$(".queueChange").empty();
+			$(".queueChange").html(res);
+		}
+	});
+}
+
+function manageApply(page){
+	$("#page-wrapper").empty();
+	var string = 
+        "<div class=\"row\">"+
+            "<div class=\"col-lg-12\">"+
+                "<h1 class=\"page-header\">资源审核</h1>"+
+            "</div>"+
+        "</div>";
+    $.ajax({
+		url:ADDRESS+'/resourceInfo/ResourceInfo_confirm.action',
+		type:'post',
+		data:{'page':page},
+		error:function(){
+			string+="<div>出错！</div>";
+			$("#page-wrapper").append(string);
+		},
+		success:function(data){
+			string += "<div class=\"row\">"+
+            "<div class=\"col-lg-12\">"+
+            "<table class=\"table table-striped\">"+
+              "<thead><tr><th>用户名</th><th>队列名</th><th>hdfs</th><th>作业数</th><th>操作</th><th></th></tr></thead>"+
+              "<tbody>";
+			if(data=="0")
+				string += "<tr><td>空！</td></tr>"+
+					"</tbody>"+
+				"</table>";
+			else{
+				var res = data.split(";");
+				var pageSum = res[0];
+				for(var i=1;i<res.length-1;i++){
+					var temp = res[i].split(",");
+					string += "<tr>"+
+                    "<td>"+temp[0]+"</td>"+
+                    "<td>"+temp[1]+"</td>"+
+                    "<td>"+temp[2]+"</td>"+
+                    "<td>"+temp[3]+"</td>"+
+                    "<td class=\"operate\">"+
+                      "<a href=\"####\" onclick=\"accept(this)\">接受</a>"+
+                    "</td>"+
+                    "<td class=\"operate\">"+
+                      "<a href=\"####\" onclick=\"refuse(this)\">拒绝</a>"+
+                    "</td>"+
+                  "</tr>";
+				}
+				string += "</tbody>"+
+	              "</table>"+
+	              "<div class=\"btn-toolbar pageBtn\" role=\"toolbar\" aria-label=\"page\">"+
+	                "<div class=\"btn-group\" role=\"group\" aria-label=\"fpage\">";
+				if(page==1)
+					string += "<button type=\"button\" class=\"btn btn-default disabled\">上一页</button>";
+				else
+					string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"manageApply("+(page-1)+")\">上一页</button>";
+				string += "</div>"+
+                "<div class=\"btn-group\" role=\"group\" aria-label=\"spage\">";
+	            if(pageSum>7){
+					if(page<4){
+						for(var i=1;i<=5;i++){
+							if(i!=page)
+								string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"manageApply("+i+")\">"+i+"</button>";
+							else
+								string += "<button type=\"button\" class=\"btn btn-default disabled\">"+i+"</button>";
+						}
+						string += "<button type=\"button\" class=\"btn btn-default\">……</button>";
+						string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"manageApply("+pageSum+")\">"+pageSum+"</button>";
+					}else if(page>=4&&page<(pageSum-4)){
+						for(var i=page-2;i<=page+2;i++){
+							if(i!=page)
+								string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"manageApply("+i+")\">"+i+"</button>";
+							else
+								string += "<button type=\"button\" class=\"btn btn-default disabled\">"+i+"</button>";
+						}
+						string += "<button type=\"button\" class=\"btn btn-default\">……</button>";
+						string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"manageApply("+pageSum+")\">"+pageSum+"</button>";
+					}else{
+						for(var i=pageSum-6;i<=pageSum;i++){
+							if(i!=page)
+								string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"manageApply("+i+")\">"+i+"</button>";
+							else
+								string += "<button type=\"button\" class=\"btn btn-default disabled\">"+i+"</button>";
+						}
+					}
+	            }else{
+					for(var i=1;i<=pageSum;i++){
+						if(i!=page)
+							string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"manageApply("+i+")\">"+i+"</button>";
+						else
+							string += "<button type=\"button\" class=\"btn btn-default disabled\">"+i+"</button>";
+					}
+				}
+	            string += "</div>"+
+                "<div class=\"btn-group\" role=\"group\" aria-label=\"tpage\">";
+	            if(page==pageSum)
+	            	string += "<button type=\"button\" class=\"btn btn-default disabled\">下一页</button>";
+	            else
+	            	string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"manageApply("+(page+1)+")\">下一页</button>";
+	            string += "</div>"+
+	              "</div>"+
+		            "</div>"+
+		        "</div>";
+			}
+			$("#page-wrapper").append(string);
+		}
+	});
+}
+
+function accept(that){
+	var name = $(that).parent().parent().children('td').eq(0).html();
+	$.ajax({
+		url:ADDRESS+'/resourceInfo/ResourceInfo_accept.action',
+		type:'post',
+		data:{"name" : name},
+		error:function(){
+			alert("Error:服务器错误!");
+		},
+		success:function(data){
+			$(that).parent().parent().remove();
+		}
+	});
+}
+
+function refuse(that){
+	var name = $(that).parent().parent().children('td').eq(0).html();
+	$.ajax({
+		url:ADDRESS+'/resourceInfo/ResourceInfo_refuse.action',
+		type:'post',
+		data:{"name" : name},
+		error:function(){
+			alert("Error:服务器错误!");
+		},
+		success:function(data){
+			$(that).parent().parent().remove();
 		}
 	});
 }
