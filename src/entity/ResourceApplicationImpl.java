@@ -5,12 +5,12 @@ public class ResourceApplicationImpl {
 	private String UserName;
 	private String Queue;
 	private int AppLimit;
-	private int HDFSDirectoryQuota;
+	private long HDFSDirectoryQuota;
 	
 	public ResourceApplicationImpl(){}
 
 	public ResourceApplicationImpl(String userName, String queue, int appLimit,
-			int hDFSDirectoryQuota) {
+			long hDFSDirectoryQuota) {
 		UserName = userName;
 		Queue = queue;
 		AppLimit = appLimit;
@@ -41,11 +41,11 @@ public class ResourceApplicationImpl {
 		AppLimit = appLimit;
 	}
 
-	public int getHDFSDirectoryQuota() {
+	public long getHDFSDirectoryQuota() {
 		return HDFSDirectoryQuota;
 	}
 
-	public void setHDFSDirectoryQuota(int hDFSDirectoryQuota) {
+	public void setHDFSDirectoryQuota(long hDFSDirectoryQuota) {
 		HDFSDirectoryQuota = hDFSDirectoryQuota;
 	}
 

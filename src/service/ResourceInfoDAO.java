@@ -24,7 +24,7 @@ public interface ResourceInfoDAO {
 	
 	public ResourceInfoImpl getHDFSDirectoryQuota(String id);
 	
-	public boolean ApplyResource(String userid,String queue,int hdfs,int num);
+	public boolean ApplyResource(String userid,String queue,long hdfs,int num);
 	
 	public Object[] HDFS(String userID);
 	

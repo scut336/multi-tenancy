@@ -80,7 +80,7 @@ public class ResourceInfoAction extends SuperAction{
 	public String apply() throws Exception{
 		String userID = session.getAttribute("loginUserId").toString();
 		String queue = request.getParameter("queue");
-		int hdfs = Integer.parseInt(request.getParameter("hdfs"));
+		long hdfs = Long.parseLong(request.getParameter("hdfs"));
 		int num = Integer.parseInt(request.getParameter("num"));
 		ResourceInfoDAO resourceInfoDAO = new ResourceInfoDAOImpl();
 		if(resourceInfoDAO.ApplyResource(userID, queue, hdfs, num)){
@@ -152,50 +152,12 @@ public class ResourceInfoAction extends SuperAction{
 		return "Ajax_Success";
 	}
 	
-	//广搜HDFS路径
+	//HDFS路径
 	public String HDFSRoute() throws Exception{
 		String res = "";
-		Queue<String> sk = new LinkedList<String>();
-		String strURL = "";
-		strURL = "http://222.201.145.144:50070/webhdfs/v1/user/"+session.getAttribute("loginUserName");  
-	    sk.add(strURL+"?op=LISTSTATUS");
-	    int size = sk.size();
-	    while(!sk.isEmpty()){
-	    	if(size==0){
-	    		res+="|";
-	    		size = sk.size();
-	    	}
-	    	String temp = sk.poll();
-	    	res += temp+",";
-	    	URL url = new URL(temp);  
-		    HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();  
-		    InputStreamReader input = new InputStreamReader(httpConn  
-		            .getInputStream(), "utf-8");  
-		    BufferedReader bufReader = new BufferedReader(input);  
-		    String line = "";  
-		    StringBuilder contentBuf = new StringBuilder();  
-		    while ((line = bufReader.readLine()) != null) {  
-		        contentBuf.append(line);  
-		    }  
-		    String buf = contentBuf.toString();
-		    JSONObject json=new JSONObject(buf);
-		    JSONObject jsonObject = json.getJSONObject("FileStatuses");
-		    JSONArray jsonArray = jsonObject.getJSONArray("FileStatus");
-		    for(int ii=0;ii<jsonArray.length();ii++){
-		    	JSONObject tempObject = jsonArray.getJSONObject(ii);
-		    	res 
-		    }
-	    }
-		
-	    
-	    return null;
-	}
-	
-	//查看作业情况
-	public String Job() throws Exception{
-		String strURL = "";
-		strURL = "http://222.201.145.144:50070/webhdfs/v1/user/"+session.getAttribute("loginUserName")+"?op=LISTSTATUS";  
-	    URL url = new URL(strURL);  
+		String addString = request.getParameter("add");
+		String strURL = "http://222.201.145.144:50070/webhdfs/v1/user/"+session.getAttribute("loginUserName")+"/"+addString;  
+		URL url = new URL(strURL+"?op=LISTSTATUS");  
 	    HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();  
 	    InputStreamReader input = new InputStreamReader(httpConn  
 	            .getInputStream(), "utf-8");  
@@ -205,12 +167,30 @@ public class ResourceInfoAction extends SuperAction{
 	    while ((line = bufReader.readLine()) != null) {  
 	        contentBuf.append(line);  
 	    }  
-	    String buf = contentBuf.toString(); 
+	    String buf = contentBuf.toString();
 	    JSONObject json=new JSONObject(buf);
-	    JSONObject jsonObject = json.getJSONObject("ContentSummary");
-	    int spaceConsumed = jsonObject.getInt("spaceConsumed");
-	    
-		inputStream=new ByteArrayInputStream(reString.getBytes("UTF-8"));
+	    JSONObject jsonObject = json.getJSONObject("FileStatuses");
+	    JSONArray jsonArray = jsonObject.getJSONArray("FileStatus");
+		for(int i=0;i<jsonArray.length();i++){
+			JSONObject temp = jsonArray.getJSONObject(i);
+			if(temp.getString("type").equals("DIRECTORY"))
+				res+="1,"+temp.getString("pathSuffix")+"|";
+			else
+				res+="0,"+temp.getString("pathSuffix")+","+
+				"http://222.201.145.144:50075/webhdfs/v1/user/"+session.getAttribute("loginUserName")+"/"+addString+"/"+temp.getString("pathSuffix")+"?op=OPEN&namenoderpcaddress=master:9000&amp;offset=0"+"|";
+		}
+		inputStream=new ByteArrayInputStream(res.getBytes("UTF-8"));
+		return "Ajax_Success";
+	}
+	
+	//查看作业情况
+	public String Job() throws Exception{
+		JobInfoDAO jobInfoDAO = new JobInfoDAOImpl();
+	    List<JobInfo> res = jobInfoDAO.queryJobInfo(session.getAttribute("loginUserId").toString());
+		String reString = "";
+	    for(int i=0;i<res.size();i++)
+			reString += res.get(i).getName()+"|";
+	    inputStream=new ByteArrayInputStream(reString.getBytes("UTF-8"));
 		return "Ajax_Success";	
 	}
 	

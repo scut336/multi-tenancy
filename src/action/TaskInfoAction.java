@@ -10,13 +10,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
+
 import service.JobInfoDAO;
 import service.ResourceInfoDAO;
 import service.TaskInfoDAO;
 import service.impl.JobInfoDAOImpl;
 import service.impl.ResourceInfoDAOImpl;
 import service.impl.TaskInfoDAOImpl;
+
 import com.opensymphony.xwork2.ModelDriven;
+
 import db.JSONCreator;
 import entity.JobInfo;
 import entity.TaskInfo;
@@ -134,27 +137,14 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 		return "Ajax_Success";
 	}
 	
-	//修改任务
-	public String update(){
+	//修改任务HDFS路径
+	public String UpdateHDFS() throws UnsupportedEncodingException{
 		TaskInfoDAO tdao = new TaskInfoDAOImpl();
 		String id = request.getParameter("id");
-		TaskInfo t = tdao.queryTaskById(id);
-		if(t!=null){
-			session.setAttribute("taskInfo", t);
-			return "TaskInfo_update_success";
-		}else
-			return "TaskInfo_update_failed";
-	}
-	
-	//保存修改任务
-	public String save() throws Exception{
-		TaskInfoDAO tdao = new TaskInfoDAOImpl();
-		TaskInfo t = (TaskInfo)(session.getAttribute("taskInfo"));
-		if(tdao.updateTask(t,taskInfo)){
+		String hdfs = request.getParameter("hdfs");
+		if(tdao.updateTaskHDFS(id,hdfs)){
 			inputStream=new ByteArrayInputStream("1".getBytes("UTF-8"));
-			session.setAttribute("taskInfo", taskInfo);
-		}
-		else
+		}else
 			inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
 		return "Ajax_Success";
 	}
@@ -186,6 +176,7 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 	//开始任务
 	public String start() throws IOException {
 		String id = request.getParameter("id");
+		String input = request.getParameter("input");
 		TaskInfoDAO taskInfoDAO = new TaskInfoDAOImpl();
 		String jarName = taskInfoDAO.findJarName(id);
         String _url = "http://222.201.145.144:4567/app/start";
@@ -199,12 +190,16 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
         connection.setRequestProperty("user", (String)session.getAttribute("loginUserName"));
         connection.setRequestProperty("app", jarName);
         connection.setRequestProperty("queue", "default");
-        connection.setRequestProperty("input", "/user/smoketest/input");
+        connection.setRequestProperty("input", input);
         int responseCode = connection.getResponseCode();
         if (HttpURLConnection.HTTP_OK == responseCode) {
             String line;
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             line = reader.readLine();
+            if(line.indexOf("Input path does not exist")>0){
+            	inputStream=new ByteArrayInputStream("-1".getBytes("UTF-8"));
+            	return "Ajax_Success";
+            }
             int first = line.indexOf("JobID is:");
             line = line.substring(first+9);
             first = line.indexOf("<br>");
@@ -246,6 +241,24 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 			}else
 				inputStream=new ByteArrayInputStream("00".getBytes("UTF-8"));
 		}
+		return "Ajax_Success";
+	}
+	
+	//查询Jar
+	public String findJar() throws UnsupportedEncodingException{
+		int page = Integer.parseInt(request.getParameter("page"));
+		TaskInfoDAO taskInfoDAO = new TaskInfoDAOImpl();
+		String taskname = request.getParameter("jar");
+		String id = (String)session.getAttribute("loginUserId");
+		List<TaskInfoImpl> taskInfo =taskInfoDAO.findTaskInfoJar(id,taskname,page,10);
+		if(taskInfo!=null){
+			String reString = taskInfoDAO.pageJarSum(id, taskname)+";";
+			for(int i=0;i<taskInfo.size();i++)
+				reString += taskInfo.get(i).getId() + "," + taskInfo.get(i).getTaskStatus() + "," + taskInfo.get(i).getTaskLog() + "," + taskInfo.get(i).getTaskResult() + "," +
+					taskInfo.get(i).getTaskError() + "," + taskInfo.get(i).getCreateDate() + "," + taskInfo.get(i).getTaskID() + ";";
+			inputStream=new ByteArrayInputStream(reString.getBytes("UTF-8"));
+		}else
+			inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
 		return "Ajax_Success";
 	}
 	

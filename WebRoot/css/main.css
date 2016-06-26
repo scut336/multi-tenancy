@@ -209,3 +209,26 @@ ul li{
 .ladda-button{
 	width:auto;
 }
+
+.hdfsroute li{
+	padding:5px;
+	border:1px solid #ECECEC;
+	-moz-border-radius: 5px;    
+    -webkit-border-radius: 5px;
+    border-radius:5px; 
+	margin-bottom:5px;
+}
+
+.hdfsroute li:hover{
+	cursor:pointer;
+	background-color:#ECECEC;
+}
+
+.well{
+	margin-left:10px;
+}
+
+.well:hover{
+	cursor:pointer;
+	background-color:#ECECEC;
+}

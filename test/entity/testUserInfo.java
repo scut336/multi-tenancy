@@ -1,6 +1,7 @@
 package entity;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -10,8 +11,12 @@ import java.net.URL;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
+
+
 
 
 
@@ -176,23 +181,37 @@ public class testUserInfo {
 	}
 	@Test
 	public void test2() throws Exception{
-		String strURL = "";
-		strURL = "http://222.201.145.144:50070/webhdfs/v1/user/la@gc.com?op=GETCONTENTSUMMARY";  
-	    URL url = new URL(strURL);  
-	    HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();  
-	    InputStreamReader input = new InputStreamReader(httpConn  
-	            .getInputStream(), "utf-8");  
-	    BufferedReader bufReader = new BufferedReader(input);  
-	    String line = "";  
-	    StringBuilder contentBuf = new StringBuilder();  
-	    while ((line = bufReader.readLine()) != null) {  
-	        contentBuf.append(line);  
-	    }  
-	    String buf = contentBuf.toString(); 
-	    
-	    JSONObject json=new JSONObject(buf);
-	    JSONObject jsonObject = json.getJSONObject("ContentSummary");
-	    int spaceConsumed = jsonObject.getInt("spaceConsumed");
-        System.out.println(spaceConsumed);
+		TaskInfoDAO taskInfoDAO = new TaskInfoDAOImpl();
+		String jarName = taskInfoDAO.findJarName("TASK0001");
+        String _url = "http://222.201.145.144:4567/app/start";
+        URL url = new URL(_url);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Content-Type", "text/html");
+        connection.setRequestProperty("Charset", "UTF-8");
+        connection.setRequestProperty("user", "la@gc.com");
+        connection.setRequestProperty("app", jarName);
+        connection.setRequestProperty("queue", "default");
+        connection.setRequestProperty("input", "user");
+        int responseCode = connection.getResponseCode();
+        if (HttpURLConnection.HTTP_OK == responseCode) {
+            String line;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            line = reader.readLine();
+            System.out.println(line.indexOf("Input path does not exist"));
+            if(line.indexOf("Input path does not exist1")<0){
+            	System.out.println(line.indexOf("Input path does not exist1"));
+            }
+            int first = line.indexOf("JobID is:");
+            line = line.substring(first+9);
+            first = line.indexOf("<br>");
+            line = line.substring(0,first);
+            System.out.println(line);
+        }
+        else{
+        	System.out.println(responseCode);
+        }
 	}
 }

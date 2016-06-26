@@ -928,7 +928,9 @@ function showTask(page){
 					for(var j=0;j<temp.length;j++){
 						if((res[1]=="1"&&j==2)||(res[1]=="0"&&j==1)||(j==temp.length-1))
 							continue;
-						else	
+						else if((res[1]=="1"&&j==3)||(res[1]=="0"&&j==2))
+							string += "<td><a href='####' onclick='updateRoute(this)' id='"+temp[0]+"'>"+temp[j]+"</a></td>";
+						else
 							string += "<td>"+temp[j]+"</td>";
 					}
                     string += "<td class=\"operate\">"+
@@ -936,11 +938,11 @@ function showTask(page){
                     "</td>"+
                   "</tr>";
                     if(res[1]=="1"){
-						string += "<tr><td style=\"display:none\">"+temp[0]+"</td><td>作业状态</td><td colspan='5' class=\"processid\"><div class=\"progress progress-striped active\" style=\"margin-bottom:0\">"+
+						string += "<tr><td>作业状态</td><td colspan='5' class=\"processid\"><div class=\"progress progress-striped active\" style=\"margin-bottom:0\">"+
                         	"<div class=\"progress-bar progress-bar-info "+temp[temp.length-1]+"\" role=\"progressbar\" aria-valuenow=\"20\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: "+temp[2]+"%\">"+temp[2]+"%</div>"+
                         "</div></td>";
                     }else if(res[1]=="0"){
-                    	string += "<tr><td style=\"display:none\">"+temp[0]+"</td><td>作业状态</td><td colspan='4' class=\"processid\"><div class=\"progress progress-striped active\" style=\"margin-bottom:0\">"+
+                    	string += "<tr><td>作业状态</td><td colspan='4' class=\"processid\"><div class=\"progress progress-striped active\" style=\"margin-bottom:0\">"+
 	                    	"<div class=\"progress-bar progress-bar-info "+temp[temp.length-1]+"\" role=\"progressbar\" aria-valuenow=\"20\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: "+temp[1]+"%\">"+temp[1]+"%</div>"+
 	                    "</div></td>";
                     }
@@ -1030,6 +1032,27 @@ function showTask(page){
 		                    "</div>"+
 		                "</div>"+
 		            "</div>"+
+		        "</div>"+
+		        "<div class=\"modal fade\" id=\"myModal7\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">"+
+		            "<div class=\"modal-dialog\">"+
+		                "<div class=\"modal-content\">"+
+		                    "<div class=\"modal-header\">"+
+		                        "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>"+
+		                        "<h4 class=\"modal-title\" id=\"myModalLabel\">修改HDFS路径</h4>"+
+		                    "</div>"+
+		                    "<div class=\"modal-body\">"+
+			                    "<div class=\"form-group\">"+
+				                    "<label>HDFS路径</label>"+
+				                    "<input class=\"form-control\" placeholder=\"hdfsroute\" id=\"updateHDFSRoute\">"+
+				                    "<div id='updateHDFSname' style='display:none'></div>"+
+			                    "</div>"+
+		                    "</div>"+
+		                    "<div class=\"modal-footer\">"+
+		                        "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\" onclick='updateHDFS()'>更改</button>"+
+		                        "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">关闭</button>"+
+		                    "</div>"+
+		                "</div>"+
+		            "</div>"+
 		        "</div>";
 			}
 			$("#page-wrapper").append(string);
@@ -1045,6 +1068,29 @@ function showTask(page){
 		    	}
 		    });
 			queryProcess();
+		}
+	});
+}
+
+function updateRoute(that){
+	$('#updateHDFSRoute').val($(that).html());
+	$('#updateHDFSname').html($(that).parent().parent().children('td').eq(0).html());
+	$('#myModal7').modal('show');
+}
+
+function updateHDFS(){
+	var tempid = $('#updateHDFSname').html();
+	var temphdfs = $('#updateHDFSRoute').val();
+	$.ajax({
+		url:ADDRESS+"/taskInfo/TaskInfo_UpdateHDFS.action",
+		type:'post',
+		data:{'id':tempid,
+			  'hdfs':temphdfs},
+		error:function(){
+			alert("Error：服务器出错！");
+		},
+		success:function(d){
+			$('#'+tempid).html(temphdfs);
 		}
 	});
 }
@@ -1103,7 +1149,7 @@ function queryProcess(){
 				var resProcess = $('.taskid').parent().children('td.processid');
 				for(var i=0;i<resProcess.length;i++){
 					var temp = resProcessData[i].split(":");
-					if(parseInt(temp[1])<100){
+					if(parseInt(temp[1])<=100){
 						$('.'+temp[0]).animate({'width': parseInt(temp[1]) + '%'},'slow');
 						$('.'+temp[0]).html(parseInt(temp[1])+"%");
 					}
@@ -1137,19 +1183,9 @@ function resourceStatus(){
 	            "<div class=\"panel-heading\">HDFS路径</div>"+
 	            "<div class=\"panel-body\">"+
 		            "<h4>文件路径</h4>"+
-		            "<ul>"+
-		                "<li>.../Home</li>"+
-		                    "<ul>"+
-		                        "<li>/input</li>"+
-		                        "<ul class='taskinput'></ul>"+
-		                        "<li>/output</li>"+
-		                        "<ul class='taskoutput'></ul>"+
-		                        "<li>/app</li>"+
-		                        "<ul class='taskapp'></ul>"+
-		                        "<li>/tmp</li>"+
-		                        "<li>/_recovery</li>"+
-		                    "</ul>"+
-		                "</li>"+
+		            "<ul class='hdfsroute'>"+
+		            	"<li class='0' onclick='expand(this)'>Home</li>"+
+		            "</ul>"+    
 	            "</div>"+
 	        "</div>"+
 	    "</div>"+
@@ -1250,7 +1286,7 @@ function resourceStatus(){
 			        label: "已用容量",
 			        data: val[0]
 			    }];
-				var plotObj = $.plot($("#flot-pie-chart"), data, {
+				$.plot($("#flot-pie-chart"), data, {
 			        series: {
 			            pie: {
 			                show: true
@@ -1277,7 +1313,7 @@ function resourceStatus(){
 			        label: "已用数量",
 			        data: val[4]
 			    }];
-				var plotObj = $.plot($("#flot-pie-chart2"), data, {
+				$.plot($("#flot-pie-chart2"), data, {
 			        series: {
 			            pie: {
 			                show: true
@@ -1312,18 +1348,245 @@ function resourceStatus(){
  		success:function(data){
  			var arr = data.split("|");
  			var res = "";
- 			var res2 = "";
  			for(var i=0;i<arr.length-1;i++){
  				var temp = arr[i].split(".");
- 				res+="<li>/"+temp[0]+"</li>";
- 				res2+="<div class=\"well col-lg-4\"><h4>"+temp[0]+"</h4></div>";
+ 				res+="<div class=\"well col-lg-4\" onclick='jumptoTask(\""+temp[0]+"\",1)'><h4>"+temp[0]+"</h4></div>";
  			}
- 			$(".taskinput").append(res);
- 			$(".taskoutput").append(res);
- 			$(".taskapp").append(res);
- 			$(".Allapp").append(res2);
+ 			$(".Allapp").append(res);
  		}
  	});
+}
+
+function jumptoTask(that,page){
+	var jar = that+".jar";
+	$("#page-wrapper").empty();
+    var string = 
+        "<div class=\"row\">"+
+            "<div class=\"col-lg-12\">"+
+                "<h1 class=\"page-header\">任务列表</h1>"+
+            "</div>"+
+            "<div class=\"input-group sidebar-search\">"+
+	            "<input type=\"text\" class=\"form-control\" placeholder=\"Search...\" id=\"findText\">"+
+	            "<span class=\"input-group-btn\">"+
+	                "<button class=\"btn btn-default\" type=\"button\" onclick=\"page(14,this)\">"+
+	                    "<i class=\"fa fa-search\"></i>"+
+	                "</button>"+
+	            "</span>"+
+	        "</div>"+
+        "</div>";
+    $.ajax({
+		url:ADDRESS+'/taskInfo/TaskInfo_findJar.action',
+		type:'post',
+		data:{'page':page,'jar':jar},
+		error:function(){
+			alert("Error：服务器出错！");
+			$("#page-wrapper").append(string);
+		},
+		success:function(data){
+			string += "<div class=\"row\">"+
+            "<div class=\"col-lg-12\">"+
+            "<table class=\"table table-striped\">";
+			if(data=="0"){
+				string += "<thead><tr><th>任务ID</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th></tr></thead>"+
+						"<tbody>"+		
+							"<tr><td colspan='6'>空！</td></tr>"+
+							"</tbody>"+
+						"</table>";
+			}
+			else{
+				var res = data.split(";");
+				var pageSum = res[0];
+				string += "<thead><tr><th>任务ID</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th></tr></thead>"+
+					"<tbody>";
+				for(var i=1;i<res.length-1;i++){
+					var temp = res[i].split(",");
+					string += "<tr>";
+					for(var j=0;j<temp.length;j++){
+						if(j==1||j==temp.length-1)
+							continue;
+						else if(j==2)
+							string += "<td><a href='####' onclick='updateRoute(this)' id='"+temp[0]+"'>"+temp[j]+"</a></td>";
+						else
+							string += "<td>"+temp[j]+"</td>";
+					}
+                    string += "<td class=\"operate\">"+
+                      "<button type=\"button\" class=\"btn btn-danger\" onclick=\"delTask(this)\">删除</button>"+
+                    "</td>"+
+                  "</tr>";
+                    string += "<tr><td>作业状态</td><td colspan='4' class=\"processid\"><div class=\"progress progress-striped active\" style=\"margin-bottom:0\">"+
+	                    	"<div class=\"progress-bar progress-bar-info "+temp[temp.length-1]+"\" role=\"progressbar\" aria-valuenow=\"20\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: "+temp[1]+"%\">"+temp[1]+"%</div>"+
+	                    "</div></td>"+
+	                    "<td class=\"operate\">"+
+                    "<button onclick=\"start(this,true)\" class=\"btn btn-primary ladda-button\" data-style=\"contract-overlay\" style=\"z-index: 1000;\" data-size=\"xs\">运行</button>"+
+                	"</td><td style=\"display:none\" class=\"taskid\">"+temp[temp.length-1]+"</td></tr>";
+				}
+				string += "</tbody>"+
+	              "</table>"+
+	              "<div class=\"btn-toolbar pageBtn\" role=\"toolbar\" aria-label=\"page\">"+
+	                "<div class=\"btn-group\" role=\"group\" aria-label=\"fpage\">";
+				if(page==1)
+					string += "<button type=\"button\" class=\"btn btn-default disabled\">上一页</button>";
+				else
+					string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"jumptoTask('"+that+"',"+(page-1)+")\">上一页</button>";
+				string += "</div>"+
+                "<div class=\"btn-group\" role=\"group\" aria-label=\"spage\">";
+	            if(pageSum>7){
+					if(page<4){
+						for(var i=1;i<=5;i++){
+							if(i!=page)
+								string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"jumptoTask('"+that+"',"+i+")\">"+i+"</button>";
+							else
+								string += "<button type=\"button\" class=\"btn btn-default disabled\">"+i+"</button>";
+						}
+						string += "<button type=\"button\" class=\"btn btn-default\">……</button>";
+						string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"jumptoTask('"+that+"',"+pageSum+")\">"+pageSum+"</button>";
+					}else if(page>=4&&page<(pageSum-4)){
+						for(var i=page-2;i<=page+2;i++){
+							if(i!=page)
+								string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"jumptoTask('"+that+"',"+i+")\">"+i+"</button>";
+							else
+								string += "<button type=\"button\" class=\"btn btn-default disabled\">"+i+"</button>";
+						}
+						string += "<button type=\"button\" class=\"btn btn-default\">……</button>";
+						string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"jumptoTask('"+that+"',"+pageSum+")\">"+pageSum+"</button>";
+					}else{
+						for(var i=pageSum-6;i<=pageSum;i++){
+							if(i!=page)
+								string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"jumptoTask('"+that+"',"+i+")\">"+i+"</button>";
+							else
+								string += "<button type=\"button\" class=\"btn btn-default disabled\">"+i+"</button>";
+						}
+					}
+	            }else{
+					for(var i=1;i<=pageSum;i++){
+						if(i!=page)
+							string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"jumptoTask('"+that+"',"+i+")\">"+i+"</button>";
+						else
+							string += "<button type=\"button\" class=\"btn btn-default disabled\">"+i+"</button>";
+					}
+				}
+	            string += "</div>"+
+                "<div class=\"btn-group\" role=\"group\" aria-label=\"tpage\">";
+	            if(page==pageSum)
+	            	string += "<button type=\"button\" class=\"btn btn-default disabled\">下一页</button>";
+	            else
+	            	string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"jumptoTask('"+that+"',"+(page+1)+")\">下一页</button>";
+	            string += "</div>"+
+	              "</div>"+
+		            "</div>"+
+		        "</div>"+
+		        "<button style=\"display:none\" data-toggle=\"modal\" data-target=\"#myModal5\" id=\"notifyBtn5\"></button>"+
+		        "<div class=\"modal fade\" id=\"myModal5\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">"+
+		            "<div class=\"modal-dialog\">"+
+		                "<div class=\"modal-content\">"+
+		                    "<div class=\"modal-header\">"+
+		                        "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>"+
+		                        "<h4 class=\"modal-title\" id=\"myModalLabel\">删除成功！</h4>"+
+		                    "</div>"+
+		                    "<div class=\"modal-footer\">"+
+		                        "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>"+
+		                    "</div>"+
+		                "</div>"+
+		            "</div>"+
+		        "</div>"+
+		        "<button style=\"display:none\" data-toggle=\"modal\" data-target=\"#myModal6\" id=\"notifyBtn6\"></button>"+
+		        "<div class=\"modal fade\" id=\"myModal6\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">"+
+		            "<div class=\"modal-dialog\">"+
+		                "<div class=\"modal-content\">"+
+		                    "<div class=\"modal-header\">"+
+		                        "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>"+
+		                        "<h4 class=\"modal-title\" id=\"myModalLabel\">删除失败！</h4>"+
+		                    "</div>"+
+		                    "<div class=\"modal-footer\">"+
+		                        "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>"+
+		                    "</div>"+
+		                "</div>"+
+		            "</div>"+
+		        "</div>"+
+		        "<div class=\"modal fade\" id=\"myModal7\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">"+
+		            "<div class=\"modal-dialog\">"+
+		                "<div class=\"modal-content\">"+
+		                    "<div class=\"modal-header\">"+
+		                        "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>"+
+		                        "<h4 class=\"modal-title\" id=\"myModalLabel\">修改HDFS路径</h4>"+
+		                    "</div>"+
+		                    "<div class=\"modal-body\">"+
+			                    "<div class=\"form-group\">"+
+				                    "<label>HDFS路径</label>"+
+				                    "<input class=\"form-control\" placeholder=\"hdfsroute\" id=\"updateHDFSRoute\">"+
+				                    "<div id='updateHDFSname' style='display:none'></div>"+
+			                    "</div>"+
+		                    "</div>"+
+		                    "<div class=\"modal-footer\">"+
+		                        "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\" onclick='updateHDFS()'>更改</button>"+
+		                        "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">关闭</button>"+
+		                    "</div>"+
+		                "</div>"+
+		            "</div>"+
+		        "</div>";
+			}
+			$("#page-wrapper").append(string);
+			Ladda.bind( '.operate button', {
+		        callback: function( instance ) {
+		        		startprogress = 0;
+			  	        var interval = setInterval( function() {
+			  	          if(startprogress === 1){
+			  	            instance.stop();
+			  	            clearInterval(interval);
+			  	          }
+			  	        }, 200);
+		    	}
+		    });
+			queryProcess();
+		}
+	});
+}
+
+function expand(that){
+	var val = $(that).attr('class');
+	var TempLastNum = val.split(" ");
+	var lastNum = TempLastNum[TempLastNum.length-1];
+	if($('.'+lastNum).length>1){
+		var lengthLastNum = $('.'+lastNum).length;
+		for(var i=1;i<lengthLastNum;i++)
+			$('.'+lastNum).eq(1).remove();
+		return;
+	}
+	var len = TempLastNum.length;
+	var add = "";
+	var sign = "";
+	var bro = $(that);
+	while(val!="0"){
+		if(add!="")
+			add = bro.html()+"/"+add;
+		else
+			add = bro.html();
+		var temp = val.split(" ");
+		sign = temp[temp.length-2];
+		bro = $('.'+sign);
+		val = bro.attr('class');
+	}
+	$.ajax({
+  		url:ADDRESS+'/resourceInfo/ResourceInfo_HDFSRoute.action',
+  		type:'post',
+  		data:{'add':add},
+  		error:function(){
+  			alert("Error：服务器出错！");
+  		},
+  		success:function(data){
+  			var arr = data.split("|");
+  			var res = "";
+  			for(var i=0;i<arr.length-1;i++){
+  				var temp = arr[i].split(",");
+  				if(temp[0]==1){
+  					res += "<li style='margin-left:"+len*20+"px' class='"+$(that).attr('class')+" "+lastNum+"-"+(i+1)+"' onclick='expand(this)'>"+temp[1]+"</li>";
+  				}else{
+  					res += "<li style='margin-left:"+len*20+"px' class='"+$(that).attr('class')+" "+lastNum+"-"+(i+1)+"' ><a href='"+temp[2]+"'>"+temp[1]+"</a></li>";
+  				}
+  			}
+  			$(that).after(res);
+  		}
+  	});
 }
 
 function resourceQueue(){
@@ -1417,7 +1680,7 @@ function manageUserResource(page){
                     "<td>"+temp[2]+"</td>"+
                     "<td>"+temp[3]+"</td>"+
                     "<td class=\"operate\">"+
-                      "<a href=\"####\" onclick=\"accept(this)\">修改</a>"+
+                      "<a href=\"####\" onclick=\"\">修改</a>"+
                     "</td>"+
                   "</tr>";
 				}
@@ -1633,6 +1896,8 @@ function findTask(name){
 				for(var j=0;j<temp.length;j++){
 					if((res[0]=="1"&&j==2)||(res[0]=="0"&&j==1)||(j==temp.length-1))
 						continue;
+					else if((res[0]=="1"&&j==3)||(res[0]=="0"&&j==2))
+						string += "<td><a href='####' onclick='updateRoute(this)' id='"+temp[0]+"'>"+temp[j]+"</a></td>";
 					else	
 						string += "<td>"+temp[j]+"</td>";
 				}
@@ -1641,11 +1906,11 @@ function findTask(name){
                 "</td>"+
               "</tr>";
                 if(res[0]=="1"){
-					string += "<tr><td style=\"display:none\">"+temp[0]+"</td><td>作业状态</td><td colspan='5' class=\"processid\"><div class=\"progress progress-striped active\" style=\"margin-bottom:0\">"+
+					string += "<tr><td>作业状态</td><td colspan='5' class=\"processid\"><div class=\"progress progress-striped active\" style=\"margin-bottom:0\">"+
                     	"<div class=\"progress-bar progress-bar-info "+temp[temp.length-1]+"\" role=\"progressbar\" aria-valuenow=\"20\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: "+temp[2]+"%\">"+temp[2]+"%</div>"+
                     "</div></td>";
                 }else if(res[0]=="0"){
-                	string += "<tr><td style=\"display:none\">"+temp[0]+"</td><td>作业状态</td><td colspan='4' class=\"processid\"><div class=\"progress progress-striped active\" style=\"margin-bottom:0\">"+
+                	string += "<tr><td>作业状态</td><td colspan='4' class=\"processid\"><div class=\"progress progress-striped active\" style=\"margin-bottom:0\">"+
                     	"<div class=\"progress-bar progress-bar-info "+temp[temp.length-1]+"\" role=\"progressbar\" aria-valuenow=\"20\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: "+temp[1]+"%\">"+temp[1]+"%</div>"+
                     "</div></td>";
                 }
@@ -1684,6 +1949,27 @@ function findTask(name){
 		                    "</div>"+
 		                "</div>"+
 		            "</div>"+
+		        "</div>"+
+		        "<div class=\"modal fade\" id=\"myModal7\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">"+
+		            "<div class=\"modal-dialog\">"+
+		                "<div class=\"modal-content\">"+
+		                    "<div class=\"modal-header\">"+
+		                        "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>"+
+		                        "<h4 class=\"modal-title\" id=\"myModalLabel\">修改HDFS路径</h4>"+
+		                    "</div>"+
+		                    "<div class=\"modal-body\">"+
+			                    "<div class=\"form-group\">"+
+				                    "<label>HDFS路径</label>"+
+				                    "<input class=\"form-control\" placeholder=\"hdfsroute\" id=\"updateHDFSRoute\">"+
+				                    "<div id='updateHDFSname' style='display:none'></div>"+
+			                    "</div>"+
+		                    "</div>"+
+		                    "<div class=\"modal-footer\">"+
+		                        "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\" onclick='updateHDFS()'>更改</button>"+
+		                        "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">关闭</button>"+
+		                    "</div>"+
+		                "</div>"+
+		            "</div>"+
 		        "</div>";
 			}
 			$("#page-wrapper").append(string);
@@ -1704,9 +1990,9 @@ function findTask(name){
 }
 
 function start(that,flag){
-	var val = $(that).parent().parent().children('td').eq(0).html();
-	var tempPro = $(that).parent().parent().children('td').eq(2).children('.progress').children('.progress-bar').html();
-	console.log(tempPro);
+	var val = $(that).parent().parent().prev().children('td').eq(0).html();
+	var input = $(that).parent().parent().prev().children('td').eq(2).children('a').html();
+	var tempPro = $(that).parent().parent().children('td').eq(1).children('.progress').children('.progress-bar').html();
 	if(tempPro!="100%"&&tempPro!="0%"){
 		startprogress = 1;
 		return;
@@ -1714,14 +2000,18 @@ function start(that,flag){
 	$.ajax({
 		url:ADDRESS+'/taskInfo/TaskInfo_start.action',
 		type:'post',
-		data:{'id':val},
+		data:{'id':val,
+			  'input':input},
 		error:function(){
 			alert("Error：服务器出错！");
 			$("#page-wrapper").append(string);
 		},
 		success:function(data){
-			if(data==1){
-				startprogress = 1;
+			startprogress = 1;
+			if(data==-1){
+				alert("输入路径有误！");
+				return;
+			}else if(data==1){
 				if(flag)
 					showTask(taskpage);
 				else

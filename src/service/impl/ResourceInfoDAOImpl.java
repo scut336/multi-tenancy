@@ -205,7 +205,7 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 	}
 
 	@Override
-	public boolean ApplyResource(String userid, String queue, int hdfs, int num) {
+	public boolean ApplyResource(String userid, String queue, long hdfs, int num) {
 		Transaction tx = null;
 		String hql = "";
 		try{
@@ -271,7 +271,7 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 			List<Object[]> list = query.list();
 			List<ResourceApplicationImpl> res = new ArrayList<ResourceApplicationImpl>();
 			for(int i=0;i<list.size();i++)
-				res.add(new ResourceApplicationImpl(list.get(i)[0].toString(),list.get(i)[1].toString(),Integer.parseInt(list.get(i)[2].toString()),Integer.parseInt(list.get(i)[3].toString())));
+				res.add(new ResourceApplicationImpl(list.get(i)[0].toString(),list.get(i)[1].toString(),Integer.parseInt(list.get(i)[2].toString()),Long.parseLong(list.get(i)[3].toString())));
 			session.flush();
 			tr.commit();
 			if(res.size()>0){

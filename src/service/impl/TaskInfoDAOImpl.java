@@ -60,7 +60,7 @@ public class TaskInfoDAOImpl implements TaskInfoDAO{
 				tx = null;
 		}
 	}
-
+	/*
 	@Override
 	public boolean updateTask(TaskInfo oldT, TaskInfo newT) {
 		Transaction tx = null;
@@ -95,7 +95,7 @@ public class TaskInfoDAOImpl implements TaskInfoDAO{
 				tx = null;
 		}
 	}
-
+	*/
 	@Override
 	public List<TaskInfoImpl> findTask(String id,int page,int num) {
 		Transaction tx = null;
@@ -320,6 +320,81 @@ public class TaskInfoDAOImpl implements TaskInfoDAO{
 			tx.rollback();
 			e.printStackTrace();
 			return null;
+		}finally{
+			if(tx!=null)
+				tx = null;
+		}
+	}
+
+	@Override
+	public boolean updateTaskHDFS(String id, String hdfs) {
+		Transaction tx = null;
+		String hql = "";
+		try{
+			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
+			tx = session.beginTransaction();
+			hql = "update TaskInfo set TaskLog = '" + hdfs + "' where id = '" + id + "'";
+			Query query = session.createQuery(hql);
+			query.executeUpdate();  
+			tx.commit();
+			return true;
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+			return false;
+		}finally{
+			if(tx!=null)
+				tx = null;
+		}
+	}
+
+	@Override
+	public List<TaskInfoImpl> findTaskInfoJar(String id, String taskname,int page,int num) {
+		Transaction tx = null;
+		String hql = "";
+		Query query;
+		try{
+			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
+			tx = session.beginTransaction();
+			hql = "select t.id,t.TaskStatus,t.TaskLog,t.TaskResult,t.TaskError,t.createDate,t.TaskID,u.name from TaskInfo t join UserInfo u on t.userInfo=u.id where t.userInfo='"+id+"' and t.TaskName='"+taskname+"'";
+			query = session.createSQLQuery(hql);
+			query.setFirstResult((page-1)*num); 
+			query.setMaxResults(num);
+			List<Object[]> taskInfos = query.list();
+ 			tx.commit();
+ 			if(taskInfos.size()==0)
+ 				return null;
+ 			List<TaskInfoImpl> res = new ArrayList<TaskInfoImpl>();
+ 			for(int i=0;i<taskInfos.size();i++)
+ 				res.add(new TaskInfoImpl(taskInfos.get(i)[0].toString(), taskInfos.get(i)[1].toString(), taskInfos.get(i)[2].toString(), taskInfos.get(i)[3].toString(), taskInfos.get(i)[4].toString(), taskInfos.get(i)[5].toString(), taskInfos.get(i)[6].toString(), taskInfos.get(i)[7].toString()));
+ 			return res;
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+			return null;
+		}finally{
+			if(tx!=null)
+				tx = null;
+		}
+	}
+
+	@Override
+	public int pageJarSum(String id, String taskname) {
+		Transaction tx = null;
+		String hql = "";
+		try{
+			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
+			tx = session.beginTransaction();
+			hql = "select count(t.id) from TaskInfo t where t.userInfo='"+id+"' and t.TaskName='"+taskname+"'";
+			Query query = session.createQuery(hql);
+			double c = (double)((long)query.uniqueResult());
+			int count = (int) Math.ceil(c/10);
+			tx.commit();
+			return count;
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+			return 0;
 		}finally{
 			if(tx!=null)
 				tx = null;

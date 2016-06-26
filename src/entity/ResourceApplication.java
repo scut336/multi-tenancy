@@ -13,7 +13,7 @@ public class ResourceApplication {
 	@Column(length=32)
 	private String UserID;
 	private int AppLimit;
-	private int HDFSDirectoryQuota;
+	private long HDFSDirectoryQuota;
 	private long Queue;
 	private char Enable;
 
@@ -37,11 +37,11 @@ public class ResourceApplication {
 		AppLimit = appLimit;
 	}
 
-	public int getHDFSDirectoryQuota() {
+	public long getHDFSDirectoryQuota() {
 		return HDFSDirectoryQuota;
 	}
 
-	public void setHDFSDirectoryQuota(int hDFSDirectoryQuota) {
+	public void setHDFSDirectoryQuota(long hDFSDirectoryQuota) {
 		HDFSDirectoryQuota = hDFSDirectoryQuota;
 	}
 
