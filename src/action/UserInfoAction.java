@@ -60,6 +60,10 @@ public class UserInfoAction extends SuperAction  implements ModelDriven<UserInfo
 	
 	//保存修改数据
 	public String save() throws Exception{
+		if(!session.getAttribute("loginUserRole").equals("admin")){
+			inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
+			return "Ajax_Success";
+		}
 		UserInfoDAO udao = new UserInfoDAOImpl();
 		if(udao.updateUserInfo(user)){
 			inputStream=new ByteArrayInputStream("1".getBytes("UTF-8"));
@@ -71,6 +75,10 @@ public class UserInfoAction extends SuperAction  implements ModelDriven<UserInfo
 	
 	//删除用户
 	public String delete() throws UnsupportedEncodingException{
+		if(!session.getAttribute("loginUserRole").equals("admin")){
+			inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
+			return "Ajax_Success";
+		}
 		UserInfoDAO udao = new UserInfoDAOImpl();
 		String Id = request.getParameter("id");
 		if(udao.deleteUserInfo(Id))
@@ -82,13 +90,23 @@ public class UserInfoAction extends SuperAction  implements ModelDriven<UserInfo
 	
 	//新增用户
 	public String add() throws UnsupportedEncodingException{
+		if(!session.getAttribute("loginUserRole").equals("admin")){
+			inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
+			return "Ajax_Success";
+		}
 		UserInfoDAO udao = new UserInfoDAOImpl();
 		String pass = user.getPassword();
 		user.setPassword(MD5creator.MD5(pass));
 		user.setCreateTime(new Date());
 		if(udao.addUserInfo(user)){
 			ResourceInfoDAO resourceInfoDAO = new ResourceInfoDAOImpl();
-			ResourceInfo resourceInfo = new ResourceInfo(10,0,user.getName(),1073741824,0,1,new Date(),1,'F',0,new Date(),user.getId());
+			ResourceInfo resourceInfo = null;
+			if(user.getRole().equals("default"))
+				resourceInfo = new ResourceInfo(10,0,user.getName(),1073741824,0,1,new Date(),session.getAttribute("loginUserId").toString(),'F',0,new Date(),user.getId());
+			else if(user.getRole().equals("vip1"))
+				resourceInfo = new ResourceInfo(10,0,user.getName(),1073741824,0,2,new Date(),session.getAttribute("loginUserId").toString(),'F',0,new Date(),user.getId());
+			else if(user.getRole().equals("vip2"))
+				resourceInfo = new ResourceInfo(10,0,user.getName(),1073741824,0,3,new Date(),session.getAttribute("loginUserId").toString(),'F',0,new Date(),user.getId());
 			if(resourceInfoDAO.AddResource(resourceInfo)){
 				inputStream=new ByteArrayInputStream("1".getBytes("UTF-8"));
 			}else {

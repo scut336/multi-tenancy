@@ -143,8 +143,22 @@ public class UserInfoDAOImpl implements UserInfoDAO{
 		try{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "update UserInfo set name = '" + u.getName() + "',department = '" + u.getDepartment() + "' where id = '" + u.getId() + "'";
+			hql = "update UserInfo set name = '" + u.getName() + "',department = '" + u.getDepartment() + "',role='"+u.getRole()+"' where id = '" + u.getId() + "'";
 			Query query = session.createQuery(hql);
+			query.executeUpdate();  
+			tx.commit();
+			
+			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
+			tx = session.beginTransaction();
+			int queue = 0;
+			if(u.getRole().equals("user"))
+				queue=1;
+			else if(u.getRole().equals("vip1"))
+				queue=2;
+			else if(u.getRole().equals("vip2"))
+				queue=3;
+			hql = "update ResourceInfo set queue = '" + queue + "' where UserID = '" + u.getId() + "'";
+			query = session.createQuery(hql);
 			query.executeUpdate();  
 			tx.commit();
 			return true;
@@ -181,6 +195,22 @@ public class UserInfoDAOImpl implements UserInfoDAO{
 			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
 			hql = "delete from ResourceInfo r where r.userID='"+Id+"'";
+			query = session.createQuery(hql);
+			query.executeUpdate();
+			session.flush();
+			tx.commit();
+			
+			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
+			tx = session.beginTransaction();
+			hql = "delete from JobInfo j where j.id='"+Id+"'";
+			query = session.createQuery(hql);
+			query.executeUpdate();
+			session.flush();
+			tx.commit();
+			
+			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
+			tx = session.beginTransaction();
+			hql = "delete from ResourceApplication r where r.UserID='"+Id+"'";
 			query = session.createQuery(hql);
 			query.executeUpdate();
 			session.flush();

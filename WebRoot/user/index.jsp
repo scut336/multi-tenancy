@@ -305,14 +305,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                                 </s:if>
                             </ul>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a href="####"><i class="fa fa-dashboard fa-fw"></i> HA管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
                                     <a href="####" onclick="page(10,this)">HA配置</a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->

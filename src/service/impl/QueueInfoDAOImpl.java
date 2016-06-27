@@ -107,4 +107,33 @@ public class QueueInfoDAOImpl implements QueueInfoDAO{
 		}
 	}
 
+	@Override
+	public String queryQueueByUser(String user) {
+		Transaction tx = null;
+		String hql = "";
+		try{
+			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
+			tx = session.beginTransaction();
+			hql = "select u.id from UserInfo u where u.name='"+user+"'";
+			Query query = session.createQuery(hql);
+			String name = (String)query.uniqueResult();
+			tx.commit();
+			
+			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
+			tx = session.beginTransaction();
+			hql = "select q.QueueName from QueueInfo q join ResourceInfo r on q.id=r.Queue where r.UserID='"+name+"'";
+			query = session.createSQLQuery(hql);
+			String queuename = (String)query.uniqueResult();
+			tx.commit();
+			return queuename;
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+			return null;
+		}finally{
+			if(tx!=null)
+				tx = null;
+		}
+	}
+
 }

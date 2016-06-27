@@ -12,9 +12,11 @@ import java.util.Date;
 import java.util.List;
 
 import service.JobInfoDAO;
+import service.QueueInfoDAO;
 import service.ResourceInfoDAO;
 import service.TaskInfoDAO;
 import service.impl.JobInfoDAOImpl;
+import service.impl.QueueInfoDAOImpl;
 import service.impl.ResourceInfoDAOImpl;
 import service.impl.TaskInfoDAOImpl;
 
@@ -177,6 +179,9 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 	public String start() throws IOException {
 		String id = request.getParameter("id");
 		String input = request.getParameter("input");
+		String name = request.getParameter("name");
+		QueueInfoDAO queueInfoDAO = new QueueInfoDAOImpl();
+		String queue = queueInfoDAO.queryQueueByUser(name);
 		TaskInfoDAO taskInfoDAO = new TaskInfoDAOImpl();
 		String jarName = taskInfoDAO.findJarName(id);
         String _url = "http://222.201.145.144:4567/app/start";
@@ -189,7 +194,7 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
         connection.setRequestProperty("Charset", "UTF-8");
         connection.setRequestProperty("user", (String)session.getAttribute("loginUserName"));
         connection.setRequestProperty("app", jarName);
-        connection.setRequestProperty("queue", "default");
+        connection.setRequestProperty("queue", queue);
         connection.setRequestProperty("input", input);
         int responseCode = connection.getResponseCode();
         if (HttpURLConnection.HTTP_OK == responseCode) {

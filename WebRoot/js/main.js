@@ -282,7 +282,8 @@ function addUser(){
                 "<div class=\"form-group\">"+
                     "<select class=\"form-control\" id=\"addRole\">"+
                         "<option>user</option>"+
-                        "<option>vip</option>"+
+                        "<option>vip1</option>"+
+                        "<option>vip2</option>"+
                     "</select>"+
                 "</div>"+
                 "<p class=\"help-block\">请选择其中一个部门或其他</p>"+
@@ -470,7 +471,7 @@ function showUser(page){
 }
 
 function loadingU(){
-	var boolName = false;
+	var boolName = true;
 	var oldName = $("#updateName").val();
     Ladda.bind( '.submit button', {
       callback: function( instance ) {
@@ -481,13 +482,14 @@ function loadingU(){
 	            clearInterval( interval );
 	          }
 	        }, 200 );
-	        if(boolName&&$("#updatePassword").val()!=""&&$("#updateDepartment").val()!=""){
+	        if(boolName&&$("#updatePassword").val()!=""&&$("#updateDepartment").val()!=""&&$("#updateRole").val()!=""){
 	        $.ajax({
 	    		url:ADDRESS+'/userInfo/UserInfo_save.action',
 	    		type:'post',
 	    		data:{	"id" : $("#updateID").val(),
 	    				"name" : $("#updateName").val(),
-						"department": $("#updateDepartment option:selected").val()},
+						"department": $("#updateDepartment option:selected").val(),
+						"role":$("#updateRole option:selected").val()},
 	    		error:function(){
 	    			alert("Error:服务器错误!");
 	    		},
@@ -579,6 +581,17 @@ function updateUser(that){
                     "</div>"+
                     "<p class=\"help-block\">请选择其中一个部门或其他</p>"+
                 "</div>"+
+                "<div class=\"form-group\">"+
+                "<label>类型</label>"+
+                "<div class=\"form-group\">"+
+                    "<select class=\"form-control\" id=\"updateRole\">"+
+                        "<option>user</option>"+
+                        "<option>vip1</option>"+
+                        "<option>vip2</option>"+
+                    "</select>"+
+                "</div>"+
+                "<p class=\"help-block\">请选择其中一种类型</p>"+
+            "</div>"+
                 "<div class=\"submit\">"+
                     "<button class=\"btn btn-primary ladda-button\" data-style=\"expand-right\" style=\"min-width:100px\"><span class=\"ladda-label\" style=\"padding:10px 12px;line-height:24px;font-size:18px;\">提交</span></button>"+
                 "</div>"+
@@ -620,6 +633,7 @@ function updateUser(that){
 	$("#updateName").val(temp.eq(1).html());
 	$("#updatePassword").val("111111111111");
     $("#updateDepartment").val(temp.eq(3).html());
+    $('#updateRole').val(temp.eq(2).html());
     loadingU();
 }
 
@@ -817,12 +831,12 @@ function addTask(){
                 "</div>"+
                 "<div class=\"form-group\">"+
                     "<label>任务的运行结果路径</label>"+
-                    "<input class=\"form-control\" placeholder=\"result path\" id=\"addTaskRes\">"+
+                    "<input class=\"form-control\" placeholder=\"result path\" id=\"addTaskRes\" disabled value='/user/smoketest/output'>"+
                     "<p class=\"help-block\">请填写出完整的地址</p>"+
                 "</div>"+
                 "<div class=\"form-group\">"+
                     "<label>任务的出错信息路径</label>"+
-                    "<input class=\"form-control\" placeholder=\"error path\" id=\"addTaskErr\">"+
+                    "<input class=\"form-control\" placeholder=\"error path\" id=\"addTaskErr\" disabled value='/user/smoketest/output'>"+
                     "<p class=\"help-block\">请填写出完整的地址</p>"+
                 "</div>"+
                 "<div class=\"submitTask\">"+
@@ -2132,6 +2146,7 @@ function findTask(name){
 function start(that,flag){
 	var val = $(that).parent().parent().prev().children('td').eq(0).html();
 	var input = $(that).parent().parent().prev().children('td').eq(2).children('a').html();
+	var name = $(that).parent().parent().prev().children('td').eq(1).html();
 	var tempPro = $(that).parent().parent().children('td').eq(1).children('.progress').children('.progress-bar').html();
 	if(tempPro!="100%"&&tempPro!="0%"){
 		startprogress = 1;
@@ -2141,7 +2156,8 @@ function start(that,flag){
 		url:ADDRESS+'/taskInfo/TaskInfo_start.action',
 		type:'post',
 		data:{'id':val,
-			  'input':input},
+			  'input':input,
+			  'name':name},
 		error:function(){
 			alert("Error：服务器出错！");
 			$("#page-wrapper").append(string);

@@ -21,7 +21,8 @@ public class ResourceInfo {
 	private long HDFSDirectoryRemaining;
 	private int Queue;
 	private Date CreateTime;
-	private int CreateUserID;
+	@Column(length=32)
+	private String CreateUserID;
 	private char Expired;
 	private int SubmitJobTimes;
 	private Date LastSubmitTime;
@@ -33,7 +34,7 @@ public class ResourceInfo {
 	public ResourceInfo(long id, int appLimit, int currentAppCount,
 			String hDFSDirectory, long hDFSDirectoryQuota,
 			long hDFSDirectoryRemaining, int queue, Date createTime,
-			int createUserID, char expired, int submitJobTimes,
+			String createUserID, char expired, int submitJobTimes,
 			Date lastSubmitTime, String userID) {
 		this.id = id;
 		AppLimit = appLimit;
@@ -53,7 +54,7 @@ public class ResourceInfo {
 	public ResourceInfo(int appLimit, int currentAppCount,
 			String hDFSDirectory, long hDFSDirectoryQuota,
 			long hDFSDirectoryRemaining, int queue, Date createTime,
-			int createUserID, char expired, int submitJobTimes,
+			String createUserID, char expired, int submitJobTimes,
 			Date lastSubmitTime, String userID) {
 		AppLimit = appLimit;
 		CurrentAppCount = currentAppCount;
@@ -72,7 +73,7 @@ public class ResourceInfo {
 	public ResourceInfo(int appLimit, int currentAppCount,
 			String hDFSDirectory, long hDFSDirectoryQuota,
 			long hDFSDirectoryRemaining, int queue, Date createTime,
-			int createUserID, char expired, int submitJobTimes,
+			String createUserID, char expired, int submitJobTimes,
 			Date lastSubmitTime) {
 		AppLimit = appLimit;
 		CurrentAppCount = currentAppCount;
@@ -160,11 +161,11 @@ public class ResourceInfo {
 		CreateTime = createTime;
 	}
 
-	public int getCreateUserID() {
+	public String getCreateUserID() {
 		return CreateUserID;
 	}
 
-	public void setCreateUserID(int createUserID) {
+	public void setCreateUserID(String createUserID) {
 		CreateUserID = createUserID;
 	}
 

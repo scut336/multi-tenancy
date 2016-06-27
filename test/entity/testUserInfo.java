@@ -112,13 +112,13 @@ public class testUserInfo {
 //		u6.setTaskInfos(s6);
 //		u7.setTaskInfos(s7);
 		
-		ResourceInfo r1 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u1.getId());
-		ResourceInfo r2 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u2.getId());
-		ResourceInfo r3 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u3.getId());
-		ResourceInfo r4 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u4.getId());
-		ResourceInfo r5 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u5.getId());
-		ResourceInfo r6 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u6.getId());
-		ResourceInfo r7 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date(),u7.getId());
+		ResourceInfo r1 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),"CN023",'F',0,new Date(),u1.getId());
+		ResourceInfo r2 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),"CN023",'F',0,new Date(),u2.getId());
+		ResourceInfo r3 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),"CN023",'F',0,new Date(),u3.getId());
+		ResourceInfo r4 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),"CN023",'F',0,new Date(),u4.getId());
+		ResourceInfo r5 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),"CN023",'F',0,new Date(),u5.getId());
+		ResourceInfo r6 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),"CN023",'F',0,new Date(),u6.getId());
+		ResourceInfo r7 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),"CN023",'F',0,new Date(),u7.getId());
 		
 		ResourceApplication ra1 = new ResourceApplication(u1.getId(),0,0,0,'F');
 		ResourceApplication ra2 = new ResourceApplication(u2.getId(),0,0,0,'F');

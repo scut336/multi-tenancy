@@ -17,4 +17,6 @@ public interface QueueInfoDAO {
 	public List<String> showQueue();
 	
 	public List<QueueInfo> showQueues();
+	
+	public String queryQueueByUser(String user);
 }
