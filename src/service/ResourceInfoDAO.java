@@ -14,7 +14,7 @@ public interface ResourceInfoDAO {
 	
 	public boolean DelResource(UserInfo u);
 	
-	public boolean UpdateResource(String id,int left);
+	public boolean UpdateResource(String id,long left);
 	
 	public boolean AddResourceApp(String id);
 	
@@ -36,4 +36,5 @@ public interface ResourceInfoDAO {
 	
 	public List<ResourceApplicationImpl> ShowResource(int page);
 	
+	public boolean UpdateResourceInfo(String name,String queue,String hdfs,String job);
 }

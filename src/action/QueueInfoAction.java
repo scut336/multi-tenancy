@@ -43,7 +43,8 @@ public class QueueInfoAction extends SuperAction{
 	    while ((line = bufReader.readLine()) != null) {  
 	        contentBuf.append(line);  
 	    }  
-	    String buf = contentBuf.toString(); 
+	    String buf = contentBuf.toString();
+	    double capacity = 0;
 	    double usedCapacity = 0;
 	    double maxCapacity = 0;
 	    String queueName = "";
@@ -52,20 +53,23 @@ public class QueueInfoAction extends SuperAction{
 	    JSONObject json=new JSONObject(buf);
 	    JSONArray jsonArray = json.getJSONObject("scheduler").getJSONObject("schedulerInfo").getJSONObject("queues").getJSONArray("queue");
         for(int i=0;i<jsonArray.length();i++){  
-            JSONObject jsonObject=jsonArray.getJSONObject(i);  
+            JSONObject jsonObject=jsonArray.getJSONObject(i);
+            capacity = jsonObject.getDouble("capacity");
             usedCapacity=jsonObject.getDouble("usedCapacity");
             maxCapacity = jsonObject.getDouble("maxCapacity");
             queueName = jsonObject.getString("queueName");
             memoryUnit = jsonObject.getJSONObject("AMResourceLimit").getInt("memory");
             vcoreUnit = jsonObject.getJSONObject("AMResourceLimit").getInt("vCores");
+            QueueInfoDAO queue = new QueueInfoDAOImpl();
+            queue.updateQueueCapacity(queueName, capacity,maxCapacity,usedCapacity,memoryUnit,vcoreUnit);
         }
 	    QueueInfoDAO queue = new QueueInfoDAOImpl();
-	    if(queue.updateQueueCapacity(queueName, maxCapacity-usedCapacity)){
-	    	String result = (maxCapacity-usedCapacity)+"|"+usedCapacity + "|" + maxCapacity + "|" + queueName + "|" + memoryUnit+"|"+vcoreUnit;
-    		inputStream=new ByteArrayInputStream(result.getBytes("UTF-8"));
+	    List<QueueInfo>resInfos = queue.showQueues();
+	    String result = "";
+	    for(int i=0;i<resInfos.size();i++){
+	    	result += resInfos.get(i).getCapacity()+"|"+resInfos.get(i).getUsedCapacity() + "|" + resInfos.get(i).getMaxCapacity() + "|" + resInfos.get(i).getQueueName() + "|" + resInfos.get(i).getResourceLimit();
 	    }
-	    else
-	    	inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
+	    inputStream=new ByteArrayInputStream(result.getBytes("UTF-8"));
 		return "Ajax_Success";	
 	}
 	
@@ -93,6 +97,39 @@ public class QueueInfoAction extends SuperAction{
 	
 	//显示队列详情
 	public String showQueue() throws Exception{
+		String strURL = "";
+		strURL = "http://222.201.145.144:8088/ws/v1/cluster/scheduler";  
+	    URL url = new URL(strURL);  
+	    HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();  
+	    InputStreamReader input = new InputStreamReader(httpConn  
+	            .getInputStream(), "utf-8");  
+	    BufferedReader bufReader = new BufferedReader(input);  
+	    String line = "";  
+	    StringBuilder contentBuf = new StringBuilder();  
+	    while ((line = bufReader.readLine()) != null) {  
+	        contentBuf.append(line);  
+	    }  
+	    String buf = contentBuf.toString();
+	    double capacity = 0;
+	    double usedCapacity = 0;
+	    double maxCapacity = 0;
+	    String queueName = "";
+	    int memoryUnit = 0;
+	    int vcoreUnit = 0;
+	    JSONObject json=new JSONObject(buf);
+	    JSONArray jsonArray = json.getJSONObject("scheduler").getJSONObject("schedulerInfo").getJSONObject("queues").getJSONArray("queue");
+        for(int i=0;i<jsonArray.length();i++){  
+            JSONObject jsonObject=jsonArray.getJSONObject(i);
+            capacity = jsonObject.getDouble("capacity");
+            usedCapacity=jsonObject.getDouble("usedCapacity");
+            maxCapacity = jsonObject.getDouble("maxCapacity");
+            queueName = jsonObject.getString("queueName");
+            memoryUnit = jsonObject.getJSONObject("AMResourceLimit").getInt("memory");
+            vcoreUnit = jsonObject.getJSONObject("AMResourceLimit").getInt("vCores");
+            QueueInfoDAO queue = new QueueInfoDAOImpl();
+            queue.updateQueueCapacity(queueName, capacity,maxCapacity,usedCapacity,memoryUnit,vcoreUnit);
+        }
+        
 		if(!session.getAttribute("loginUserRole").equals("admin")){
 			inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
 			return "Ajax_Success";
@@ -101,7 +138,7 @@ public class QueueInfoAction extends SuperAction{
 		List<QueueInfo> q = queueInfoDAO.showQueues();
 		String res = "";
 		for(int i=0;i<q.size();i++){
-			res+=q.get(i).getQueueName()+","+q.get(i).getCapacity()+","+q.get(i).getEnable()+","+
+			res+=q.get(i).getQueueName()+","+q.get(i).getCapacity()+","+q.get(i).getMaxCapacity()+","+q.get(i).getUsedCapacity()+","+q.get(i).getEnable()+","+
 					q.get(i).getResourceLimit()+","+q.get(i).getMaxWaitingTime()+"|";
 		}
 		inputStream=new ByteArrayInputStream(res.getBytes("UTF-8"));

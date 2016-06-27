@@ -1278,13 +1278,21 @@ function resourceStatus(){
 					return;
 				}
 				var val = d.split(",");
-				$('#hdfsHead').html("HDFS使用情况[总共"+val[2]/1048576+"M]");
+				$('#hdfsHead').html("HDFS使用情况[总共"+(val[2]/1048576).toFixed(2)+"M]");
+				var outrange = "";
+				if(val[1]<0){
+					outrange = -val[1];
+					val[1] = "";
+				}
 				var data = [{
 			        label: "剩余容量",
 			        data: val[1]
 			    }, {
 			        label: "已用容量",
 			        data: val[0]
+			    }, {
+			        label: "超出容量",
+			        data: outrange
 			    }];
 				$.plot($("#flot-pie-chart"), data, {
 			        series: {
@@ -1334,7 +1342,7 @@ function resourceStatus(){
 			    });
 				$('#createJobTime').html(val[8]);
 				$('#lastUpdateTime').html(val[10]);
-				$('#usedQueue').html("队列名称:"+val[7]+"<br/>容量百分比:"+val[11]+"<br/>队列单元占用大小:"+val[12]+"<br/>队列单元CPU值:"+val[13]);
+				$('#usedQueue').html("队列名称:"+val[7]+"<br/>容量百分比:"+val[11]+"<br/>最大容量百分比:"+val[12]+"<br/>已经使用容量百分比:"+val[13]+"<br/>队列单元占用大小:"+val[14]+"<br/>队列单元CPU值:"+val[15]);
 				$('#usedTimes').html(val[9]);
 			}
 		});
@@ -1603,7 +1611,7 @@ function resourceQueue(){
 		        "<div class=\"panel-body\">"+
 			        "<div class=\"table-responsive\">"+
 	                	"<table class=\"table table-striped table-bordered table-hover\">"+
-	                    "<thead><tr><th>name</th><th>capacity</th><th>enable</th><th>cpu</th><th>memory</th><th>max_waiting_time(min)</th></tr></thead>"+
+	                    "<thead><tr><th>name</th><th>capacity</th><th>Maxcapacity</th><th>Usedcapacity</th><th>enable</th><th>cpu</th><th>memory</th><th>max_waiting_time(min)</th></tr></thead>"+
 	                    "<tbody class='queueUsage'></tbody>"+
 	                    "</table>"+
                     "</div>"+
@@ -1639,8 +1647,8 @@ function resourceQueue(){
 				var res = "";
 				for(var i=0;i<val.length-1;i++){
 					var temp = val[i].split(",");
-					res += "<tr><td>"+temp[0]+"</td><td>"+temp[1]+"</td><td>"+temp[2]+"</td><td>"+
-						temp[3]+"</td><td>"+temp[4]+"</td><td>"+temp[5]+"</td></tr>";
+					res += "<tr><td>"+temp[0]+"</td><td>"+(parseFloat(temp[1])).toFixed(2)+"</td><td>"+(parseFloat(temp[2])).toFixed(2)+"</td><td>"+
+					(parseFloat(temp[3])).toFixed(2)+"</td><td>"+temp[4]+"</td><td>"+temp[5]+"</td><td>"+temp[6]+"</td><td>"+temp[7]+"</td></tr>";
 				}
 				$('.queueUsage').append(res);
 			}
@@ -1680,7 +1688,7 @@ function manageUserResource(page){
                     "<td>"+temp[2]+"</td>"+
                     "<td>"+temp[3]+"</td>"+
                     "<td class=\"operate\">"+
-                      "<a href=\"####\" onclick=\"\">修改</a>"+
+                      "<a href=\"####\" onclick=\"updateResource(this)\">修改</a>"+
                     "</td>"+
                   "</tr>";
 				}
@@ -1745,6 +1753,138 @@ function manageUserResource(page){
 			$("#page-wrapper").append(string);
 		}
 	});
+}
+
+function updateResource(that){
+	var temp = $(that).parent().parent().children('td');
+	$("#page-wrapper").empty();
+    var string = 
+        "<div class=\"row\">"+
+            "<div class=\"col-lg-12\">"+
+                "<h1 class=\"page-header\">修改用户资源</h1>"+
+            "</div>"+
+        "</div>"+
+        "<div class=\"row\">"+
+            "<div class=\"col-lg-12\">"+
+                "<div class=\"form-group\">"+
+                    "<label>用户</label>"+
+                    "<input class=\"form-control\" placeholder=\"此界面不支持用户名的更改\" id=\"updateName\" disabled>"+
+                    "<p class=\"help-block\">此界面不支持用户名的更改</p>"+
+                "</div>"+
+                "<div class=\"form-group\">"+
+                    "<label>队列</label>"+
+                    "<div class=\"form-group\">"+
+	                    "<select class=\"form-control\" id=\"updateQueue\">"+
+	                    "</select>"+
+                    "</div>"+
+                    "<p class=\"help-block\">请选择其中一个队列</p>"+
+                "</div>"+
+                "<div class=\"form-group\">"+
+	                "<label>HDFS(Byte)</label>"+
+	                "<input class=\"form-control\" placeholder=\"HDFS\" id=\"updateHDFS\">"+
+	                "<p class=\"help-block\">请输入整数</p>"+
+	            "</div>"+
+	            "<div class=\"form-group\">"+
+	                "<label>作业数</label>"+
+	                "<input class=\"form-control\" placeholder=\"jobNumber\" id=\"updateJob\">"+
+	                "<p class=\"help-block\">请输入整数</p>"+
+	            "</div>"+
+                "<div class=\"submit\">"+
+                    "<button class=\"btn btn-primary ladda-button\" data-style=\"expand-right\" style=\"min-width:100px\"><span class=\"ladda-label\" style=\"padding:10px 12px;line-height:24px;font-size:18px;\">提交</span></button>"+
+                "</div>"+
+            "</div>"+
+        "</div>"+
+        "<button style=\"display:none\" data-toggle=\"modal\" data-target=\"#myModal3\" id=\"notifyBtn3\"></button>"+
+        "<div class=\"modal fade\" id=\"myModal3\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">"+
+            "<div class=\"modal-dialog\">"+
+                "<div class=\"modal-content\">"+
+                    "<div class=\"modal-header\">"+
+                        "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>"+
+                        "<h4 class=\"modal-title\" id=\"myModalLabel\">修改成功</h4>"+
+                    "</div>"+
+                    "<div class=\"modal-body\">您已成功修改了该用户资源</div>"+
+                    "<div class=\"modal-footer\">"+
+                        "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>"+
+                    "</div>"+
+                "</div>"+
+            "</div>"+
+        "</div>"+
+        "<button style=\"display:none\" data-toggle=\"modal\" data-target=\"#myModal4\" id=\"notifyBtn4\"></button>"+
+        "<div class=\"modal fade\" id=\"myModal4\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">"+
+            "<div class=\"modal-dialog\">"+
+                "<div class=\"modal-content\">"+
+                    "<div class=\"modal-header\">"+
+                        "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>"+
+                        "<h4 class=\"modal-title\" id=\"myModalLabel\">修改失败！</h4>"+
+                    "</div>"+
+                    "<div class=\"modal-body\">请正确填写！</div>"+
+                    "<div class=\"modal-footer\">"+
+                        "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>"+
+                    "</div>"+
+                "</div>"+
+            "</div>"+
+        "</div>";
+          
+    $("#page-wrapper").append(string);
+    $.ajax({
+		url:ADDRESS+'/queueInfo/QueueInfo_show.action',
+		type:'post',
+		data:{},
+		error:function(){
+			alert("Error:服务器错误!");
+		},
+		success:function(data){
+			var res = data.split("|");
+			var str = "";
+			for(var i=0;i<res.length;i++){
+				str+="<option>"+res[i]+"</option>";
+			}
+			$('#updateQueue').append(str);
+		}
+	});
+    
+	$("#updateName").val(temp.eq(0).html());
+	$("#updateQueue").val(temp.eq(1).html());
+    $("#updateHDFS").val(temp.eq(2).html());
+    $("#updateJob").val(temp.eq(3).html());
+    loadingR();
+}
+
+function loadingR(){
+    Ladda.bind( '.submit button', {
+      callback: function( instance ) {
+	        var progress = 0;
+	        var interval = setInterval( function() {
+	          if( progress === 1 ) {
+	            instance.stop();
+	            clearInterval( interval );
+	          }
+	        }, 200 );
+	        if($("#updateQueue").val()!=""&&$("#updateHDFS").val()!=""&&$("#updateJob").val()!=""){
+	        $.ajax({
+	    		url:ADDRESS+'/resourceInfo/ResourceInfo_updateResource.action',
+	    		type:'post',
+	    		data:{	"name" : $("#updateName").val(),
+	    				"queue" : $("#updateQueue option:selected").val(),
+						"hdfs": $("#updateHDFS").val(),
+						"job": $("#updateJob").val()},
+	    		error:function(){
+	    			alert("Error:服务器错误!");
+	    		},
+	    		success:function(data){
+	    			progress = 1;
+	    			if(data=="1"){
+	    				$('#notifyBtn3').click();
+	    			}else
+	    				alert("服务器错误！");
+	    		}
+			});
+	      }else{
+	    	  progress = 1;
+	    	  $('#notifyBtn4').click();
+	      }
+      }
+    });
 }
 
 function findUser(){

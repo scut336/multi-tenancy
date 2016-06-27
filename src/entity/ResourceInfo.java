@@ -17,8 +17,8 @@ public class ResourceInfo {
 	private int AppLimit;
 	private int CurrentAppCount;
 	private String HDFSDirectory;
-	private int HDFSDirectoryQuota;
-	private int HDFSDirectoryRemaining;
+	private long HDFSDirectoryQuota;
+	private long HDFSDirectoryRemaining;
 	private int Queue;
 	private Date CreateTime;
 	private int CreateUserID;
@@ -31,8 +31,8 @@ public class ResourceInfo {
 	public ResourceInfo(){}
 
 	public ResourceInfo(long id, int appLimit, int currentAppCount,
-			String hDFSDirectory, int hDFSDirectoryQuota,
-			int hDFSDirectoryRemaining, int queue, Date createTime,
+			String hDFSDirectory, long hDFSDirectoryQuota,
+			long hDFSDirectoryRemaining, int queue, Date createTime,
 			int createUserID, char expired, int submitJobTimes,
 			Date lastSubmitTime, String userID) {
 		this.id = id;
@@ -51,8 +51,8 @@ public class ResourceInfo {
 	}
 
 	public ResourceInfo(int appLimit, int currentAppCount,
-			String hDFSDirectory, int hDFSDirectoryQuota,
-			int hDFSDirectoryRemaining, int queue, Date createTime,
+			String hDFSDirectory, long hDFSDirectoryQuota,
+			long hDFSDirectoryRemaining, int queue, Date createTime,
 			int createUserID, char expired, int submitJobTimes,
 			Date lastSubmitTime, String userID) {
 		AppLimit = appLimit;
@@ -70,8 +70,8 @@ public class ResourceInfo {
 	}
 
 	public ResourceInfo(int appLimit, int currentAppCount,
-			String hDFSDirectory, int hDFSDirectoryQuota,
-			int hDFSDirectoryRemaining, int queue, Date createTime,
+			String hDFSDirectory, long hDFSDirectoryQuota,
+			long hDFSDirectoryRemaining, int queue, Date createTime,
 			int createUserID, char expired, int submitJobTimes,
 			Date lastSubmitTime) {
 		AppLimit = appLimit;
@@ -89,7 +89,7 @@ public class ResourceInfo {
 
 	
 	public ResourceInfo(int appLimit, int currentAppCount,
-			int hDFSDirectoryQuota, int hDFSDirectoryRemaining) {
+			long hDFSDirectoryQuota, long hDFSDirectoryRemaining) {
 		AppLimit = appLimit;
 		CurrentAppCount = currentAppCount;
 		HDFSDirectoryQuota = hDFSDirectoryQuota;
@@ -128,19 +128,19 @@ public class ResourceInfo {
 		HDFSDirectory = hDFSDirectory;
 	}
 
-	public int getHDFSDirectoryQuota() {
+	public long getHDFSDirectoryQuota() {
 		return HDFSDirectoryQuota;
 	}
 
-	public void setHDFSDirectoryQuota(int hDFSDirectoryQuota) {
+	public void setHDFSDirectoryQuota(long hDFSDirectoryQuota) {
 		HDFSDirectoryQuota = hDFSDirectoryQuota;
 	}
 
-	public int getHDFSDirectoryRemaining() {
+	public long getHDFSDirectoryRemaining() {
 		return HDFSDirectoryRemaining;
 	}
 
-	public void setHDFSDirectoryRemaining(int hDFSDirectoryRemaining) {
+	public void setHDFSDirectoryRemaining(long hDFSDirectoryRemaining) {
 		HDFSDirectoryRemaining = hDFSDirectoryRemaining;
 	}
 

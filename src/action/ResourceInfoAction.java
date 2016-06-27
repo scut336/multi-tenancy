@@ -17,9 +17,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import service.JobInfoDAO;
+import service.QueueInfoDAO;
 import service.ResourceInfoDAO;
 import service.UserInfoDAO;
 import service.impl.JobInfoDAOImpl;
+import service.impl.QueueInfoDAOImpl;
 import service.impl.ResourceInfoDAOImpl;
 import service.impl.UserInfoDAOImpl;
 import entity.JobInfo;
@@ -43,7 +45,7 @@ public class ResourceInfoAction extends SuperAction{
 	//查看HDFS资源
 	public String get() throws Exception{
 		String strURL = "";
-		strURL = "http://222.201.145.144:50070/webhdfs/v1/user/"+session.getAttribute("loginUserName")+"?op=GETCONTENTSUMMARY";  
+		strURL = "http://222.201.145.144:8088/ws/v1/cluster/scheduler";  
 	    URL url = new URL(strURL);  
 	    HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();  
 	    InputStreamReader input = new InputStreamReader(httpConn  
@@ -54,18 +56,50 @@ public class ResourceInfoAction extends SuperAction{
 	    while ((line = bufReader.readLine()) != null) {  
 	        contentBuf.append(line);  
 	    }  
-	    String buf = contentBuf.toString(); 
+	    String buf = contentBuf.toString();
+	    double capacity = 0;
+	    double usedCapacity = 0;
+	    double maxCapacity = 0;
+	    String queueName = "";
+	    int memoryUnit = 0;
+	    int vcoreUnit = 0;
 	    JSONObject json=new JSONObject(buf);
+	    JSONArray jsonArray = json.getJSONObject("scheduler").getJSONObject("schedulerInfo").getJSONObject("queues").getJSONArray("queue");
+        for(int i=0;i<jsonArray.length();i++){  
+            JSONObject jsonObject=jsonArray.getJSONObject(i);
+            capacity = jsonObject.getDouble("capacity");
+            usedCapacity=jsonObject.getDouble("usedCapacity");
+            maxCapacity = jsonObject.getDouble("maxCapacity");
+            queueName = jsonObject.getString("queueName");
+            memoryUnit = jsonObject.getJSONObject("AMResourceLimit").getInt("memory");
+            vcoreUnit = jsonObject.getJSONObject("AMResourceLimit").getInt("vCores");
+            QueueInfoDAO queue = new QueueInfoDAOImpl();
+            queue.updateQueueCapacity(queueName, capacity,maxCapacity,usedCapacity,memoryUnit,vcoreUnit);
+        }
+        
+		strURL = "";
+		strURL = "http://222.201.145.144:50070/webhdfs/v1/user/"+session.getAttribute("loginUserName")+"?op=GETCONTENTSUMMARY";  
+	    url = new URL(strURL);  
+	    httpConn = (HttpURLConnection) url.openConnection();  
+	    input = new InputStreamReader(httpConn.getInputStream(), "utf-8");  
+	    bufReader = new BufferedReader(input);  
+	    line = "";  
+	    contentBuf = new StringBuilder();  
+	    while ((line = bufReader.readLine()) != null) {  
+	        contentBuf.append(line);  
+	    }  
+	    buf = contentBuf.toString(); 
+	    json=new JSONObject(buf);
 	    JSONObject jsonObject = json.getJSONObject("ContentSummary");
-	    int spaceConsumed = jsonObject.getInt("spaceConsumed");
+	    long spaceConsumed = jsonObject.getLong("spaceConsumed");
 	    ResourceInfoDAO res = new ResourceInfoDAOImpl();
 	    if(res.UpdateResource(session.getAttribute("loginUserId").toString(), spaceConsumed)){
 	    	ResourceInfoImpl resourceInfo = res.getHDFSDirectoryQuota(session.getAttribute("loginUserId").toString());
 	    	if(resourceInfo!=null){
-	    		int left = resourceInfo.getHDFSDirectoryQuota() - spaceConsumed;
+	    		long left = resourceInfo.getHDFSDirectoryQuota() - spaceConsumed;
 	    		String result = spaceConsumed + ","+left+","+resourceInfo.getHDFSDirectoryQuota()+","+resourceInfo.getAppLimit()+","+resourceInfo.getCurrentAppCount()+","+(resourceInfo.getAppLimit()-resourceInfo.getCurrentAppCount())+","+
 	    				resourceInfo.getHDFSDirectory()+","+resourceInfo.getQueue()+","+resourceInfo.getCreateTime()+","+resourceInfo.getSubmitJobTimes()+","+
-	    				resourceInfo.getLastSubmitTime()+","+resourceInfo.getCapacity()+","+resourceInfo.getResourceLimit();
+	    				resourceInfo.getLastSubmitTime()+","+resourceInfo.getCapacity()+","+resourceInfo.getMaxCapacity()+","+resourceInfo.getUsedCapacity()+","+resourceInfo.getResourceLimit();
 	    		inputStream=new ByteArrayInputStream(result.getBytes("UTF-8"));
 	    	}else {
 	    		inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
@@ -210,6 +244,24 @@ public class ResourceInfoAction extends SuperAction{
 				resString += list.get(i).getUserName() + "," +list.get(i).getQueue() + "," + list.get(i).getHDFSDirectoryQuota() + "," +list.get(i).getAppLimit() + ";";
 			}
 			inputStream=new ByteArrayInputStream(resString.getBytes("UTF-8"));
+		}else
+			inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
+		return "Ajax_Success";
+	}
+	
+	//更新资源信息
+	public String updateResource() throws Exception{
+		if(!session.getAttribute("loginUserRole").equals("admin")){
+			inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
+			return "Ajax_Success";
+		}
+		String name = request.getParameter("name");
+		String queue = request.getParameter("queue");
+		String hdfs = request.getParameter("hdfs");
+		String job = request.getParameter("job");
+		ResourceInfoDAO rdao = new ResourceInfoDAOImpl();
+		if(rdao.UpdateResourceInfo(name, queue, hdfs, job)){
+			inputStream=new ByteArrayInputStream("1".getBytes("UTF-8"));
 		}else
 			inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
 		return "Ajax_Success";

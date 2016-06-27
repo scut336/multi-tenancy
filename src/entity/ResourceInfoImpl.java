@@ -7,8 +7,8 @@ public class ResourceInfoImpl {
 	private int AppLimit;
 	private int CurrentAppCount;
 	private String HDFSDirectory;
-	private int HDFSDirectoryQuota;
-	private int HDFSDirectoryRemaining;
+	private long HDFSDirectoryQuota;
+	private long HDFSDirectoryRemaining;
 	private String Queue;
 	private Date CreateTime;
 	private int CreateUserID;
@@ -16,13 +16,16 @@ public class ResourceInfoImpl {
 	private int SubmitJobTimes;
 	private Date LastSubmitTime;
 	private String Capacity;
+	private String MaxCapacity;
+	private String UsedCapacity;
 	private String resourceLimit;
 
 	public ResourceInfoImpl(int appLimit, int currentAppCount,
-			String hDFSDirectory, int hDFSDirectoryQuota,
-			int hDFSDirectoryRemaining, String queue, Date createTime,
+			String hDFSDirectory, long hDFSDirectoryQuota,
+			long hDFSDirectoryRemaining, String queue, Date createTime,
 			int createUserID, char expired, int submitJobTimes,
-			Date lastSubmitTime, String capacity, String resourceLimit) {
+			Date lastSubmitTime, String capacity, String maxCapacity,
+			String usedCapacity, String resourceLimit) {
 		AppLimit = appLimit;
 		CurrentAppCount = currentAppCount;
 		HDFSDirectory = hDFSDirectory;
@@ -35,6 +38,8 @@ public class ResourceInfoImpl {
 		SubmitJobTimes = submitJobTimes;
 		LastSubmitTime = lastSubmitTime;
 		Capacity = capacity;
+		MaxCapacity = maxCapacity;
+		UsedCapacity = usedCapacity;
 		this.resourceLimit = resourceLimit;
 	}
 
@@ -62,19 +67,19 @@ public class ResourceInfoImpl {
 		HDFSDirectory = hDFSDirectory;
 	}
 
-	public int getHDFSDirectoryQuota() {
+	public long getHDFSDirectoryQuota() {
 		return HDFSDirectoryQuota;
 	}
 
-	public void setHDFSDirectoryQuota(int hDFSDirectoryQuota) {
+	public void setHDFSDirectoryQuota(long hDFSDirectoryQuota) {
 		HDFSDirectoryQuota = hDFSDirectoryQuota;
 	}
 
-	public int getHDFSDirectoryRemaining() {
+	public long getHDFSDirectoryRemaining() {
 		return HDFSDirectoryRemaining;
 	}
 
-	public void setHDFSDirectoryRemaining(int hDFSDirectoryRemaining) {
+	public void setHDFSDirectoryRemaining(long hDFSDirectoryRemaining) {
 		HDFSDirectoryRemaining = hDFSDirectoryRemaining;
 	}
 
@@ -140,6 +145,22 @@ public class ResourceInfoImpl {
 
 	public void setResourceLimit(String resourceLimit) {
 		this.resourceLimit = resourceLimit;
+	}
+
+	public String getMaxCapacity() {
+		return MaxCapacity;
+	}
+
+	public void setMaxCapacity(String maxCapacity) {
+		MaxCapacity = maxCapacity;
+	}
+
+	public String getUsedCapacity() {
+		return UsedCapacity;
+	}
+
+	public void setUsedCapacity(String usedCapacity) {
+		UsedCapacity = usedCapacity;
 	}
 
 }

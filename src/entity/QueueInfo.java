@@ -13,6 +13,8 @@ public class QueueInfo {
 	private long id;
 	private String QueueName;
 	private double Capacity;
+	private double MaxCapacity;
+	private double UsedCapacity;
 	private long ParentQueue;
 	private char IsLeafQueue;
 	private String ResourceLimit;
@@ -22,11 +24,14 @@ public class QueueInfo {
 	public QueueInfo(){}
 
 	public QueueInfo(long id, String queueName, double capacity,
-			long parentQueue, char isLeafQueue, String resourceLimit,
-			char enable, int maxWaitingTime) {
+			double maxCapacity, double usedCapacity, long parentQueue,
+			char isLeafQueue, String resourceLimit, char enable,
+			int maxWaitingTime) {
 		this.id = id;
 		QueueName = queueName;
 		Capacity = capacity;
+		MaxCapacity = maxCapacity;
+		UsedCapacity = usedCapacity;
 		ParentQueue = parentQueue;
 		IsLeafQueue = isLeafQueue;
 		ResourceLimit = resourceLimit;
@@ -34,10 +39,13 @@ public class QueueInfo {
 		MaxWaitingTime = maxWaitingTime;
 	}
 
-	public QueueInfo(String queueName, double capacity, String resourceLimit,
-			char enable, int maxWaitingTime) {
+	public QueueInfo(String queueName, double capacity, double maxCapacity,
+			double usedCapacity, String resourceLimit, char enable,
+			int maxWaitingTime) {
 		QueueName = queueName;
 		Capacity = capacity;
+		MaxCapacity = maxCapacity;
+		UsedCapacity = usedCapacity;
 		ResourceLimit = resourceLimit;
 		Enable = enable;
 		MaxWaitingTime = maxWaitingTime;
@@ -105,6 +113,22 @@ public class QueueInfo {
 
 	public void setMaxWaitingTime(int maxWaitingTime) {
 		MaxWaitingTime = maxWaitingTime;
+	}
+
+	public double getMaxCapacity() {
+		return MaxCapacity;
+	}
+
+	public void setMaxCapacity(double maxCapacity) {
+		MaxCapacity = maxCapacity;
+	}
+
+	public double getUsedCapacity() {
+		return UsedCapacity;
+	}
+
+	public void setUsedCapacity(double usedCapacity) {
+		UsedCapacity = usedCapacity;
 	}
 
 }

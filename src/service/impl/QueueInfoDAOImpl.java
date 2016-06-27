@@ -22,13 +22,13 @@ public class QueueInfoDAOImpl implements QueueInfoDAO{
 	}
 
 	@Override
-	public boolean updateQueueCapacity(String name,double capacity) {
+	public boolean updateQueueCapacity(String name,double capacity,double maxcapacity,double usedcapacity,int memoryUnit,int vcoreUnit) {
 		Transaction tx = null;
 		String hql = "";
 		try{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "update QueueInfo set Capacity='"+capacity+"' where QueueName ='"+name+"'";
+			hql = "update QueueInfo set Capacity='"+capacity+"',MaxCapacity='"+maxcapacity+"',UsedCapacity='"+usedcapacity+"',ResourceLimit='"+memoryUnit+","+vcoreUnit+"' where QueueName ='"+name+"'";
 			Query query = session.createQuery(hql);
 			query.executeUpdate();  
 			tx.commit();
@@ -50,7 +50,7 @@ public class QueueInfoDAOImpl implements QueueInfoDAO{
 		try{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			String hql = "select new QueueInfo(q.id, q.QueueName, q.Capacity,q.ParentQueue,q.IsLeafQueue,q.ResourceLimit,q.Enable,q.MaxWaitingTime) from QueueInfo q where q.QueueName='"+name+"'";
+			String hql = "select new QueueInfo(q.id, q.QueueName, q.Capacity, q.MaxCapacity, q.UsedCapacity,q.ParentQueue,q.IsLeafQueue,q.ResourceLimit,q.Enable,q.MaxWaitingTime) from QueueInfo q where q.QueueName='"+name+"'";
 			Query query = session.createQuery(hql);
 			q = (QueueInfo)query.uniqueResult();
 			tx.commit();
@@ -92,7 +92,7 @@ public class QueueInfoDAOImpl implements QueueInfoDAO{
 		try{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			String hql = "select new QueueInfo(QueueName,Capacity,ResourceLimit,Enable,MaxWaitingTime) from QueueInfo";
+			String hql = "select new QueueInfo(QueueName,Capacity,MaxCapacity,UsedCapacity,ResourceLimit,Enable,MaxWaitingTime) from QueueInfo";
 			Query query = session.createQuery(hql);
 			List<QueueInfo> queue = query.list();
  			tx.commit();

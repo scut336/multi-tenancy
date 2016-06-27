@@ -54,7 +54,7 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 	}
 
 	@Override
-	public boolean UpdateResource(String id,int left) {
+	public boolean UpdateResource(String id,long left) {
 		Transaction tx = null;
 		String hql = "";
 		try{
@@ -90,13 +90,13 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 			
 			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "select QueueName,Capacity,ResourceLimit from QueueInfo where id='"+resourceInfo.getQueue()+"'";
+			hql = "select QueueName,Capacity,MaxCapacity,UsedCapacity,ResourceLimit from QueueInfo where id='"+resourceInfo.getQueue()+"'";
 			query = session.createQuery(hql);
 			Object[] queue = (Object[])query.uniqueResult();
 			session.flush();
 			tx.commit();
 			
-			ResourceInfoImpl resourceInfoImpl = new ResourceInfoImpl(resourceInfo.getAppLimit(), resourceInfo.getCurrentAppCount(), resourceInfo.getHDFSDirectory(), resourceInfo.getHDFSDirectoryQuota(), resourceInfo.getHDFSDirectoryRemaining(), queue[0].toString(), resourceInfo.getCreateTime(), resourceInfo.getCreateUserID(), resourceInfo.getExpired(), resourceInfo.getSubmitJobTimes(), resourceInfo.getLastSubmitTime(),queue[1].toString(),queue[2].toString());
+			ResourceInfoImpl resourceInfoImpl = new ResourceInfoImpl(resourceInfo.getAppLimit(), resourceInfo.getCurrentAppCount(), resourceInfo.getHDFSDirectory(), resourceInfo.getHDFSDirectoryQuota(), resourceInfo.getHDFSDirectoryRemaining(), queue[0].toString(), resourceInfo.getCreateTime(), resourceInfo.getCreateUserID(), resourceInfo.getExpired(), resourceInfo.getSubmitJobTimes(), resourceInfo.getLastSubmitTime(),queue[1].toString(),queue[2].toString(),queue[3].toString(),queue[4].toString());
 			return resourceInfoImpl;
 		}catch(Exception e){
 			tx.rollback();
@@ -392,6 +392,45 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 			if(tr!=null){
 				tr=null;
 			}
+		}
+	}
+
+	@Override
+	public boolean UpdateResourceInfo(String name, String queue, String hdfs,
+			String job) {
+		Transaction tx = null;
+		String hql = "";
+		try{
+			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
+			tx = session.beginTransaction();
+			hql = "select id from QueueInfo where QueueName='"+queue+"'";
+			Query query = session.createQuery(hql);
+			long id = (long)query.uniqueResult();
+			session.flush();
+			tx.commit();
+			
+			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
+			tx = session.beginTransaction();
+			hql = "select id from UserInfo where name='"+name+"'";
+			query = session.createQuery(hql);
+			String userid = (String)query.uniqueResult();
+			session.flush();
+			tx.commit();
+			
+			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
+			tx = session.beginTransaction();
+			hql = "update ResourceInfo set Queue='"+id+"',HDFSDirectoryQuota='"+hdfs+"',AppLimit='"+job+"' where userID ='"+userid+"'";
+			query = session.createQuery(hql);
+			query.executeUpdate();  
+			tx.commit();
+			return true;
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+			return false;
+		}finally{
+			if(tx!=null)
+				tx = null;
 		}
 	}
 }

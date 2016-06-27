@@ -10,7 +10,7 @@ public interface QueueInfoDAO {
 	
 	public boolean addQueue(QueueInfo q);
 	
-	public boolean updateQueueCapacity(String name,double capacity);
+	public boolean updateQueueCapacity(String name,double capacity,double maxcapacity,double usedcapacity,int memoryUnit,int vcoreUnit);
 	
 	public QueueInfo findQueue(String name);
 
