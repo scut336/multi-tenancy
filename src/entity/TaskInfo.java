@@ -19,6 +19,8 @@ public class TaskInfo {
 	private String TaskLog;
 	private String TaskResult;
 	private String TaskError;
+	@Column(length=14)
+	private String lastStartTime;
 	private Date createDate;
 	@Column(length=50)
 	private String TaskID;
@@ -149,5 +151,13 @@ public class TaskInfo {
 	public void setTaskID(String taskID) {
 		TaskID = taskID;
 	}
-	
+
+	public String getLastStartTime() {
+		return lastStartTime;
+	}
+
+	public void setLastStartTime(String lastStartTime) {
+		this.lastStartTime = lastStartTime;
+	}
+
 }

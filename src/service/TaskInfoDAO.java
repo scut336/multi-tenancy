@@ -22,11 +22,17 @@ public interface TaskInfoDAO {
 	
 	public int pageSum();
 	
+	public long taskSum();
+	
 	public boolean insertJarName(String id,String name);
 	
 	public String findJarName(String id);
 	
-	public boolean insertTaskID(String id,String taskID);
+	public String findUserName(String id);
+	
+	public String findLastStartTime(String id);
+	
+	public boolean insertTaskID(String id,String taskID,String time);
 	
 	public boolean updateTaskStatus(String TaskID,String num);
 	
@@ -35,4 +41,5 @@ public interface TaskInfoDAO {
 	public List<TaskInfoImpl> findTaskInfoJar(String id,String taskname,int page,int num);
 	
 	public int pageJarSum(String id, String taskname);
+	
 }

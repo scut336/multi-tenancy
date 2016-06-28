@@ -101,7 +101,7 @@ public class UserInfoAction extends SuperAction  implements ModelDriven<UserInfo
 		if(udao.addUserInfo(user)){
 			ResourceInfoDAO resourceInfoDAO = new ResourceInfoDAOImpl();
 			ResourceInfo resourceInfo = null;
-			if(user.getRole().equals("default"))
+			if(user.getRole().equals("user"))
 				resourceInfo = new ResourceInfo(10,0,user.getName(),1073741824,0,1,new Date(),session.getAttribute("loginUserId").toString(),'F',0,new Date(),user.getId());
 			else if(user.getRole().equals("vip1"))
 				resourceInfo = new ResourceInfo(10,0,user.getName(),1073741824,0,2,new Date(),session.getAttribute("loginUserId").toString(),'F',0,new Date(),user.getId());

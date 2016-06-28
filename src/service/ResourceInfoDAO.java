@@ -32,6 +32,8 @@ public interface ResourceInfoDAO {
 	
 	public int pageSum();
 	
+	public long applySum();
+	
 	public boolean manageApply(String name,char enable);
 	
 	public List<ResourceApplicationImpl> ShowResource(int page);

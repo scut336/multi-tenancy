@@ -2,12 +2,15 @@ package entity;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,6 +18,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -38,11 +51,13 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import service.JobInfoDAO;
+import service.QueueInfoDAO;
 import service.ResourceInfoDAO;
 import service.TaskInfoDAO;
 import service.UserInfoDAO;
 import service.UserProfileDAO;
 import service.impl.JobInfoDAOImpl;
+import service.impl.QueueInfoDAOImpl;
 import service.impl.ResourceInfoDAOImpl;
 import service.impl.TaskInfoDAOImpl;
 import service.impl.UserInfoDAOImpl;
@@ -181,8 +196,6 @@ public class testUserInfo {
 	}
 	@Test
 	public void test2() throws Exception{
-		TaskInfoDAO taskInfoDAO = new TaskInfoDAOImpl();
-		String jarName = taskInfoDAO.findJarName("TASK0001");
         String _url = "http://222.201.145.144:4567/app/start";
         URL url = new URL(_url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -192,26 +205,38 @@ public class testUserInfo {
         connection.setRequestProperty("Content-Type", "text/html");
         connection.setRequestProperty("Charset", "UTF-8");
         connection.setRequestProperty("user", "la@gc.com");
-        connection.setRequestProperty("app", jarName);
-        connection.setRequestProperty("queue", "default");
-        connection.setRequestProperty("input", "user");
+        connection.setRequestProperty("app", "smoketest.jar");
+        connection.setRequestProperty("queue", "vip1");
+        connection.setRequestProperty("input", "/user/smoketest/input");
         int responseCode = connection.getResponseCode();
         if (HttpURLConnection.HTTP_OK == responseCode) {
             String line;
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             line = reader.readLine();
-            System.out.println(line.indexOf("Input path does not exist"));
-            if(line.indexOf("Input path does not exist1")<0){
-            	System.out.println(line.indexOf("Input path does not exist1"));
-            }
-            int first = line.indexOf("JobID is:");
-            line = line.substring(first+9);
-            first = line.indexOf("<br>");
-            line = line.substring(0,first);
             System.out.println(line);
         }
-        else{
-        	System.out.println(responseCode);
-        }
+	}
+	
+	@Test
+	public void test3() throws IOException{
+		String strURL = "http://222.201.145.144:50070/webhdfs/v1/user/t1?op=GETCONTENTSUMMARY";  
+	    URL url = new URL(strURL);  
+	    HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();  
+	    try{
+	    	InputStreamReader input2 = new InputStreamReader(httpConn.getInputStream(), "utf-8");  
+		    BufferedReader bufReader = new BufferedReader(input2);  
+		    String line = "";  
+		    StringBuilder contentBuf = new StringBuilder();  
+		    while ((line = bufReader.readLine()) != null) {  
+		        contentBuf.append(line);  
+		    }  
+		    String buf = contentBuf.toString(); 
+		    System.out.println(buf);
+	    }
+	    catch(FileNotFoundException e){
+	    	System.out.println("hehe");
+	    }catch(Exception e){
+	    	
+	    }
 	}
 }

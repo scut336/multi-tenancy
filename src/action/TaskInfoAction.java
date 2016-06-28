@@ -2,14 +2,20 @@ package action;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import org.json.JSONObject;
 
 import service.JobInfoDAO;
 import service.QueueInfoDAO;
@@ -118,8 +124,10 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 		    int endIx = buf.indexOf(",\"trackingUI\"");
 		    String result = buf.substring(beginIx, endIx); 
 		    result = result.replace("\"progress\":", "");
-		    result = result.replace(".0", "");
-		    taskInfoDAO.updateTaskStatus(index[i], result);
+		    int indexF = result.indexOf(".");
+		    result = result.substring(0, indexF);
+		    if(Integer.parseInt(result)<=100)
+		    	taskInfoDAO.updateTaskStatus(index[i], result);
 		    reString += index[i] + ":" + result + ",";
 		}
 		System.out.println(reString);
@@ -177,9 +185,42 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 	
 	//开始任务
 	public String start() throws IOException {
+		String name = request.getParameter("name");
+		if(!session.getAttribute("loginUserRole").equals("admin")){
+			name = session.getAttribute("loginUserName").toString();
+		}
 		String id = request.getParameter("id");
 		String input = request.getParameter("input");
-		String name = request.getParameter("name");
+		
+		String strURL = "http://222.201.145.144:50070/webhdfs/v1/user/"+name+"?op=GETCONTENTSUMMARY";  
+	    try{
+	    	URL url = new URL(strURL);  
+		    HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();  
+		    InputStreamReader input2 = new InputStreamReader(httpConn.getInputStream(), "utf-8");  
+		    BufferedReader bufReader = new BufferedReader(input2);  
+		    String line = "";  
+		    StringBuilder contentBuf = new StringBuilder();  
+		    while ((line = bufReader.readLine()) != null) {  
+		        contentBuf.append(line);  
+		    }  
+		    String buf = contentBuf.toString(); 
+	    	JSONObject json=new JSONObject(buf);
+		    JSONObject jsonObject = json.getJSONObject("ContentSummary");
+		    long spaceConsumed = jsonObject.getLong("spaceConsumed");
+		    ResourceInfoDAO res = new ResourceInfoDAOImpl();
+		    res.UpdateResource(session.getAttribute("loginUserId").toString(), spaceConsumed);
+	    }catch(Exception e){
+	    	return starting(name, id,input);
+	    }
+		return starting(name, id,input);
+    }
+	
+	//继续执行start
+	public String starting(String name,String id,String input) throws IOException{
+	    Date date=new Date();
+		DateFormat format=new SimpleDateFormat("yyyyMMddHHmmss");
+		String time=format.format(date);
+
 		QueueInfoDAO queueInfoDAO = new QueueInfoDAOImpl();
 		String queue = queueInfoDAO.queryQueueByUser(name);
 		TaskInfoDAO taskInfoDAO = new TaskInfoDAOImpl();
@@ -196,9 +237,11 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
         connection.setRequestProperty("app", jarName);
         connection.setRequestProperty("queue", queue);
         connection.setRequestProperty("input", input);
+        connection.setRequestProperty("startTime", time);
+        System.out.println(jarName+","+queue+","+input+","+time);
         int responseCode = connection.getResponseCode();
         if (HttpURLConnection.HTTP_OK == responseCode) {
-            String line;
+            String line="";
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             line = reader.readLine();
             if(line.indexOf("Input path does not exist")>0){
@@ -210,7 +253,7 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
             first = line.indexOf("<br>");
             line = line.substring(0,first);
             System.out.println(line);
-            if(taskInfoDAO.insertTaskID(id, line)){
+            if(taskInfoDAO.insertTaskID(id, line,time)){
     			inputStream=new ByteArrayInputStream("1".getBytes("UTF-8"));
     		}else{
     			inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
@@ -220,7 +263,7 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
         	inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
         }
         return "Ajax_Success";
-    }
+	}
 	
 	//查询任务
 	public String find() throws UnsupportedEncodingException{

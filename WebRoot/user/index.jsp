@@ -323,11 +323,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </div><!--wrapper-->
 
     <div id="page-wrapper">
-        <div class="row">
-            <div class="col-lg-12">
-                <h1 class="page-header">集群管理</h1>
-            </div><!--col-lg-12-->
-        </div><!--row-->
     </div><!--page-wrapper-->
 
 	<script>
@@ -344,6 +339,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <script src="<%=path%>/js/jquery.flot.pie.js"></script>
     <script src="<%=path%>/js/jquery.flot.resize.js"></script>
     <script src="<%=path%>/js/jquery.flot.tooltip.js"></script>
+    <script src="<%=path%>/js/easypiechart.js"></script>
     <script src="<%=path%>/js/main.js"></script>
     <script>
         $(function() {

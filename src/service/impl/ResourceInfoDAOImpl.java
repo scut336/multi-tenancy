@@ -36,6 +36,13 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 			Query query = session.createSQLQuery(sql);
 			query.executeUpdate();
 			tx.commit();
+			
+			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
+			tx = session.beginTransaction();
+			sql = "insert into ResourceApplication(UserID,AppLimit,Enable,HDFSDirectoryQuota,Queue) values ('"+r.getUserID()+"',0,'T',0,1)";
+			query = session.createSQLQuery(sql);
+			query.executeUpdate();
+			tx.commit();
 			return true;
 		}catch(Exception e){
 			tx.rollback();
@@ -428,6 +435,28 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 			tx.rollback();
 			e.printStackTrace();
 			return false;
+		}finally{
+			if(tx!=null)
+				tx = null;
+		}
+	}
+
+	@Override
+	public long applySum() {
+		Transaction tx = null;
+		String hql = "";
+		try{
+			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
+			tx = session.beginTransaction();
+			hql = "select count(userID) from ResourceApplication where enable = 'W'";
+			Query query = session.createQuery(hql);
+			long count = (long)query.uniqueResult();
+			tx.commit();
+			return count;
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+			return 0;
 		}finally{
 			if(tx!=null)
 				tx = null;

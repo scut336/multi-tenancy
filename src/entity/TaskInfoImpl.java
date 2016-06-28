@@ -7,6 +7,7 @@ public class TaskInfoImpl {
 	private String TaskLog;
 	private String TaskResult;
 	private String TaskError;
+	private String lastStartTime;
 	private String createDate;
 	private String TaskID;
 	private String TaskName;
@@ -15,13 +16,14 @@ public class TaskInfoImpl {
 	public TaskInfoImpl(){}
 
 	public TaskInfoImpl(String id, String taskStatus, String taskLog,
-			String taskResult, String taskError, String createDate,
-			String taskID, String userName) {
+			String taskResult, String taskError, String lastStartTime,
+			String createDate, String taskID, String userName) {
 		this.id = id;
 		TaskStatus = taskStatus;
 		TaskLog = taskLog;
 		TaskResult = taskResult;
 		TaskError = taskError;
+		this.lastStartTime = lastStartTime;
 		this.createDate = createDate;
 		TaskID = taskID;
 		this.userName = userName;
@@ -97,6 +99,14 @@ public class TaskInfoImpl {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public String getLastStartTime() {
+		return lastStartTime;
+	}
+
+	public void setLastStartTime(String lastStartTime) {
+		this.lastStartTime = lastStartTime;
 	}
 	
 }

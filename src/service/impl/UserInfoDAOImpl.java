@@ -298,4 +298,26 @@ public class UserInfoDAOImpl implements UserInfoDAO{
 		}
 	}
 
+	@Override
+	public long userSum() {
+		Transaction tx = null;
+		String hql = "";
+		try{
+			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
+			tx = session.beginTransaction();
+			hql = "select count(u.id) from UserInfo u";
+			Query query = session.createQuery(hql);
+			long count = (long)query.uniqueResult();
+			tx.commit();
+			return count;
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+			return 0;
+		}finally{
+			if(tx!=null)
+				tx = null;
+		}
+	}
+
 }

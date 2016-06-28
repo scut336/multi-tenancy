@@ -19,10 +19,12 @@ import org.json.JSONObject;
 import service.JobInfoDAO;
 import service.QueueInfoDAO;
 import service.ResourceInfoDAO;
+import service.TaskInfoDAO;
 import service.UserInfoDAO;
 import service.impl.JobInfoDAOImpl;
 import service.impl.QueueInfoDAOImpl;
 import service.impl.ResourceInfoDAOImpl;
+import service.impl.TaskInfoDAOImpl;
 import service.impl.UserInfoDAOImpl;
 import entity.JobInfo;
 import entity.ResourceApplication;
@@ -264,6 +266,41 @@ public class ResourceInfoAction extends SuperAction{
 			inputStream=new ByteArrayInputStream("1".getBytes("UTF-8"));
 		}else
 			inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
+		return "Ajax_Success";
+	}
+	
+	//结果路径
+	public String ResultRoute() throws Exception{
+		String res = "";
+		String taskid = request.getParameter("id");
+		TaskInfoDAO taskInfoDAO = new TaskInfoDAOImpl();
+		String jarname = taskInfoDAO.findJarName(taskid);
+		String time = taskInfoDAO.findLastStartTime(taskid);
+		int indexF = jarname.indexOf(".");
+		jarname = jarname.substring(0,indexF);
+		String username = taskInfoDAO.findUserName(taskid);
+		String strURL = "http://222.201.145.144:50070/webhdfs/v1/user/"+username+"/output/"+jarname+"/"+time;  
+		URL url = new URL(strURL+"?op=LISTSTATUS");  
+	    HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();  
+	    InputStreamReader input = new InputStreamReader(httpConn  
+	            .getInputStream(), "utf-8");  
+	    BufferedReader bufReader = new BufferedReader(input);  
+	    String line = "";  
+	    StringBuilder contentBuf = new StringBuilder();  
+	    while ((line = bufReader.readLine()) != null) {  
+	        contentBuf.append(line);  
+	    }  
+	    String buf = contentBuf.toString();
+	    JSONObject json=new JSONObject(buf);
+	    JSONObject jsonObject = json.getJSONObject("FileStatuses");
+	    JSONArray jsonArray = jsonObject.getJSONArray("FileStatus");
+	    strURL = strURL.replace("50070", "50075");
+		for(int i=0;i<jsonArray.length();i++){
+			JSONObject temp = jsonArray.getJSONObject(i);
+			res+=temp.getString("pathSuffix")+","+
+						strURL+"/"+temp.getString("pathSuffix")+"?op=OPEN&namenoderpcaddress=master:9000&amp;offset=0"+"|";
+		}
+		inputStream=new ByteArrayInputStream(res.getBytes("UTF-8"));
 		return "Ajax_Success";
 	}
 }

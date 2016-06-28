@@ -57,6 +57,15 @@
 		</action>
 	</package>
 	
+	<package name="cluster" namespace="/cluster" extends="default">
+		<action name="*_*" class="action.{1}Action" method="{2}">
+			<result type="stream" name="Ajax_Success">
+				<param name="contentType">text/html</param>
+				<param name="inputStream">inputStream</param>
+			</result>
+		</action>
+	</package>
+	
 	<package name="jarFileUpload" namespace="/jarFileUpload" extends="json-default">
 		<action name="JarFileUploadAction" class="action.JarFileUploadAction">
 			<result type="json" name="success">

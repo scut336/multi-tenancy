@@ -6,6 +6,77 @@ ul li{
 	list-style-type:none;
 }
 
+.operate .ladda-spinner{
+	z-index:2000;
+}
+
+.colorBlue{
+	background-color:#649FD3;
+}
+
+.Homechart {
+  position: relative;
+  display: inline-block;
+  width: 200px;
+  height: 200px;
+  text-align: center;
+}
+
+.Homechart canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.Homepercent {
+  font-size:50px;
+  display: inline-block;
+  line-height: 200px;
+  z-index: 2;
+}
+
+.Homechart:hover {
+  cursor:pointer;
+}
+
+.indexGroup .flot-chart{
+	height:200px;
+}
+
+.huge {
+    font-size: 40px;
+}
+
+.panel-green{
+    border-color: #5cb85c;
+}
+
+.panel-green .panel-heading {
+    border-color: #5cb85c;
+    color: #fff;
+    background-color: #5cb85c;
+}
+
+.panel-yellow {
+    border-color: #f0ad4e;
+}
+
+.panel-yellow .panel-heading {
+    border-color: #f0ad4e;
+    color: #fff;
+    background-color: #f0ad4e;
+}
+
+.panel-red {
+    border-color: #d9534f;
+}
+
+.panel-red .panel-heading {
+    border-color: #d9534f;
+    color: #fff;
+    background-color: #d9534f;
+}
+
 .operate a{
     width:100%;
     float: left;

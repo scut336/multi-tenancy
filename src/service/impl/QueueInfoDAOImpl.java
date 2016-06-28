@@ -136,4 +136,26 @@ public class QueueInfoDAOImpl implements QueueInfoDAO{
 		}
 	}
 
+	@Override
+	public long querySum() {
+		Transaction tx = null;
+		String hql = "";
+		try{
+			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
+			tx = session.beginTransaction();
+			hql = "select count(q.id) from QueueInfo q";
+			Query query = session.createQuery(hql);
+			long count = (long)query.uniqueResult();
+			tx.commit();
+			return count;
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+			return 0;
+		}finally{
+			if(tx!=null)
+				tx = null;
+		}
+	}
+
 }

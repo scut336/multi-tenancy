@@ -19,6 +19,7 @@ $(function() {
             $("#page-wrapper").css("min-height", (height) + "px");
         }
     });
+    
 });
 
 function page(pageNum,that) {
@@ -236,8 +237,327 @@ function showGroup(){
             "<div class=\"col-lg-12\">"+
                 "<h1 class=\"page-header\">集群管理</h1>"+
             "</div>"+
-        "</div>";
+        "</div>"+
+        "<div class=\"row\">"+
+        	"<div class=\"col-lg-6 col-md-6\">"+
+	        	"<div class=\"panel panel-primary\">"+
+			        "<div class=\"panel-heading\"><i class=\"fa fa-th fa-fw\"></i> 集群信息</div>"+
+			        "<div class=\"panel-body\">"+
+				        "<div class=\"table-responsive\">"+
+			            	"<table class=\"table table-bordered clusterField\">"+
+			                "</table>"+
+			            "</div>"+
+			        "</div>"+
+			    "</div>"+
+        	"</div>"+
+	        "<div class=\"col-lg-6 col-md-6\">"+
+		        "<div class=\"col-lg-6 col-md-6\">"+
+		            "<div class=\"panel panel-primary\">"+
+		                "<div class=\"panel-heading\">"+
+		                    "<div class=\"row\">"+
+		                        "<div class=\"col-xs-3\">"+
+		                            "<i class=\"fa fa-user fa-5x\"></i>"+
+		                        "</div>"+
+		                        "<div class=\"col-xs-9 text-right\">"+
+		                            "<div class=\"huge\" id='userSum'></div>"+
+		                            "<div>用户总数</div>"+
+		                        "</div>"+
+		                    "</div>"+
+		                "</div>"+
+		                "<a href=\"####\" onclick='page(3,this)'>"+
+		                    "<div class=\"panel-footer\">"+
+		                        "<span class=\"pull-left\">View Details</span>"+
+		                        "<span class=\"pull-right\"><i class=\"fa fa-arrow-circle-right\"></i></span>"+
+		                        "<div class=\"clearfix\"></div>"+
+		                    "</div>"+
+		                "</a>"+
+		            "</div>"+
+		        "</div>"+
+		        "<div class=\"col-lg-6 col-md-6\">"+
+		    	    "<div class=\"panel panel-green\">"+
+		    	        "<div class=\"panel-heading\">"+
+		    	            "<div class=\"row\">"+
+		    	                "<div class=\"col-xs-3\">"+
+		    	                    "<i class=\"fa fa-bar-chart-o fa-5x\"></i>"+
+		    	                "</div>"+
+		    	                "<div class=\"col-xs-9 text-right\">"+
+		    	                    "<div class=\"huge\" id='taskSum'></div>"+
+		    	                    "<div>任务总数</div>"+
+		    	                "</div>"+
+		    	            "</div>"+
+		    	        "</div>"+
+		    	        "<a href=\"####\" onclick='page(5,this)'>"+
+		    	            "<div class=\"panel-footer\">"+
+		    	                "<span class=\"pull-left\">View Details</span>"+
+		    	                "<span class=\"pull-right\"><i class=\"fa fa-arrow-circle-right\"></i></span>"+
+		    	                "<div class=\"clearfix\"></div>"+
+		    	            "</div>"+
+		    	        "</a>"+
+		    	    "</div>"+
+		    	"</div>"+
+		    	"<div class=\"col-lg-6 col-md-6\">"+
+		    	    "<div class=\"panel panel-yellow\">"+
+		    	        "<div class=\"panel-heading\">"+
+		    	            "<div class=\"row\">"+
+		    	                "<div class=\"col-xs-3\">"+
+		    	                    "<i class=\"fa fa-random fa-5x\"></i>"+
+		    	                "</div>"+
+		    	                "<div class=\"col-xs-9 text-right\">"+
+		    	                    "<div class=\"huge\" id='queueSum'>26</div>"+
+		    	                    "<div>队列总数</div>"+
+		    	                "</div>"+
+		    	            "</div>"+
+		    	        "</div>"+
+		    	        "<a href=\"####\" onclick='page(8,this)'>"+
+		    	            "<div class=\"panel-footer\">"+
+		    	                "<span class=\"pull-left\">View Details</span>"+
+		    	                "<span class=\"pull-right\"><i class=\"fa fa-arrow-circle-right\"></i></span>"+
+		    	                "<div class=\"clearfix\"></div>"+
+		    	            "</div>"+
+		    	        "</a>"+
+		    	    "</div>"+
+	    	    "</div>"+
+	    	    "<div class=\"col-lg-6 col-md-6\">"+
+		    	    "<div class=\"panel panel-red\">"+
+		    	        "<div class=\"panel-heading\">"+
+		    	            "<div class=\"row\">"+
+		    	                "<div class=\"col-xs-3\">"+
+		    	                    "<i class=\"fa fa-magnet fa-5x\"></i>"+
+		    	                "</div>"+
+		    	                "<div class=\"col-xs-9 text-right\">"+
+		    	                    "<div class=\"huge\" id='manageSum'>26</div>"+
+		    	                    "<div>待审核事项</div>"+
+		    	                "</div>"+
+		    	            "</div>"+
+		    	        "</div>"+
+		    	        "<a href=\"####\" onclick='page(15,this)'>"+
+		    	            "<div class=\"panel-footer\">"+
+		    	                "<span class=\"pull-left\">View Details</span>"+
+		    	                "<span class=\"pull-right\"><i class=\"fa fa-arrow-circle-right\"></i></span>"+
+		    	                "<div class=\"clearfix\"></div>"+
+		    	            "</div>"+
+		    	        "</a>"+
+		    	    "</div>"+
+		    	"</div>"+
+	    	"</div>"+
+    	"</div>"+
+    	"<div class=\"row indexGroup\">"+
+	        "<div class=\"col-lg-3\">"+
+	            "<div class=\"panel panel-primary\">"+
+	                "<div class=\"panel-heading\" id=\"hdfsHead\"><i class=\"fa fa-bullseye fa-fw\"></i> CPU使用情况</div>"+
+	                "<div class=\"panel-body\">"+
+		                "<a href='#cpuHealth'><span class=\"Homechart\" id='Homechart1' data-percent=\"12\">"+
+			        		"<span class=\"Homepercent\"></span>"+
+			        	"</span></a>"+
+	                "</div>"+
+	            "</div>"+
+	        "</div>"+
+	        "<div class=\"col-lg-3\">"+
+	            "<div class=\"panel panel-green\">"+
+	                "<div class=\"panel-heading\" id=\"hdfsHead\"><i class=\"fa fa-rocket fa-fw\"></i> Memory使用情况</div>"+
+	                "<div class=\"panel-body\">"+
+		                "<a href='#memoryHealth'><span class=\"Homechart\" id='Homechart2' data-percent=\"12\">"+
+			        		"<span class=\"Homepercent\"></span>"+
+			        	"</span></a>"+
+	                "</div>"+
+	            "</div>"+
+	        "</div>"+
+	        "<div class=\"col-lg-3\">"+
+	            "<div class=\"panel panel-yellow\">"+
+	                "<div class=\"panel-heading\" id=\"hdfsHead\"><i class=\"fa fa-sitemap fa-fw\"></i> 节点使用情况</div>"+
+	                "<div class=\"panel-body\">"+
+		                "<a href='#nodeHealth'><span class=\"Homechart\" id='Homechart3' data-percent=\"12\">"+
+			        		"<span class=\"Homepercent\"></span>"+
+			        	"</span></a>"+
+	                "</div>"+
+	            "</div>"+
+	        "</div>"+
+	        "<div class=\"col-lg-3\">"+
+	            "<div class=\"panel panel-red\">"+
+	                "<div class=\"panel-heading\" id=\"hdfsHead\"><i class=\"fa fa-square fa-fw\"></i> APP情况</div>"+
+	                "<div class=\"panel-body\">"+
+		                "<a href='#appHealth'><span class=\"Homechart\" id='Homechart4' data-percent=\"12\">"+
+			        		"<span class=\"Homepercent\"></span>"+
+			        	"</span></a>"+
+	                "</div>"+
+	            "</div>"+
+	        "</div>"+
+        "</div>"+
+        "<div class=\"row\">" +
+	    	"<div class=\"col-lg-6\">"+
+	    		"<div class=\"panel panel-primary\" id='cpuHealth'>"+
+			        "<div class=\"panel-heading\"><i class=\"fa fa-desktop fa-fw\"></i> CPU信息</div>"+
+			        "<div class=\"panel-body\">"+
+				        "<div class=\"table-responsive\">"+
+			            	"<table class=\"table table-striped table-bordered table-hover\">"+
+			                "<thead><tr class='info'><th>Available(个)</th><th>Allocated(个)</th><th>Reserved(个)</th></tr></thead>"+
+			                "<tbody class='cpuHealth'></tbody>"+
+			                "</table>"+
+			            "</div>"+
+			        "</div>"+
+			    "</div>"+
+		    "</div>"+
+	    	"<div class=\"col-lg-6\">"+
+	    		"<div class=\"panel panel-green\" id='memoryHealth'>"+
+			        "<div class=\"panel-heading\"><i class=\"fa fa-desktop fa-fw\"></i> Memory信息</div>"+
+			        "<div class=\"panel-body\">"+
+				        "<div class=\"table-responsive\">"+
+			            	"<table class=\"table table-striped table-bordered table-hover\">"+
+			                "<thead><tr class='success'><th>Available(M)</th><th>Allocated(M)</th><th>Reserved(M)</th></thead>"+
+			                "<tbody class='memoryHealth'></tbody>"+
+			                "</table>"+
+			            "</div>"+
+			        "</div>"+
+			    "</div>"+
+		    "</div>"+
+		"</div>"+
+        "<div class=\"row\" id='nodeHealth'>" +
+        	"<div class=\"col-lg-12\">"+
+        		"<div class=\"panel panel-yellow\">"+
+			        "<div class=\"panel-heading\"><i class=\"fa fa-desktop fa-fw\"></i> 节点信息</div>"+
+			        "<div class=\"panel-body\">"+
+				        "<div class=\"table-responsive\">"+
+			            	"<table class=\"table table-striped table-bordered table-hover\">"+
+			                "<thead><tr class='warning'><th>name</th><th>state</th><th>version</th><th>LastHealthUpdate</th><th>usedMemory(M)</th><th>availMemory(M)</th><th>usedVirtualCores(个)</th><th>availableVirtualCores(个)</th></tr></thead>"+
+			                "<tbody class='nodeHealth'></tbody>"+
+			                "</table>"+
+			            "</div>"+
+			        "</div>"+
+			    "</div>"+
+		    "</div>"+
+		"</div>"+
+		"<div class=\"row\" id='appHealth'>" +
+	    	"<div class=\"col-lg-12\">"+
+	    		"<div class=\"panel panel-red\">"+
+			        "<div class=\"panel-heading\"><i class=\"fa fa-desktop fa-fw\"></i> APP信息</div>"+
+			        "<div class=\"panel-body\">"+
+				        "<div class=\"table-responsive\">"+
+			            	"<table class=\"table table-striped table-bordered table-hover\">"+
+			                "<thead><tr class='danger'><th>Submitted(个)</th><th>Completed(个)</th><th>Pending(个)</th><th>Running(个)</th><th>Failed(个)</th><th>Killed(个)</th></tr></thead>"+
+			                "<tbody class='appHealth'></tbody>"+
+			                "</table>"+
+			            "</div>"+
+			        "</div>"+
+			    "</div>"+
+		    "</div>"+
+		"</div>";
+	       
      $("#page-wrapper").append(string);
+     $.ajax({
+  		url:ADDRESS+'/cluster/Cluster_getSum.action',
+  		type:'post',
+  		data:{},
+  		error:function(){
+  			alert("服务器出错！");
+  		},
+  		success:function(data){
+  			var res = data.split(",");
+  			$('#userSum').html(res[0]);
+  			$('#taskSum').html(res[1]);
+  			$('#queueSum').html(res[2]);
+  			$('#manageSum').html(res[3]);
+  		}
+      });
+     $.ajax({
+ 		url:ADDRESS+'/cluster/Cluster_getCluster.action',
+ 		type:'post',
+ 		data:{},
+ 		error:function(){
+ 			alert("服务器出错！");
+ 		},
+ 		success:function(data){
+ 			var res = data.split(",");
+ 			var str = "<tbody><tr class='colorBlue'><td>开始时间</td><td>"+res[0]+"</td></tr><tr><td>状态</td><td>"+res[1]+"</td></tr><tr class='colorBlue'><td>ResourceManager</td><td>"+res[2]+"</td></tr><tr><td>Hadoop版本</td><td>"+res[3]+"</td></tr></tbody>";
+ 			$('.clusterField').append(str);
+ 		}
+     });
+     $.ajax({
+  		url:ADDRESS+'/cluster/Cluster_getMetrics.action',
+  		type:'post',
+  		data:{},
+  		error:function(){
+  			alert("服务器出错！");
+  		},
+  		success:function(data){
+  			var res = data.split(",");
+  			var str1 = parseInt(res[9])+parseInt(res[10])+parseInt(res[11]);
+  			var str2 = parseInt(res[6])+parseInt(res[7])+parseInt(res[8]);
+  			var str3 = parseInt(res[12])+parseInt(res[13])+parseInt(res[14])+parseInt(res[15])+parseInt(res[16]);
+  			$('#Homechart1').attr('data-percent',parseInt(res[9])+parseInt(res[11])/str1*100);
+  			$('#Homechart1').children('span').html(str1+"个");
+  			$('#Homechart2').attr('data-percent',parseInt(res[6])+parseInt(res[8])/str2*100);
+  			$('#Homechart2').children('span').html(str2/1024+"G");
+  			$('#Homechart3').attr('data-percent',parseInt(res[16])/str3*100);
+  			$('#Homechart3').children('span').html(str3+"个");
+  			$('#Homechart4').attr('data-percent',parseInt(res[1])/parseInt(res[0])*100);
+  			$('#Homechart4').children('span').html(parseInt(res[0])+"个");
+  			var str5 = "<tr><td>"+res[10]+"</td><td>"+res[11]+"</td><td>"+res[9]+"</td><tr>";
+  			$('.cpuHealth').append(str5);
+  			var str6 = "<tr><td>"+res[7]+"</td><td>"+res[8]+"</td><td>"+res[6]+"</td><tr>";
+  			$('.memoryHealth').append(str6);
+  			var str7 = "<tr><td>"+res[0]+"</td><td>"+res[1]+"</td><td>"+res[2]+"</td><td>"+res[3]+"</td><td>"+res[4]+"</td><td>"+res[5]+"</td><tr>";
+  			$('.appHealth').append(str7);
+  			
+  			window.chart = new EasyPieChart(document.querySelector('#Homechart1'), {
+  				easing: 'easeOutElastic',
+  				delay: 3000,
+  				barColor: '#5093CE',
+  				trackColor: '#78ACD9',
+  				scaleColor: false,
+  				lineWidth: 20,
+  				trackWidth: 16,
+  				lineCap: 'butt',
+  			});
+  		     window.chart = new EasyPieChart(document.querySelector('#Homechart2'), {
+  		 		easing: 'easeOutElastic',
+  		 		delay: 3000,
+  		 		barColor: '#6EBF6E',
+  		 		trackColor: '#A3D7A3',
+  		 		scaleColor: false,
+  		 		lineWidth: 20,
+  		 		trackWidth: 16,
+  		 		lineCap: 'butt',
+  		 	});
+  		     window.chart = new EasyPieChart(document.querySelector('#Homechart3'), {
+  		 		easing: 'easeOutElastic',
+  		 		delay: 3000,
+  		 		barColor: '#F4C27B',
+  		 		trackColor: '#F8D8AA',
+  		 		scaleColor: false,
+  		 		lineWidth: 20,
+  		 		trackWidth: 16,
+  		 		lineCap: 'butt',
+  		 	});
+  		     window.chart = new EasyPieChart(document.querySelector('#Homechart4'), {
+  		 		easing: 'easeOutElastic',
+  		 		delay: 3000,
+  		 		barColor: '#E27D79',
+  		 		trackColor: '#EBA5A3',
+  		 		scaleColor: false,
+  		 		lineWidth: 20,
+  		 		trackWidth: 16,
+  		 		lineCap: 'butt',
+  		 	});
+  		}
+      });
+     $.ajax({
+  		url:ADDRESS+'/cluster/Cluster_getNodes.action',
+  		type:'post',
+  		data:{},
+  		error:function(){
+  			alert("服务器出错！");
+  		},
+  		success:function(data){
+  			var arr = data.split(";");
+  			var str = "";
+  			for(var i=0;i<arr.length-1;i++){
+  				var res = arr[i].split(",");
+  				str += "<tr><td>"+res[0]+"</td><td>"+res[1]+"</td><td>"+res[2]+"</td><td>"+res[3]+"</td><td>"+res[4]+"</td>"+
+  				"<td>"+res[5]+"</td><td>"+res[6]+"</td><td>"+res[7]+"</td></tr>";
+  			}
+  			$('.nodeHealth').append(str);
+  		}
+      });
 }
 
 function addUser(){
@@ -251,22 +571,22 @@ function addUser(){
         "<div class=\"row\">"+
             "<div class=\"col-lg-12\">"+
                 "<div class=\"form-group\">"+
-                    "<label>用户ID</label>"+
+                    "<label>用户ID<span style='color:red'>*</span></label>"+
                     "<input class=\"form-control\" placeholder=\"userID\" id=\"addID\">"+
                     "<p class=\"help-block\">5个字符，可使用字母、数字，需以字母开头</p>"+
                 "</div>"+
                 "<div class=\"form-group\">"+
-                    "<label>用户名</label>"+
+                    "<label>用户名<span style='color:red'>*</span></label>"+
                     "<input class=\"form-control\" placeholder=\"userName\" id=\"addName\">"+
                     "<p class=\"help-block\">6~18个字符，可使用字母、数字、下划线，需以字母开头</p>"+
                 "</div>"+
                 "<div class=\"form-group\">"+
-                    "<label>密码</label>"+
+                    "<label>密码<span style='color:red'>*</span></label>"+
                     "<input class=\"form-control\" type=\"password\" placeholder=\"password\" id=\"addPassword\">"+
                     "<p class=\"help-block\">6~16个字符，区分大小写</p>"+
                 "</div>"+
                 "<div class=\"form-group\">"+
-                    "<label>部门</label>"+
+                    "<label>部门<span style='color:red'>*</span></label>"+
                     "<div class=\"form-group\">"+
 	                    "<select class=\"form-control\" id=\"addDepartment\">"+
 	                        "<option>运营部</option>"+
@@ -278,7 +598,7 @@ function addUser(){
                     "<p class=\"help-block\">请选择其中一个部门或其他</p>"+
                 "</div>"+
                 "<div class=\"form-group\">"+
-                "<label>类型</label>"+
+                "<label>类型<span style='color:red'>*</span></label>"+
                 "<div class=\"form-group\">"+
                     "<select class=\"form-control\" id=\"addRole\">"+
                         "<option>user</option>"+
@@ -784,11 +1104,11 @@ function addTask(){
         "<div class=\"row\">"+
             "<div class=\"col-lg-12\">"+
                 "<div class=\"form-group\">"+
-                    "<label>任务ID</label>"+
+                    "<label>任务ID<span style='color:red'>*</span></label>"+
                     "<input class=\"form-control\" placeholder=\"taskID\" id=\"addTaskID\">"+
                     "<p class=\"help-block\">5个字符，可使用字母、数字，需以字母开头</p>"+
                 "</div>"+
-                "<div class=\"form-group\">"+"<label>选择作业</label>"+
+                "<div class=\"form-group\">"+"<label>选择作业<span style='color:red'>*</span></label>"+
                 "<div class=\"panel panel-default\">"+
                         
                         "<div class=\"panel-body\">"+
@@ -825,7 +1145,7 @@ function addTask(){
                     
                 "</div>"+
                 "<div class=\"form-group\">"+
-                    "<label>任务的运行日志HDFS路径</label>"+
+                    "<label>任务的运行输入路径<span style='color:red'>*</span></label>"+
                     "<input class=\"form-control\" placeholder=\"HDFS path\" id=\"addTasklog\">"+
                     "<p class=\"help-block\">请填写出完整的地址</p>"+
                 "</div>"+
@@ -913,16 +1233,16 @@ function showTask(page){
             "<div class=\"col-lg-12\">"+
             "<table class=\"table table-striped\">";
 			if(data=="0"){
-				string += "<thead><tr><th>任务ID</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th></tr></thead>"+
+				string += "<thead><tr><th>任务ID</th><th>任务的运行输入路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th><th></th></tr></thead>"+
 						"<tbody>"+		
-							"<tr><td colspan='6'>空！</td></tr>"+
+							"<tr><td colspan='7'>空！</td></tr>"+
 							"</tbody>"+
 						"</table>";
 			}
 			else if(data=="00"){
-				string += "<thead><tr><th>任务ID</th><th>用户名</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th></tr></thead>"+
+				string += "<thead><tr><th>任务ID</th><th>用户名</th><th>任务的运行输入路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th><th></th></tr></thead>"+
 							"<tbody>"+			
-							"<tr><td colspan='7'>空！</td></tr>"+
+							"<tr><td colspan='8'>空！</td></tr>"+
 							"</tbody>"+
 						"</table>";
 			}
@@ -930,10 +1250,10 @@ function showTask(page){
 				var res = data.split(";");
 				var pageSum = res[0];
 				if(res[1]=="1"){
-					string += "<thead><tr><th>任务ID</th><th>用户名</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th></tr></thead>"+
+					string += "<thead><tr><th>任务ID</th><th>用户名</th><th>任务的运行输入路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th><th></th></tr></thead>"+
 					"<tbody>";
 				}else{
-					string += "<thead><tr><th>任务ID</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th></tr></thead>"+
+					string += "<thead><tr><th>任务ID</th><th>任务的运行输入路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th><th></th></tr></thead>"+
 					"<tbody>";
 				}
 				for(var i=2;i<res.length-1;i++){
@@ -949,7 +1269,7 @@ function showTask(page){
 					}
                     string += "<td class=\"operate\">"+
                       "<button type=\"button\" class=\"btn btn-danger\" onclick=\"delTask(this)\">删除</button>"+
-                    "</td>"+
+                    "</td><td></td>"+
                   "</tr>";
                     if(res[1]=="1"){
 						string += "<tr><td>作业状态</td><td colspan='5' class=\"processid\"><div class=\"progress progress-striped active\" style=\"margin-bottom:0\">"+
@@ -962,6 +1282,9 @@ function showTask(page){
                     }
                     string += "<td class=\"operate\">"+
                     "<button onclick=\"start(this,true)\" class=\"btn btn-primary ladda-button\" data-style=\"contract-overlay\" style=\"z-index: 1000;\" data-size=\"xs\">运行</button>"+
+                	"</td>"+
+                	"<td class=\"operate\">"+
+                	"<button onclick=\"download(this)\" class=\"btn btn-primary\">结果下载</button>"+
                 	"</td><td style=\"display:none\" class=\"taskid\">"+temp[temp.length-1]+"</td></tr>";
 				}
 				string += "</tbody>"+
@@ -1067,10 +1390,25 @@ function showTask(page){
 		                    "</div>"+
 		                "</div>"+
 		            "</div>"+
+		        "</div>"+
+		        "<div class=\"modal fade\" id=\"myModal8\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">"+
+		            "<div class=\"modal-dialog\">"+
+		                "<div class=\"modal-content\">"+
+		                    "<div class=\"modal-header\">"+
+		                        "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>"+
+		                        "<h4 class=\"modal-title\" id=\"myModalLabel\">结果下载</h4>"+
+		                    "</div>"+
+		                    "<div class=\"modal-body\" id='download'>"+
+		                    "</div>"+
+		                    "<div class=\"modal-footer\">"+
+		                        "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">关闭</button>"+
+		                    "</div>"+
+		                "</div>"+
+		            "</div>"+
 		        "</div>";
 			}
 			$("#page-wrapper").append(string);
-			Ladda.bind( '.operate button', {
+			Ladda.bind( '.operate .ladda-button', {
 		        callback: function( instance ) {
 		        		startprogress = 0;
 			  	        var interval = setInterval( function() {
@@ -1084,6 +1422,30 @@ function showTask(page){
 			queryProcess();
 		}
 	});
+}
+
+function download(that){
+	var id = $(that).parent().parent().prev().children('td').eq(0).html();
+	$.ajax({
+  		url:ADDRESS+'/resourceInfo/ResourceInfo_ResultRoute.action',
+  		type:'post',
+  		data:{'id':id},
+  		error:function(){
+  			alert("Error：服务器出错！");
+  		},
+  		success:function(data){
+  			var arr = data.split("|");
+  			var res = "";
+  			for(var i=0;i<arr.length-1;i++){
+  				var temp = arr[i].split(",");
+  				res += "<li><a href='"+temp[1]+"'>"+temp[0]+"</a></li>";
+  			}
+  			$('#download').empty();
+  			$('#download').append("<ul>"+res+"</ul>");
+  			$('#myModal8').modal('show');
+  		}
+  	});
+	
 }
 
 function updateRoute(that){
@@ -1235,7 +1597,7 @@ function resourceStatus(){
 		                        	"<h4 class=\"timeline-title\">创建作业时间</h4>"+
 		                    	"</div>"+
 			                    "<div class=\"timeline-body\">"+
-			                        "<h3 id=\"createJobTime\"></h3>"+
+			                        "<h4 id=\"createJobTime\"></h4>"+
 			                    "</div>"+
 		                    "</div>"+
 		                "</li>"+
@@ -1246,7 +1608,7 @@ function resourceStatus(){
 			                    	"<h4 class=\"timeline-title\">使用队列</h4>"+
 			                    "</div>"+
 			                    "<div class=\"timeline-body\">"+
-			                        "<h3 id=\"usedQueue\"></h3>"+
+			                        "<h4 id=\"usedQueue\"></h4>"+
 			                    "</div>"+
 			                "</div>"+
 			            "</li>"+
@@ -1257,7 +1619,7 @@ function resourceStatus(){
 		                        	"<h4 class=\"timeline-title\">启动作业次数</h4>"+
 		                        "</div>"+
 			                    "<div class=\"timeline-body\">"+
-			                        "<h3 id=\"usedTimes\"></h3>"+
+			                        "<h4 id=\"usedTimes\"></h4>"+
 			                    "</div>"+
 		                    "</div>"+
 		                "</li>"+
@@ -1268,7 +1630,7 @@ function resourceStatus(){
 			                    	"<h4 class=\"timeline-title\">最后一次启动作业的时间</h4>"+
 			                    "</div>"+
 			                    "<div class=\"timeline-body\">"+
-			                        "<h3 id=\"lastUpdateTime\"></h3>"+
+			                        "<h4 id=\"lastUpdateTime\"></h4>"+
 			                    "</div>"+
 			                "</div>"+
 		                "</li>"+
@@ -1409,7 +1771,7 @@ function jumptoTask(that,page){
             "<div class=\"col-lg-12\">"+
             "<table class=\"table table-striped\">";
 			if(data=="0"){
-				string += "<thead><tr><th>任务ID</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th></tr></thead>"+
+				string += "<thead><tr><th>任务ID</th><th>任务的运行输入路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th><th></th></tr></thead>"+
 						"<tbody>"+		
 							"<tr><td colspan='6'>空！</td></tr>"+
 							"</tbody>"+
@@ -1418,7 +1780,7 @@ function jumptoTask(that,page){
 			else{
 				var res = data.split(";");
 				var pageSum = res[0];
-				string += "<thead><tr><th>任务ID</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th></tr></thead>"+
+				string += "<thead><tr><th>任务ID</th><th>任务的运行输入路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th><th></th></tr></thead>"+
 					"<tbody>";
 				for(var i=1;i<res.length-1;i++){
 					var temp = res[i].split(",");
@@ -1433,13 +1795,16 @@ function jumptoTask(that,page){
 					}
                     string += "<td class=\"operate\">"+
                       "<button type=\"button\" class=\"btn btn-danger\" onclick=\"delTask(this)\">删除</button>"+
-                    "</td>"+
+                    "</td><td></td>"+
                   "</tr>";
                     string += "<tr><td>作业状态</td><td colspan='4' class=\"processid\"><div class=\"progress progress-striped active\" style=\"margin-bottom:0\">"+
 	                    	"<div class=\"progress-bar progress-bar-info "+temp[temp.length-1]+"\" role=\"progressbar\" aria-valuenow=\"20\" aria-valuemin=\"0\" aria-valuemax=\"100\" style=\"width: "+temp[1]+"%\">"+temp[1]+"%</div>"+
 	                    "</div></td>"+
 	                    "<td class=\"operate\">"+
                     "<button onclick=\"start(this,true)\" class=\"btn btn-primary ladda-button\" data-style=\"contract-overlay\" style=\"z-index: 1000;\" data-size=\"xs\">运行</button>"+
+                	"</td>"+
+                	"<td class=\"operate\">"+
+                	"<button onclick=\"download(this)\" class=\"btn btn-primary\">结果下载</button>"+
                 	"</td><td style=\"display:none\" class=\"taskid\">"+temp[temp.length-1]+"</td></tr>";
 				}
 				string += "</tbody>"+
@@ -1545,10 +1910,25 @@ function jumptoTask(that,page){
 		                    "</div>"+
 		                "</div>"+
 		            "</div>"+
+		        "</div>"+
+		        "<div class=\"modal fade\" id=\"myModal8\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">"+
+		            "<div class=\"modal-dialog\">"+
+		                "<div class=\"modal-content\">"+
+		                    "<div class=\"modal-header\">"+
+		                        "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>"+
+		                        "<h4 class=\"modal-title\" id=\"myModalLabel\">结果下载</h4>"+
+		                    "</div>"+
+		                    "<div class=\"modal-body\" id='download'>"+
+		                    "</div>"+
+		                    "<div class=\"modal-footer\">"+
+		                        "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">关闭</button>"+
+		                    "</div>"+
+		                "</div>"+
+		            "</div>"+
 		        "</div>";
 			}
 			$("#page-wrapper").append(string);
-			Ladda.bind( '.operate button', {
+			Ladda.bind( '.operate .ladda-button', {
 		        callback: function( instance ) {
 		        		startprogress = 0;
 			  	        var interval = setInterval( function() {
@@ -1625,7 +2005,7 @@ function resourceQueue(){
 		        "<div class=\"panel-body\">"+
 			        "<div class=\"table-responsive\">"+
 	                	"<table class=\"table table-striped table-bordered table-hover\">"+
-	                    "<thead><tr><th>name</th><th>capacity</th><th>Maxcapacity</th><th>Usedcapacity</th><th>enable</th><th>cpu</th><th>memory</th><th>max_waiting_time(min)</th></tr></thead>"+
+	                    "<thead><tr><th>name</th><th>capacity(%)</th><th>Maxcapacity(%)</th><th>Usedcapacity(%)</th><th>enable</th><th>memory(M)</th><th>cpu(个)</th><th>max_waiting_time(min)</th></tr></thead>"+
 	                    "<tbody class='queueUsage'></tbody>"+
 	                    "</table>"+
                     "</div>"+
@@ -1662,7 +2042,7 @@ function resourceQueue(){
 				for(var i=0;i<val.length-1;i++){
 					var temp = val[i].split(",");
 					res += "<tr><td>"+temp[0]+"</td><td>"+(parseFloat(temp[1])).toFixed(2)+"</td><td>"+(parseFloat(temp[2])).toFixed(2)+"</td><td>"+
-					(parseFloat(temp[3])).toFixed(2)+"</td><td>"+temp[4]+"</td><td>"+temp[5]+"</td><td>"+temp[6]+"</td><td>"+temp[7]+"</td></tr>";
+					(parseFloat(temp[3])).toFixed(2)+"</td><td>"+(temp[4]=='T'?"可用":"不可用")+"</td><td>"+temp[5]+"</td><td>"+temp[6]+"</td><td>"+temp[7]+"</td></tr>";
 				}
 				$('.queueUsage').append(res);
 			}
@@ -1854,11 +2234,11 @@ function updateResource(that){
 				str+="<option>"+res[i]+"</option>";
 			}
 			$('#updateQueue').append(str);
+			$("#updateQueue").val(temp.eq(1).html());
 		}
 	});
     
 	$("#updateName").val(temp.eq(0).html());
-	$("#updateQueue").val(temp.eq(1).html());
     $("#updateHDFS").val(temp.eq(2).html());
     $("#updateJob").val(temp.eq(3).html());
     loadingR();
@@ -2022,26 +2402,26 @@ function findTask(name){
             "<div class=\"col-lg-12\">"+
             "<table class=\"table table-striped\">";
 			if(data=="0"){
-				string += "<thead><tr><th>任务ID</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th></tr></thead>"+
+				string += "<thead><tr><th>任务ID</th><th>任务的运行输入路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th><th></th></tr></thead>"+
 						"<tbody>"+		
-							"<tr><td colspan='6'>空！</td></tr>"+
+							"<tr><td colspan='7'>空！</td></tr>"+
 							"</tbody>"+
 						"</table>";
 			}
 			else if(data=="00"){
-				string += "<thead><tr><th>任务ID</th><th>用户名</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th></tr></thead>"+
+				string += "<thead><tr><th>任务ID</th><th>用户名</th><th>任务的运行输入路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th><th></th></tr></thead>"+
 							"<tbody>"+			
-							"<tr><td colspan='7'>空！</td></tr>"+
+							"<tr><td colspan='8'>空！</td></tr>"+
 							"</tbody>"+
 						"</table>";
 			}
 			else{
 				var res = data.split(";");
 				if(res[0]=="1"){
-					string += "<thead><tr><th>任务ID</th><th>用户名</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th></tr></thead>"+
+					string += "<thead><tr><th>任务ID</th><th>用户名</th><th>任务的运行输入路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th><th></th></tr></thead>"+
 					"<tbody>";
 				}else{
-					string += "<thead><tr><th>任务ID</th><th>任务的运行日志HDFS路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th></tr></thead>"+
+					string += "<thead><tr><th>任务ID</th><th>任务的运行输入路径</th><th>任务的运行结果路径</th><th>任务的出错信息路径</th><th>任务创建时间</th><th>操作</th><th></th></tr></thead>"+
 					"<tbody>";
 				}
 
@@ -2057,7 +2437,7 @@ function findTask(name){
 				}
                 string += "<td class=\"operate\">"+
                   "<button type=\"button\" class=\"btn btn-danger\" onclick=\"delTask(this)\">删除</button>"+
-                "</td>"+
+                "</td><td></td>"+
               "</tr>";
                 if(res[0]=="1"){
 					string += "<tr><td>作业状态</td><td colspan='5' class=\"processid\"><div class=\"progress progress-striped active\" style=\"margin-bottom:0\">"+
@@ -2070,6 +2450,9 @@ function findTask(name){
                 }
                 string += "<td class=\"operate\">"+
                 "<button onclick=\"start(this,false)\" class=\"btn btn-primary ladda-button\" data-style=\"contract-overlay\" style=\"z-index: 1000;\" data-size=\"xs\">运行</button>"+
+            	"</td>"+
+            	"<td class=\"operate\">"+
+            	"<button onclick=\"download(this)\" class=\"btn btn-primary\">结果下载</button>"+
             	"</td><td style=\"display:none\" class=\"taskid\">"+temp[temp.length-1]+"</td></tr>";
 				
 				string += "</tbody>"+
@@ -2124,10 +2507,25 @@ function findTask(name){
 		                    "</div>"+
 		                "</div>"+
 		            "</div>"+
+		        "</div>"+
+		        "<div class=\"modal fade\" id=\"myModal8\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">"+
+		            "<div class=\"modal-dialog\">"+
+		                "<div class=\"modal-content\">"+
+		                    "<div class=\"modal-header\">"+
+		                        "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>"+
+		                        "<h4 class=\"modal-title\" id=\"myModalLabel\">结果下载</h4>"+
+		                    "</div>"+
+		                    "<div class=\"modal-body\" id='download'>"+
+		                    "</div>"+
+		                    "<div class=\"modal-footer\">"+
+		                        "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">关闭</button>"+
+		                    "</div>"+
+		                "</div>"+
+		            "</div>"+
 		        "</div>";
 			}
 			$("#page-wrapper").append(string);
-			Ladda.bind( '.operate button', {
+			Ladda.bind( '.operate .ladda-button', {
 		        callback: function( instance ) {
 		        		startprogress = 0;
 			  	        var interval = setInterval( function() {
@@ -2145,8 +2543,14 @@ function findTask(name){
 
 function start(that,flag){
 	var val = $(that).parent().parent().prev().children('td').eq(0).html();
-	var input = $(that).parent().parent().prev().children('td').eq(2).children('a').html();
-	var name = $(that).parent().parent().prev().children('td').eq(1).html();
+	var input,name;
+	if($(that).parent().parent().prev().children('td').length==7){
+		input = $(that).parent().parent().prev().children('td').eq(1).children('a').html();
+		name = "";
+	}else{
+		input = $(that).parent().parent().prev().children('td').eq(2).children('a').html();
+		name = $(that).parent().parent().prev().children('td').eq(1).html();
+	}
 	var tempPro = $(that).parent().parent().children('td').eq(1).children('.progress').children('.progress-bar').html();
 	if(tempPro!="100%"&&tempPro!="0%"){
 		startprogress = 1;
@@ -2167,13 +2571,13 @@ function start(that,flag){
 			if(data==-1){
 				alert("输入路径有误！");
 				return;
-			}else if(data==1){
+			}else if(data==0){
+				alert("启动失败");
+			}else{
 				if(flag)
 					showTask(taskpage);
 				else
 					findTask(val);
-			}else{
-				alert("启动失败");
 			}
 		}
 	});

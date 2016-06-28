@@ -24,4 +24,6 @@ public interface UserInfoDAO {
 	
 	public int pageSum();
 	
+	public long userSum();
+	
 }
