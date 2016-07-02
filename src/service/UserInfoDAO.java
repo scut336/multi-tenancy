@@ -6,13 +6,13 @@ public interface UserInfoDAO {
 
 	public List<UserInfo> UsersLogin(UserInfo u);
 	
-	public boolean checkUserInfoById(String Id);
+	public boolean checkUserInfoById(long Id);
 	
 	public boolean checkUserInfoByName(String name);
 	
 	public List<UserInfo> queryAllUserInfo(int page);
 	
-	public UserInfo queryUserInfoById(String Id);
+	public UserInfo queryUserInfoById(long Id);
 	
 	public UserInfo queryUserInfoByName(String name);
 	
@@ -20,7 +20,7 @@ public interface UserInfoDAO {
 	
 	public boolean updateUserInfo(UserInfo u);
 	
-	public boolean deleteUserInfo(String id);
+	public boolean deleteUserInfo(long id);
 	
 	public int pageSum();
 	

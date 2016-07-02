@@ -1,22 +1,24 @@
 package entity;
 
 import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 public class UserInfo {
 
 	@Id
-	@GeneratedValue(generator="id")
-	@GenericGenerator(name="id",strategy="assigned")
-	@Column(length=32)
-	private String id;
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private long id;
+	@Column(length=100)
 	private String name;
+	@Column(length=32)
 	private String role;
+	@Column(length=100)
 	private String department;
 	@Column(length=32)
 	private String password;
@@ -24,12 +26,12 @@ public class UserInfo {
 	
 	public UserInfo(){}
 	
-	public UserInfo(String id, String role) {
+	public UserInfo(long id, String role) {
 		this.id = id;
 		this.role = role;
 	}
 
-	public UserInfo(String id, String name, String role, String department,
+	public UserInfo(long id, String name, String role, String department,
 			String password, Date createTime) {
 		this.id = id;
 		this.name = name;
@@ -39,7 +41,16 @@ public class UserInfo {
 		this.createTime = createTime;
 	}
 
-	public UserInfo(String id, String name, String role, String department,
+	public UserInfo(String name, String role, String department,
+			String password, Date createTime) {
+		this.name = name;
+		this.role = role;
+		this.department = department;
+		this.password = password;
+		this.createTime = createTime;
+	}
+
+	public UserInfo(long id, String name, String role, String department,
 			Date createTime) {
 		this.id = id;
 		this.name = name;
@@ -48,11 +59,11 @@ public class UserInfo {
 		this.createTime = createTime;
 	}
 
-	public String getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

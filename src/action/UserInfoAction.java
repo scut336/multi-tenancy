@@ -49,7 +49,7 @@ public class UserInfoAction extends SuperAction  implements ModelDriven<UserInfo
 	//修改用户
 	public String update(){
 		UserInfoDAO udao = new UserInfoDAOImpl();
-		String Id = request.getParameter("id");
+		long Id = Long.parseLong(request.getParameter("id"));
 		UserInfo u = udao.queryUserInfoById(Id);
 		if(u!=null){
 			session.setAttribute("userInfo", u);
@@ -80,7 +80,7 @@ public class UserInfoAction extends SuperAction  implements ModelDriven<UserInfo
 			return "Ajax_Success";
 		}
 		UserInfoDAO udao = new UserInfoDAOImpl();
-		String Id = request.getParameter("id");
+		long Id = Long.parseLong(request.getParameter("id"));
 		if(udao.deleteUserInfo(Id))
 			inputStream=new ByteArrayInputStream("1".getBytes("UTF-8"));
 		else
@@ -101,12 +101,13 @@ public class UserInfoAction extends SuperAction  implements ModelDriven<UserInfo
 		if(udao.addUserInfo(user)){
 			ResourceInfoDAO resourceInfoDAO = new ResourceInfoDAOImpl();
 			ResourceInfo resourceInfo = null;
+			user =udao.queryUserInfoByName(user.getName());
 			if(user.getRole().equals("user"))
-				resourceInfo = new ResourceInfo(10,0,user.getName(),1073741824,0,1,new Date(),session.getAttribute("loginUserId").toString(),'F',0,new Date(),user.getId());
+				resourceInfo = new ResourceInfo(user.getId(),10,0,user.getName(),1073741824,0,1,new Date(),Long.parseLong(session.getAttribute("loginUserId").toString()),'F',0,new Date());
 			else if(user.getRole().equals("vip1"))
-				resourceInfo = new ResourceInfo(10,0,user.getName(),1073741824,0,2,new Date(),session.getAttribute("loginUserId").toString(),'F',0,new Date(),user.getId());
+				resourceInfo = new ResourceInfo(user.getId(),10,0,user.getName(),1073741824,0,2,new Date(),Long.parseLong(session.getAttribute("loginUserId").toString()),'F',0,new Date());
 			else if(user.getRole().equals("vip2"))
-				resourceInfo = new ResourceInfo(10,0,user.getName(),1073741824,0,3,new Date(),session.getAttribute("loginUserId").toString(),'F',0,new Date(),user.getId());
+				resourceInfo = new ResourceInfo(user.getId(),10,0,user.getName(),1073741824,0,3,new Date(),Long.parseLong(session.getAttribute("loginUserId").toString()),'F',0,new Date());
 			if(resourceInfoDAO.AddResource(resourceInfo)){
 				inputStream=new ByteArrayInputStream("1".getBytes("UTF-8"));
 			}else {

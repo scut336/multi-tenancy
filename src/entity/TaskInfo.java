@@ -26,14 +26,13 @@ public class TaskInfo {
 	private String TaskID;
 	@Column(length=50)
 	private String TaskName;
-	@Column(length=32)
-	private String userInfo;
+	private long userInfo;
 	
 	public TaskInfo(){}
 	
 	public TaskInfo(String id, String taskStatus, String taskLog,
 			String taskResult, String taskError, Date createDate,
-			String taskID, String taskName, String userInfo) {
+			String taskID, String taskName, long userInfo) {
 		this.id = id;
 		TaskStatus = taskStatus;
 		TaskLog = taskLog;
@@ -47,7 +46,7 @@ public class TaskInfo {
 
 	public TaskInfo(String id, String taskStatus, String taskLog,
 			String taskResult, String taskError, Date createDate,
-			String taskID, String userInfo) {
+			String taskID, long userInfo) {
 		this.id = id;
 		TaskStatus = taskStatus;
 		TaskLog = taskLog;
@@ -70,7 +69,7 @@ public class TaskInfo {
 
 	public TaskInfo(String id, String taskStatus, String taskLog,
 			String taskResult, String taskError, Date createDate,
-			String userInfo) {
+			long userInfo) {
 		this.id = id;
 		TaskStatus = taskStatus;
 		TaskLog = taskLog;
@@ -128,11 +127,11 @@ public class TaskInfo {
 		this.createDate = createDate;
 	}
 
-	public String getUserInfo() {
+	public long getUserInfo() {
 		return userInfo;
 	}
 
-	public void setUserInfo(String userInfo) {
+	public void setUserInfo(long userInfo) {
 		this.userInfo = userInfo;
 	}
 

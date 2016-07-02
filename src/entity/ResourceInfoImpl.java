@@ -11,7 +11,7 @@ public class ResourceInfoImpl {
 	private long HDFSDirectoryRemaining;
 	private String Queue;
 	private Date CreateTime;
-	private String CreateUserID;
+	private long CreateUserID;
 	private char Expired;
 	private int SubmitJobTimes;
 	private Date LastSubmitTime;
@@ -23,7 +23,7 @@ public class ResourceInfoImpl {
 	public ResourceInfoImpl(int appLimit, int currentAppCount,
 			String hDFSDirectory, long hDFSDirectoryQuota,
 			long hDFSDirectoryRemaining, String queue, Date createTime,
-			String createUserID, char expired, int submitJobTimes,
+			long createUserID, char expired, int submitJobTimes,
 			Date lastSubmitTime, String capacity, String maxCapacity,
 			String usedCapacity, String resourceLimit) {
 		AppLimit = appLimit;
@@ -99,11 +99,11 @@ public class ResourceInfoImpl {
 		CreateTime = createTime;
 	}
 
-	public String getCreateUserID() {
+	public long getCreateUserID() {
 		return CreateUserID;
 	}
 
-	public void setCreateUserID(String createUserID) {
+	public void setCreateUserID(long createUserID) {
 		CreateUserID = createUserID;
 	}
 

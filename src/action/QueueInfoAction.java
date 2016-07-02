@@ -11,6 +11,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import db.ProjectProperties;
 import entity.QueueInfo;
 import service.QueueInfoDAO;
 import service.ResourceInfoDAO;
@@ -32,7 +33,7 @@ public class QueueInfoAction extends SuperAction{
 	//查看队列信息
 	public String get() throws Exception{
 		String strURL = "";
-		strURL = "http://222.201.145.144:8088/ws/v1/cluster/scheduler";  
+		strURL = ProjectProperties.getValue("scheduler");  
 	    URL url = new URL(strURL);  
 	    HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();  
 	    InputStreamReader input = new InputStreamReader(httpConn  
@@ -98,7 +99,7 @@ public class QueueInfoAction extends SuperAction{
 	//显示队列详情
 	public String showQueue() throws Exception{
 		String strURL = "";
-		strURL = "http://222.201.145.144:8088/ws/v1/cluster/scheduler";  
+		strURL = ProjectProperties.getValue("scheduler");  
 	    URL url = new URL(strURL);  
 	    HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();  
 	    InputStreamReader input = new InputStreamReader(httpConn  

@@ -1,44 +1,14 @@
 package entity;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Set;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -46,24 +16,12 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.Test;
 
-import service.JobInfoDAO;
-import service.QueueInfoDAO;
-import service.ResourceInfoDAO;
-import service.TaskInfoDAO;
 import service.UserInfoDAO;
-import service.UserProfileDAO;
-import service.impl.JobInfoDAOImpl;
-import service.impl.QueueInfoDAOImpl;
-import service.impl.ResourceInfoDAOImpl;
-import service.impl.TaskInfoDAOImpl;
 import service.impl.UserInfoDAOImpl;
-import service.impl.UserProfileDAOImpl;
-import db.JSONCreator;
 import db.MD5creator;
+import db.MyHibernateSessionFactory;
 
 public class testUserInfo {
 	
@@ -80,11 +38,7 @@ public class testUserInfo {
 	}
 	@Test
 	public void add(){
-		Configuration config = new Configuration().configure();
-		ServiceRegistry serviceRegistry = 
-				new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
-		SessionFactory sessionFactory = config.buildSessionFactory(serviceRegistry);
-		Session session = sessionFactory.getCurrentSession();
+		Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 		Transaction tx = session.beginTransaction();
 //		TaskInfo t1 = new TaskInfo("TASK01","running","/user","/res","/err",new Date());
 //		TaskInfo t2 = new TaskInfo("TASK02","killed","/user","/res","/err",new Date());
@@ -111,13 +65,13 @@ public class testUserInfo {
 //		s5.add(t7);
 //		s6.add(t8);
 //		s7.add(t9);
-		UserInfo u1 = new UserInfo("CN022","sasa@gc.com","user","运营部",MD5creator.MD5("123456"),new Date());
-		UserInfo u2 = new UserInfo("CN023","la@gc.com","admin","运营部",MD5creator.MD5("123456"),new Date());
-		UserInfo u3 = new UserInfo("CN024","ha@gc.com","user","运营部",MD5creator.MD5("123456"),new Date());
-		UserInfo u4 = new UserInfo("CN025","qa@gc.com","user","运营部",MD5creator.MD5("123456"),new Date());
-		UserInfo u5 = new UserInfo("CN026","wa@gc.com","user","运营部",MD5creator.MD5("123456"),new Date());
-		UserInfo u6 = new UserInfo("CN027","ea@gc.com","user","运营部",MD5creator.MD5("123456"),new Date());
-		UserInfo u7 = new UserInfo("CN028","ra@gc.com","user","运营部",MD5creator.MD5("123456"),new Date());
+		UserInfo u1 = new UserInfo(1,"la@gc.com","admin","运营部",MD5creator.MD5("123456"),new Date());
+		UserInfo u2 = new UserInfo(2,"sasa@gc.com","user","运营部",MD5creator.MD5("123456"),new Date());
+		UserInfo u3 = new UserInfo(3,"ha@gc.com","user","运营部",MD5creator.MD5("123456"),new Date());
+		UserInfo u4 = new UserInfo(4,"qa@gc.com","user","运营部",MD5creator.MD5("123456"),new Date());
+		UserInfo u5 = new UserInfo(5,"wa@gc.com","user","运营部",MD5creator.MD5("123456"),new Date());
+		UserInfo u6 = new UserInfo(6,"ea@gc.com","user","运营部",MD5creator.MD5("123456"),new Date());
+		UserInfo u7 = new UserInfo(7,"ra@gc.com","user","运营部",MD5creator.MD5("123456"),new Date());
 		
 //		u1.setTaskInfos(s1);
 //		u2.setTaskInfos(s2);
@@ -127,13 +81,13 @@ public class testUserInfo {
 //		u6.setTaskInfos(s6);
 //		u7.setTaskInfos(s7);
 		
-		ResourceInfo r1 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),"CN023",'F',0,new Date(),u1.getId());
-		ResourceInfo r2 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),"CN023",'F',0,new Date(),u2.getId());
-		ResourceInfo r3 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),"CN023",'F',0,new Date(),u3.getId());
-		ResourceInfo r4 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),"CN023",'F',0,new Date(),u4.getId());
-		ResourceInfo r5 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),"CN023",'F',0,new Date(),u5.getId());
-		ResourceInfo r6 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),"CN023",'F',0,new Date(),u6.getId());
-		ResourceInfo r7 = new ResourceInfo(10,0,"smoketest",1073741824,0,1,new Date(),"CN023",'F',0,new Date(),u7.getId());
+		ResourceInfo r1 = new ResourceInfo(u1.getId(),10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date());
+		ResourceInfo r2 = new ResourceInfo(u2.getId(),10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date());
+		ResourceInfo r3 = new ResourceInfo(u3.getId(),10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date());
+		ResourceInfo r4 = new ResourceInfo(u4.getId(),10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date());
+		ResourceInfo r5 = new ResourceInfo(u5.getId(),10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date());
+		ResourceInfo r6 = new ResourceInfo(u6.getId(),10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date());
+		ResourceInfo r7 = new ResourceInfo(u7.getId(),10,0,"smoketest",1073741824,0,1,new Date(),1,'F',0,new Date());
 		
 		ResourceApplication ra1 = new ResourceApplication(u1.getId(),0,0,0,'F');
 		ResourceApplication ra2 = new ResourceApplication(u2.getId(),0,0,0,'F');
@@ -177,8 +131,8 @@ public class testUserInfo {
 		session.save(ra6);
 		session.save(ra7);
 		
+		session.flush();
 		tx.commit();
-		sessionFactory.close();
 	}
 	@Test
 	public void del(){
@@ -219,24 +173,11 @@ public class testUserInfo {
 	
 	@Test
 	public void test3() throws IOException{
-		String strURL = "http://222.201.145.144:50070/webhdfs/v1/user/t1?op=GETCONTENTSUMMARY";  
-	    URL url = new URL(strURL);  
-	    HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();  
-	    try{
-	    	InputStreamReader input2 = new InputStreamReader(httpConn.getInputStream(), "utf-8");  
-		    BufferedReader bufReader = new BufferedReader(input2);  
-		    String line = "";  
-		    StringBuilder contentBuf = new StringBuilder();  
-		    while ((line = bufReader.readLine()) != null) {  
-		        contentBuf.append(line);  
-		    }  
-		    String buf = contentBuf.toString(); 
-		    System.out.println(buf);
-	    }
-	    catch(FileNotFoundException e){
-	    	System.out.println("hehe");
-	    }catch(Exception e){
-	    	
-	    }
+		Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		String hql = "update UserInfo set name = 'aa',department = 'aa',role='aa' where id = 1";
+		Query query = session.createQuery(hql);
+		query.executeUpdate();  
+		tx.commit();
 	}
 }

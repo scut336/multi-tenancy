@@ -1,5 +1,6 @@
 package entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,12 +12,14 @@ public class QueueInfo {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private long id;
+	@Column(length=32)
 	private String QueueName;
 	private double Capacity;
 	private double MaxCapacity;
 	private double UsedCapacity;
 	private long ParentQueue;
 	private char IsLeafQueue;
+	@Column(length=32)
 	private String ResourceLimit;
 	private char Enable;
 	private int MaxWaitingTime;

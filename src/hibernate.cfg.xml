@@ -17,9 +17,7 @@
         <property name="c3p0.idleConnectionTestPeriod">18000</property>
         <property name="c3p0.maxIdleTime">25000</property>
         <property name="c3p0.idle_test_period">120</property>
-		<property name="dialect">
-			org.hibernate.dialect.MySQLDialect
-		</property>
+		<property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
 		<property name="connection.url">
 			<![CDATA[
 				jdbc:mysql://222.201.145.144:3366/project?useUnicode=true&characterEncoding=UTF-8
@@ -30,9 +28,7 @@
 		<property name="connection.driver_class">
 			com.mysql.jdbc.Driver
 		</property>
-		<property name="myeclipse.connection.profile">
-			mysqlProject
-		</property>
+		<property name="myeclipse.connection.profile"></property>
 
 		<property name="show_sql">true</property>
 		<property name="format_sql">true</property>
@@ -45,6 +41,7 @@
 		<mapping class="entity.UserInfo" />
 		<mapping class="entity.QueueInfo" />
 		<mapping class="entity.ResourceApplication" />
+		<mapping class="entity.ActionInfo" />
 		
 	</session-factory>
 

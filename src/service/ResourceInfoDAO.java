@@ -14,19 +14,19 @@ public interface ResourceInfoDAO {
 	
 	public boolean DelResource(UserInfo u);
 	
-	public boolean UpdateResource(String id,long left);
+	public boolean UpdateResource(long id,long left);
 	
-	public boolean AddResourceApp(String id);
+	public boolean AddResourceApp(long id);
 	
-	public boolean SubResourceApp(String id);
+	public boolean SubResourceApp(long id);
 	
-	public boolean AddResourceJobTime(String id);
+	public boolean AddResourceJobTime(long id);
 	
-	public ResourceInfoImpl getHDFSDirectoryQuota(String id);
+	public ResourceInfoImpl getHDFSDirectoryQuota(long id);
 	
-	public boolean ApplyResource(String userid,String queue,long hdfs,int num);
+	public boolean ApplyResource(long userid,String queue,long hdfs,int num);
 	
-	public Object[] HDFS(String userID);
+	public Object[] HDFS(long userID);
 	
 	public List<ResourceApplicationImpl> ShowResourceApplication(int page);
 	
@@ -34,7 +34,7 @@ public interface ResourceInfoDAO {
 	
 	public long applySum();
 	
-	public boolean manageApply(String name,char enable);
+	public boolean manageApply(String admin,String name,char enable);
 	
 	public List<ResourceApplicationImpl> ShowResource(int page);
 	

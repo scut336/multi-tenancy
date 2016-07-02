@@ -1,17 +1,18 @@
 package entity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 public class ResourceApplication {
 
 	@Id
-	@Column(length=32)
-	private String UserID;
+	@GeneratedValue(generator="id")
+	@GenericGenerator(name="id",strategy="assigned")
+	private long UserID;
 	private int AppLimit;
 	private long HDFSDirectoryQuota;
 	private long Queue;
@@ -20,7 +21,7 @@ public class ResourceApplication {
 	
 	public ResourceApplication(){}
 
-	public ResourceApplication(String userID, int appLimit, int hDFSDirectoryQuota,
+	public ResourceApplication(long userID, int appLimit, int hDFSDirectoryQuota,
 			long queue, char enable) {
 		AppLimit = appLimit;
 		HDFSDirectoryQuota = hDFSDirectoryQuota;
@@ -61,11 +62,11 @@ public class ResourceApplication {
 		Enable = enable;
 	}
 
-	public String getUserID() {
+	public long getUserID() {
 		return UserID;
 	}
 
-	public void setUserID(String userID) {
+	public void setUserID(long userID) {
 		UserID = userID;
 	}
 	

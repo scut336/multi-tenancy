@@ -29,6 +29,7 @@ import service.impl.TaskInfoDAOImpl;
 import com.opensymphony.xwork2.ModelDriven;
 
 import db.JSONCreator;
+import db.ProjectProperties;
 import entity.JobInfo;
 import entity.TaskInfo;
 import entity.TaskInfoImpl;
@@ -51,10 +52,10 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 		ResourceInfoDAO resourceInfoDAO = new ResourceInfoDAOImpl();
 		TaskInfoDAO taskInfoDAO = new TaskInfoDAOImpl();
 		taskInfo.setCreateDate(new Date());
-		taskInfo.setUserInfo(session.getAttribute("loginUserId").toString());
+		taskInfo.setUserInfo(Long.parseLong(session.getAttribute("loginUserId").toString()));
 		//String taskid = start(taskInfo.getTaskName());
 		//if(!taskid.equals("0")){
-		resourceInfoDAO.AddResourceJobTime(session.getAttribute("loginUserId").toString());
+		resourceInfoDAO.AddResourceJobTime(Long.parseLong(session.getAttribute("loginUserId").toString()));
 		taskInfo.setTaskID("0");
 		if(taskInfoDAO.addTask(taskInfo)){
 			inputStream=new ByteArrayInputStream("1".getBytes("UTF-8"));
@@ -73,7 +74,7 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 		int page = Integer.parseInt(request.getParameter("page"));
 		TaskInfoDAO taskInfoDAO = new TaskInfoDAOImpl();
 		if(!session.getAttribute("loginUserRole").equals("admin")){
-			String id = (String)session.getAttribute("loginUserId");
+			long id = Long.parseLong(session.getAttribute("loginUserId").toString());
 			List<TaskInfoImpl> list=taskInfoDAO.findTask(id,page,10);
 			if(list!=null&&list.size()>0){
 				String reString = taskInfoDAO.pageSum() + ";0;";
@@ -85,7 +86,7 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 			}else
 				inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
 		}else{
-			List<TaskInfoImpl> list = taskInfoDAO.findTask("",page,10);
+			List<TaskInfoImpl> list = taskInfoDAO.findTask(0,page,10);
 			if(list!=null&&list.size()>0){
 				String reString = taskInfoDAO.pageSum() + ";1;";
 				for(int i=0;i<list.size();i++){
@@ -107,7 +108,7 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 		String reString = "";
 		TaskInfoDAO taskInfoDAO = new TaskInfoDAOImpl();
 		for(int i=0;i<index.length;i++){
-			strURL = "http://222.201.145.144:8088/ws/v1/cluster/apps/" + index[i];  
+			strURL = ProjectProperties.getValue("process") + index[i];  
 		    URL url = new URL(strURL);  
 		    HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();  
 		    InputStreamReader input = new InputStreamReader(httpConn  
@@ -173,7 +174,7 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 	//查看作业
 	public String showJobs() throws UnsupportedEncodingException{
 		JobInfoDAO jobInfoDAO = new JobInfoDAOImpl();
-		String id = (String)session.getAttribute("loginUserId");
+		long id = Long.parseLong(session.getAttribute("loginUserId").toString());
 		List<JobInfo> list = null;
 		list = jobInfoDAO.queryJobInfo(id);
 		if(list!=null&&list.size()>0){
@@ -192,11 +193,11 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 		String id = request.getParameter("id");
 		String input = request.getParameter("input");
 		
-		String strURL = "http://222.201.145.144:50070/webhdfs/v1/user/"+name+"?op=GETCONTENTSUMMARY";  
-	    try{
-	    	URL url = new URL(strURL);  
-		    HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();  
-		    InputStreamReader input2 = new InputStreamReader(httpConn.getInputStream(), "utf-8");  
+		String strURL = ProjectProperties.getValue("hdfs")+"user/"+name+"?op=GETCONTENTSUMMARY";  
+    	URL url = new URL(strURL);  
+	    HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();  
+	    if (httpConn.getResponseCode() == 200){
+	    	InputStreamReader input2 = new InputStreamReader(httpConn.getInputStream(), "utf-8");  
 		    BufferedReader bufReader = new BufferedReader(input2);  
 		    String line = "";  
 		    StringBuilder contentBuf = new StringBuilder();  
@@ -208,15 +209,9 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 		    JSONObject jsonObject = json.getJSONObject("ContentSummary");
 		    long spaceConsumed = jsonObject.getLong("spaceConsumed");
 		    ResourceInfoDAO res = new ResourceInfoDAOImpl();
-		    res.UpdateResource(session.getAttribute("loginUserId").toString(), spaceConsumed);
-	    }catch(Exception e){
-	    	return starting(name, id,input);
+		    res.UpdateResource(Long.parseLong(session.getAttribute("loginUserId").toString()), spaceConsumed);
 	    }
-		return starting(name, id,input);
-    }
-	
-	//继续执行start
-	public String starting(String name,String id,String input) throws IOException{
+		  
 	    Date date=new Date();
 		DateFormat format=new SimpleDateFormat("yyyyMMddHHmmss");
 		String time=format.format(date);
@@ -225,8 +220,8 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 		String queue = queueInfoDAO.queryQueueByUser(name);
 		TaskInfoDAO taskInfoDAO = new TaskInfoDAOImpl();
 		String jarName = taskInfoDAO.findJarName(id);
-        String _url = "http://222.201.145.144:4567/app/start";
-        URL url = new URL(_url);
+        String _url = ProjectProperties.getValue("start");
+        url = new URL(_url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(true);
@@ -263,14 +258,14 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
         	inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
         }
         return "Ajax_Success";
-	}
+    }
 	
 	//查询任务
 	public String find() throws UnsupportedEncodingException{
 		TaskInfoDAO taskInfoDAO = new TaskInfoDAOImpl();
 		String taskid = request.getParameter("id");
 		if(!session.getAttribute("loginUserRole").equals("admin")){
-			String id = (String)session.getAttribute("loginUserId");
+			long id = Long.parseLong(session.getAttribute("loginUserId").toString());
 			TaskInfoImpl taskInfo =taskInfoDAO.findTaskInfo(id,taskid);
 			if(taskInfo!=null){
 				String reString = "0;";
@@ -280,7 +275,7 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 			}else
 				inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
 		}else{
-			TaskInfoImpl taskInfo =taskInfoDAO.findTaskInfo("",taskid);
+			TaskInfoImpl taskInfo =taskInfoDAO.findTaskInfo(0,taskid);
 			if(taskInfo!=null){
 				String reString = "1;";
 				reString += taskInfo.getId() + "," + taskInfo.getUserName() + "," + taskInfo.getTaskStatus() + "," + taskInfo.getTaskLog() + "," + taskInfo.getTaskResult() + "," +
@@ -297,7 +292,7 @@ public class TaskInfoAction extends SuperAction implements ModelDriven<TaskInfo>
 		int page = Integer.parseInt(request.getParameter("page"));
 		TaskInfoDAO taskInfoDAO = new TaskInfoDAOImpl();
 		String taskname = request.getParameter("jar");
-		String id = (String)session.getAttribute("loginUserId");
+		long id = Long.parseLong(session.getAttribute("loginUserId").toString());
 		List<TaskInfoImpl> taskInfo =taskInfoDAO.findTaskInfoJar(id,taskname,page,10);
 		if(taskInfo!=null){
 			String reString = taskInfoDAO.pageJarSum(id, taskname)+";";

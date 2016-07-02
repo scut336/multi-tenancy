@@ -1,16 +1,11 @@
 package service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
 import db.MyHibernateSessionFactory;
 import entity.QueueInfo;
-import entity.TaskInfoImpl;
-import entity.UserInfo;
 import service.QueueInfoDAO;
 
 public class QueueInfoDAOImpl implements QueueInfoDAO{
@@ -116,12 +111,12 @@ public class QueueInfoDAOImpl implements QueueInfoDAO{
 			tx = session.beginTransaction();
 			hql = "select u.id from UserInfo u where u.name='"+user+"'";
 			Query query = session.createQuery(hql);
-			String name = (String)query.uniqueResult();
+			long name = (long)query.uniqueResult();
 			tx.commit();
 			
 			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "select q.QueueName from QueueInfo q join ResourceInfo r on q.id=r.Queue where r.UserID='"+name+"'";
+			hql = "select q.QueueName from QueueInfo q join ResourceInfo r on q.id=r.Queue where r.id='"+name+"'";
 			query = session.createSQLQuery(hql);
 			String queuename = (String)query.uniqueResult();
 			tx.commit();

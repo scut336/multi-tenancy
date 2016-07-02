@@ -48,25 +48,20 @@ public class UserAction extends SuperAction implements ModelDriven<UserInfo>{
 
 	//检查用户ID是否重复
 	public String check() throws UnsupportedEncodingException{
-		String ID=user.getId();
 		String name = user.getName();
 		UserInfoDAO udao = new UserInfoDAOImpl();
-		if(ID!=null){
-			if(udao.checkUserInfoById(ID)){
-				inputStream=new ByteArrayInputStream("1".getBytes("UTF-8"));
-			}else{
-				inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
-			}
-		}else if(name!=null){
+		if(name!=null){
 			if(udao.checkUserInfoByName(name)){
 				inputStream=new ByteArrayInputStream("1".getBytes("UTF-8"));
 			}else{
 				inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
 			}
+		}else {
+			inputStream=new ByteArrayInputStream("0".getBytes("UTF-8"));
 		}
 		return "Ajax_Success";
 	}
-	
+
 	@Override
 	public UserInfo getModel() {
 		// TODO Auto-generated method stub

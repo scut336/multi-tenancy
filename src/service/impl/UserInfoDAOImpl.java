@@ -44,13 +44,13 @@ public class UserInfoDAOImpl implements UserInfoDAO{
 	}
 	
 	@Override
-	public boolean checkUserInfoById(String Id) {
+	public boolean checkUserInfoById(long Id) {
 		Transaction tr =null;
 		String hql = "";
 		try{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tr = session.beginTransaction();
-			hql = "select u.name from UserInfo u where u.id = '"+Id+"'";
+			hql = "select u.name from UserInfo u where u.id = "+Id;
 			Query query = session.createQuery(hql);
 			List list = query.list();
 			tr.commit();
@@ -96,13 +96,13 @@ public class UserInfoDAOImpl implements UserInfoDAO{
 	}
 
 	@Override
-	public UserInfo queryUserInfoById(String Id) {
+	public UserInfo queryUserInfoById(long Id) {
 		Transaction tx = null;
 		UserInfo u = null;
 		try{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			String hql = "select new UserInfo(u.id,u.name,u.role,u.department,u.createTime) from UserInfo u where u.id='"+Id+"'";
+			String hql = "select new UserInfo(u.id,u.name,u.role,u.department,u.createTime) from UserInfo u where u.id="+Id;
 			Query query = session.createQuery(hql);
 			u = (UserInfo)query.uniqueResult();
 			tx.commit();
@@ -143,7 +143,7 @@ public class UserInfoDAOImpl implements UserInfoDAO{
 		try{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "update UserInfo set name = '" + u.getName() + "',department = '" + u.getDepartment() + "',role='"+u.getRole()+"' where id = '" + u.getId() + "'";
+			hql = "update UserInfo set name = '" + u.getName() + "',department = '" + u.getDepartment() + "',role='"+u.getRole()+"' where id = " + u.getId();
 			Query query = session.createQuery(hql);
 			query.executeUpdate();  
 			tx.commit();
@@ -157,7 +157,7 @@ public class UserInfoDAOImpl implements UserInfoDAO{
 				queue=2;
 			else if(u.getRole().equals("vip2"))
 				queue=3;
-			hql = "update ResourceInfo set queue = '" + queue + "' where UserID = '" + u.getId() + "'";
+			hql = "update ResourceInfo set queue = '" + queue + "' where id = " + u.getId();
 			query = session.createQuery(hql);
 			query.executeUpdate();  
 			tx.commit();
@@ -173,12 +173,12 @@ public class UserInfoDAOImpl implements UserInfoDAO{
 	}
 
 	@Override
-	public boolean deleteUserInfo(String Id) {
+	public boolean deleteUserInfo(long Id) {
 		Transaction tx = null;
 		try{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			String hql = "delete from UserInfo u where u.id='"+Id+"'";
+			String hql = "delete from UserInfo u where u.id="+Id;
 			Query query = session.createQuery(hql);
 			query.executeUpdate();
 			session.flush();
@@ -186,7 +186,7 @@ public class UserInfoDAOImpl implements UserInfoDAO{
 			
 			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "delete from TaskInfo t where t.userInfo='"+Id+"'";
+			hql = "delete from TaskInfo t where t.userInfo="+Id;
 			query = session.createQuery(hql);
 			query.executeUpdate();
 			session.flush();
@@ -194,7 +194,7 @@ public class UserInfoDAOImpl implements UserInfoDAO{
 			
 			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "delete from ResourceInfo r where r.userID='"+Id+"'";
+			hql = "delete from ResourceInfo r where r.id="+Id;
 			query = session.createQuery(hql);
 			query.executeUpdate();
 			session.flush();
@@ -202,7 +202,7 @@ public class UserInfoDAOImpl implements UserInfoDAO{
 			
 			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "delete from JobInfo j where j.id='"+Id+"'";
+			hql = "delete from JobInfo j where j.id="+Id;
 			query = session.createQuery(hql);
 			query.executeUpdate();
 			session.flush();
@@ -210,7 +210,7 @@ public class UserInfoDAOImpl implements UserInfoDAO{
 			
 			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "delete from ResourceApplication r where r.UserID='"+Id+"'";
+			hql = "delete from ResourceApplication r where r.UserID="+Id;
 			query = session.createQuery(hql);
 			query.executeUpdate();
 			session.flush();

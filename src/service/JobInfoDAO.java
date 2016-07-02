@@ -8,5 +8,5 @@ public interface JobInfoDAO {
 
 	public boolean addJob(JobInfo j);
 	
-	public List<JobInfo> queryJobInfo(String id);
+	public List<JobInfo> queryJobInfo(long id);
 }

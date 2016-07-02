@@ -14,7 +14,7 @@ public interface TaskInfoDAO {
 	
 	public boolean updateTaskHDFS(String id,String hdfs);
 	
-	public List<TaskInfoImpl> findTask(String id,int page,int num);
+	public List<TaskInfoImpl> findTask(long id,int page,int num);
 	
 	public boolean checkTaskInfoById(String id);
 	
@@ -36,10 +36,10 @@ public interface TaskInfoDAO {
 	
 	public boolean updateTaskStatus(String TaskID,String num);
 	
-	public TaskInfoImpl findTaskInfo(String id,String taskid);
+	public TaskInfoImpl findTaskInfo(long id,String taskid);
 	
-	public List<TaskInfoImpl> findTaskInfoJar(String id,String taskname,int page,int num);
+	public List<TaskInfoImpl> findTaskInfoJar(long id,String taskname,int page,int num);
 	
-	public int pageJarSum(String id, String taskname);
+	public int pageJarSum(long id, String taskname);
 	
 }

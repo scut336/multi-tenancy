@@ -41,7 +41,7 @@ public class JobInfoDAOImpl implements JobInfoDAO{
 	}
 
 	@Override
-	public List<JobInfo> queryJobInfo(String id) {
+	public List<JobInfo> queryJobInfo(long id) {
 		Transaction tx = null;
 		List<JobInfo> list = null;
 		String hql = "";

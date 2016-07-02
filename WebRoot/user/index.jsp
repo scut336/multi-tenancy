@@ -285,6 +285,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                         <li>
                             <a href="####"><i class="fa fa-list-alt fa-fw"></i> 资源管理<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
+                            	<li>
+                                    <a href="####" onclick="page(9,this)">数据概况</a>
+                                </li>
 	                            <s:if test='%{#session.loginUserRole=="admin"}'>
 	                            	<li>
                                     	<a href="####" onclick="page(15,this)">资源审核</a>

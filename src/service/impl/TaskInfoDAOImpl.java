@@ -24,8 +24,8 @@ public class TaskInfoDAOImpl implements TaskInfoDAO{
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String string = sdf.format(t.getCreateDate());
 			String sql = "insert into TaskInfo(id,TaskName,TaskID,TaskError,TaskLog,TaskResult,lastStartTime,createDate,userInfo,TaskStatus) "+
-			"values ('"+t.getId()+"','"+t.getTaskName()+"','"+t.getTaskID()+"','"+t.getTaskError()+"','"+t.getTaskLog()+"','"+t.getTaskResult()+"','0','"+string+"','"+
-					t.getUserInfo()+"','0')";
+			"values ('"+t.getId()+"','"+t.getTaskName()+"','"+t.getTaskID()+"','"+t.getTaskError()+"','"+t.getTaskLog()+"','"+t.getTaskResult()+"','0','"+string+"',"+
+					t.getUserInfo()+",'0')";
 			Query query = session.createSQLQuery(sql);
 			query.executeUpdate();
 			tx.commit();
@@ -97,19 +97,19 @@ public class TaskInfoDAOImpl implements TaskInfoDAO{
 	}
 	*/
 	@Override
-	public List<TaskInfoImpl> findTask(String id,int page,int num) {
+	public List<TaskInfoImpl> findTask(long id,int page,int num) {
 		Transaction tx = null;
 		String hql = "";
 		Query query;
 		try{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			if(id.equals("")){
+			if(id==0){
 				hql = "select t.id,t.TaskStatus,t.TaskLog,t.TaskResult,t.TaskError,t.lastStartTime,t.createDate,t.TaskID,u.name from TaskInfo t join UserInfo u on t.userInfo=u.id order by t.userInfo asc";
 				query = session.createSQLQuery(hql);
 			}
 			else{
-				hql = "select t.id,t.TaskStatus,t.TaskLog,t.TaskResult,t.TaskError,t.lastStartTime,t.createDate,t.TaskID,u.name from TaskInfo t join UserInfo u on t.userInfo=u.id where t.userInfo='"+id+"'";
+				hql = "select t.id,t.TaskStatus,t.TaskLog,t.TaskResult,t.TaskError,t.lastStartTime,t.createDate,t.TaskID,u.name from TaskInfo t join UserInfo u on t.userInfo=u.id where t.userInfo="+id;
 				query = session.createSQLQuery(hql);
 			}
 			query.setFirstResult((page-1)*num); 
@@ -295,19 +295,19 @@ public class TaskInfoDAOImpl implements TaskInfoDAO{
 	}
 
 	@Override
-	public TaskInfoImpl findTaskInfo(String id, String taskid) {
+	public TaskInfoImpl findTaskInfo(long id, String taskid) {
 		Transaction tx = null;
 		String hql = "";
 		Query query;
 		try{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			if(id.equals("")){
+			if(id==0){
 				hql = "select t.id,t.TaskStatus,t.TaskLog,t.TaskResult,t.TaskError,t.lastStartTime,t.createDate,t.TaskID,u.name from TaskInfo t join UserInfo u on t.userInfo=u.id where t.id='"+taskid+"'";
 				query = session.createSQLQuery(hql);
 			}
 			else{
-				hql = "select t.id,t.TaskStatus,t.TaskLog,t.TaskResult,t.TaskError,t.lastStartTime,t.createDate,t.TaskID,u.name from TaskInfo t join UserInfo u on t.userInfo=u.id where t.userInfo='"+id+"' and t.id='"+taskid+"'";
+				hql = "select t.id,t.TaskStatus,t.TaskLog,t.TaskResult,t.TaskError,t.lastStartTime,t.createDate,t.TaskID,u.name from TaskInfo t join UserInfo u on t.userInfo=u.id where t.userInfo="+id+" and t.id='"+taskid+"'";
 				query = session.createSQLQuery(hql);
 			}
 			Object[] taskInfos = (Object[])query.uniqueResult();
@@ -349,14 +349,14 @@ public class TaskInfoDAOImpl implements TaskInfoDAO{
 	}
 
 	@Override
-	public List<TaskInfoImpl> findTaskInfoJar(String id, String taskname,int page,int num) {
+	public List<TaskInfoImpl> findTaskInfoJar(long id, String taskname,int page,int num) {
 		Transaction tx = null;
 		String hql = "";
 		Query query;
 		try{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "select t.id,t.TaskStatus,t.TaskLog,t.TaskResult,t.TaskError,t.lastStartTime,t.createDate,t.TaskID,u.name from TaskInfo t join UserInfo u on t.userInfo=u.id where t.userInfo='"+id+"' and t.TaskName='"+taskname+"'";
+			hql = "select t.id,t.TaskStatus,t.TaskLog,t.TaskResult,t.TaskError,t.lastStartTime,t.createDate,t.TaskID,u.name from TaskInfo t join UserInfo u on t.userInfo=u.id where t.userInfo="+id+" and t.TaskName='"+taskname+"'";
 			query = session.createSQLQuery(hql);
 			query.setFirstResult((page-1)*num); 
 			query.setMaxResults(num);
@@ -379,13 +379,13 @@ public class TaskInfoDAOImpl implements TaskInfoDAO{
 	}
 
 	@Override
-	public int pageJarSum(String id, String taskname) {
+	public int pageJarSum(long id, String taskname) {
 		Transaction tx = null;
 		String hql = "";
 		try{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "select count(t.id) from TaskInfo t where t.userInfo='"+id+"' and t.TaskName='"+taskname+"'";
+			hql = "select count(t.id) from TaskInfo t where t.userInfo="+id+" and t.TaskName='"+taskname+"'";
 			Query query = session.createQuery(hql);
 			double c = (double)((long)query.uniqueResult());
 			int count = (int) Math.ceil(c/10);
@@ -432,17 +432,17 @@ public class TaskInfoDAOImpl implements TaskInfoDAO{
 			tx = session.beginTransaction();
 			hql = "select t.userInfo from TaskInfo t where t.id='"+id+"'";
 			Query query = session.createQuery(hql);
-			String userinfo = (String)query.uniqueResult();
+			long userinfo = (long)query.uniqueResult();
 			tx.commit();
 			
 			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "select name from UserInfo where id='"+userinfo+"'";
+			hql = "select name from UserInfo where id="+userinfo;
 			query = session.createQuery(hql);
-			userinfo = (String)query.uniqueResult();
+			String username = (String)query.uniqueResult();
 			tx.commit();
 			
-			return userinfo;
+			return username;
 		}catch(Exception e){
 			tx.rollback();
 			e.printStackTrace();

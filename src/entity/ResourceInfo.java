@@ -8,34 +8,35 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 public class ResourceInfo {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(generator="id")
+	@GenericGenerator(name="id",strategy="assigned")
 	private long id;
 	private int AppLimit;
 	private int CurrentAppCount;
+	@Column(length=200)
 	private String HDFSDirectory;
 	private long HDFSDirectoryQuota;
 	private long HDFSDirectoryRemaining;
 	private int Queue;
 	private Date CreateTime;
-	@Column(length=32)
-	private String CreateUserID;
+	private long CreateUserID;
 	private char Expired;
 	private int SubmitJobTimes;
 	private Date LastSubmitTime;
-	@Column(length=32)
-	private String userID;
 	
 	public ResourceInfo(){}
 
 	public ResourceInfo(long id, int appLimit, int currentAppCount,
 			String hDFSDirectory, long hDFSDirectoryQuota,
 			long hDFSDirectoryRemaining, int queue, Date createTime,
-			String createUserID, char expired, int submitJobTimes,
-			Date lastSubmitTime, String userID) {
+			long createUserID, char expired, int submitJobTimes,
+			Date lastSubmitTime) {
 		this.id = id;
 		AppLimit = appLimit;
 		CurrentAppCount = currentAppCount;
@@ -48,32 +49,12 @@ public class ResourceInfo {
 		Expired = expired;
 		SubmitJobTimes = submitJobTimes;
 		LastSubmitTime = lastSubmitTime;
-		this.userID = userID;
 	}
 
 	public ResourceInfo(int appLimit, int currentAppCount,
 			String hDFSDirectory, long hDFSDirectoryQuota,
 			long hDFSDirectoryRemaining, int queue, Date createTime,
-			String createUserID, char expired, int submitJobTimes,
-			Date lastSubmitTime, String userID) {
-		AppLimit = appLimit;
-		CurrentAppCount = currentAppCount;
-		HDFSDirectory = hDFSDirectory;
-		HDFSDirectoryQuota = hDFSDirectoryQuota;
-		HDFSDirectoryRemaining = hDFSDirectoryRemaining;
-		Queue = queue;
-		CreateTime = createTime;
-		CreateUserID = createUserID;
-		Expired = expired;
-		SubmitJobTimes = submitJobTimes;
-		LastSubmitTime = lastSubmitTime;
-		this.userID = userID;
-	}
-
-	public ResourceInfo(int appLimit, int currentAppCount,
-			String hDFSDirectory, long hDFSDirectoryQuota,
-			long hDFSDirectoryRemaining, int queue, Date createTime,
-			String createUserID, char expired, int submitJobTimes,
+			long createUserID, char expired, int submitJobTimes,
 			Date lastSubmitTime) {
 		AppLimit = appLimit;
 		CurrentAppCount = currentAppCount;
@@ -88,7 +69,6 @@ public class ResourceInfo {
 		LastSubmitTime = lastSubmitTime;
 	}
 
-	
 	public ResourceInfo(int appLimit, int currentAppCount,
 			long hDFSDirectoryQuota, long hDFSDirectoryRemaining) {
 		AppLimit = appLimit;
@@ -161,11 +141,11 @@ public class ResourceInfo {
 		CreateTime = createTime;
 	}
 
-	public String getCreateUserID() {
+	public long getCreateUserID() {
 		return CreateUserID;
 	}
 
-	public void setCreateUserID(String createUserID) {
+	public void setCreateUserID(long createUserID) {
 		CreateUserID = createUserID;
 	}
 
@@ -191,14 +171,6 @@ public class ResourceInfo {
 
 	public void setLastSubmitTime(Date lastSubmitTime) {
 		LastSubmitTime = lastSubmitTime;
-	}
-
-	public String getUserID() {
-		return userID;
-	}
-
-	public void setUserID(String userID) {
-		this.userID = userID;
 	}
 
 	

@@ -264,12 +264,12 @@ ul li{
 }
 
 .table button{
-	font-size:15px;
+	font-size:14px;
 	padding:5px 10px;
 }
 
 .table>tbody>tr>td{
-	font-size:15px;
+	font-size:14px;
 	line-height:33px;
 }
 
@@ -281,7 +281,7 @@ ul li{
 	width:auto;
 }
 
-.hdfsroute li{
+.hdfsroute li,.hdfscomroute li{
 	padding:5px;
 	border:1px solid #ECECEC;
 	-moz-border-radius: 5px;    
@@ -290,7 +290,7 @@ ul li{
 	margin-bottom:5px;
 }
 
-.hdfsroute li:hover{
+.hdfsroute li:hover,.hdfscomroute li:hover{
 	cursor:pointer;
 	background-color:#ECECEC;
 }
@@ -302,4 +302,8 @@ ul li{
 .well:hover{
 	cursor:pointer;
 	background-color:#ECECEC;
+}
+
+.hdfsroute button{
+	float:right;
 }

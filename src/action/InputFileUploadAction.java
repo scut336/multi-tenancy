@@ -9,13 +9,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import db.ProjectProperties;
-import entity.JobInfo;
-import service.JobInfoDAO;
-import service.ResourceInfoDAO;
-import service.impl.JobInfoDAOImpl;
-import service.impl.ResourceInfoDAOImpl;
 
-public class JarFileUploadAction extends SuperAction{
+public class InputFileUploadAction extends SuperAction{
 
 	/**
 	 * 
@@ -51,12 +46,9 @@ public class JarFileUploadAction extends SuperAction{
 		this.message = message;
 	}
 	public String execute() throws Exception{
-		ResourceInfoDAO resourceInfoDAO = new ResourceInfoDAOImpl();
-		if(!resourceInfoDAO.AddResourceApp(Long.parseLong(session.getAttribute("loginUserId").toString()))){
-			this.setMessage("ResourceErr");
-            return ERROR;
-		}
-		String _url = ProjectProperties.getValue("upload");
+		String input = request.getParameter("input");
+		input = input.equals("")?"/":input;
+		String _url = ProjectProperties.getValue("dataUpload");
         URL url = new URL(_url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
@@ -78,7 +70,8 @@ public class JarFileUploadAction extends SuperAction{
         connection.setRequestProperty("Connection", "Keep-Alive");
         connection.setRequestProperty("Charset", "UTF-8");
         connection.setRequestProperty("user", (String)session.getAttribute("loginUserName"));
-        connection.setRequestProperty("app", fileFileName);
+        connection.setRequestProperty("input", input);
+        connection.setRequestProperty("file", fileFileName);
         OutputStream outputStream = connection.getOutputStream();
         outputStream.write(bytes);
         outputStream.close();
@@ -89,47 +82,10 @@ public class JarFileUploadAction extends SuperAction{
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
             }
-            JobInfoDAO jobInfoDAO = new JobInfoDAOImpl();
-            if(jobInfoDAO.addJob(new JobInfo(fileFileName, Long.parseLong(session.getAttribute("loginUserId").toString())))){
-            	this.setMessage("ok");
-                return SUCCESS;
-            }else{
-            	resourceInfoDAO.SubResourceApp(Long.parseLong(session.getAttribute("loginUserId").toString()));
-            	this.setMessage("insertError");
-                return ERROR;
-            }
-            
+        	this.setMessage("ok");
+            return SUCCESS;
         }
         this.setMessage("error");
         return ERROR;
 	}
-	/*
-	public String execute() throws Exception {      
-		String path2 = request.getContextPath();
-		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path2+"/";
-        String path = basePath+"/upload";  
-        System.out.println(path);
-        try {  
-            File f = this.getFile();  
-            if(this.getFileFileName().endsWith(".exe")){  
-                message="文件错误";  
-                return ERROR;  
-            }  
-            FileInputStream inputStream = new FileInputStream(f);  
-            FileOutputStream outputStream = new FileOutputStream(path + "/"+ this.getFileFileName());  
-            byte[] buf = new byte[1024];  
-            int length = 0;  
-            while ((length = inputStream.read(buf)) != -1) {  
-                outputStream.write(buf, 0, length);  
-            }  
-            inputStream.close();  
-            outputStream.flush();  
-            this.setMessage("http://localhost:8080/ajaxfile/upload/"+this.getFileFileName());  
-        } catch (Exception e) {  
-            e.printStackTrace();  
-            message = "上传异常!!!!";  
-        }  
-        return SUCCESS;  
-    }*/
-	
 }

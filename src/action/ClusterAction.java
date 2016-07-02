@@ -13,6 +13,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import db.ProjectProperties;
 import entity.QueueInfo;
 import service.QueueInfoDAO;
 import service.ResourceInfoDAO;
@@ -42,7 +43,7 @@ public class ClusterAction extends SuperAction{
 			return "Ajax_Success";
 		}
 		String strURL = "";
-		strURL = "http://222.201.145.144:8088/ws/v1/cluster/info";  
+		strURL = ProjectProperties.getValue("cluster");  
 	    URL url = new URL(strURL);  
 	    HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();  
 	    InputStreamReader input = new InputStreamReader(httpConn  
@@ -74,7 +75,7 @@ public class ClusterAction extends SuperAction{
 			return "Ajax_Success";
 		}
 		String strURL = "";
-		strURL = "http://222.201.145.144:8088/ws/v1/cluster/metrics";  
+		strURL = ProjectProperties.getValue("metrics");  
 	    URL url = new URL(strURL);  
 	    HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();  
 	    InputStreamReader input = new InputStreamReader(httpConn  
@@ -118,7 +119,7 @@ public class ClusterAction extends SuperAction{
 			return "Ajax_Success";
 		}
 		String strURL = "";
-		strURL = "http://222.201.145.144:8088/ws/v1/cluster/nodes";  
+		strURL = ProjectProperties.getValue("nodes");  
 	    URL url = new URL(strURL);  
 	    HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();  
 	    InputStreamReader input = new InputStreamReader(httpConn  

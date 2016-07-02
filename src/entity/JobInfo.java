@@ -16,10 +16,11 @@ public class JobInfo implements Serializable{
 	@Column(length=100)
 	private String name;
 	@Id
-	@Column(length=32)
-	private String id;
+	private long id;
 	
-	public JobInfo(String name, String id) {
+	public JobInfo() {}
+	
+	public JobInfo(String name, long id) {
 		this.name = name;
 		this.id = id;
 	}
@@ -29,10 +30,10 @@ public class JobInfo implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getId() {
+	public long getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	

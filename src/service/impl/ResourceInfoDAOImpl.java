@@ -5,20 +5,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javassist.expr.NewArray;
-
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import db.MD5creator;
 import db.MyHibernateSessionFactory;
-import entity.ResourceApplication;
+import entity.ActionInfo;
 import entity.ResourceApplicationImpl;
 import entity.ResourceInfo;
 import entity.ResourceInfoImpl;
-import entity.TaskInfoImpl;
 import entity.UserInfo;
+import service.ActionInfoDAO;
 import service.ResourceInfoDAO;
 
 public class ResourceInfoDAOImpl implements ResourceInfoDAO{
@@ -30,16 +27,16 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String sql = "insert into ResourceInfo(AppLimit,CurrentAppCount,HDFSDirectory,HDFSDirectoryQuota,HDFSDirectoryRemaining,Queue,CreateTime,CreateUserID,Expired,SubmitJobTimes,LastSubmitTime,userID)"+
-			"values ('"+r.getAppLimit()+"','"+r.getCurrentAppCount()+"','"+r.getHDFSDirectory()+"','"+r.getHDFSDirectoryQuota()+"','"+r.getHDFSDirectoryRemaining()+"','"+r.getQueue()+"','"+sdf.format(new Date())+"','"+
-					r.getCreateUserID()+"','"+r.getExpired()+"','"+r.getSubmitJobTimes()+"','"+sdf.format(new Date())+"','"+r.getUserID()+"')";
+			String sql = "insert into ResourceInfo(id,AppLimit,CurrentAppCount,HDFSDirectory,HDFSDirectoryQuota,HDFSDirectoryRemaining,Queue,CreateTime,CreateUserID,Expired,SubmitJobTimes,LastSubmitTime)"+
+			"values ('"+r.getId()+"','"+r.getAppLimit()+"','"+r.getCurrentAppCount()+"','"+r.getHDFSDirectory()+"','"+r.getHDFSDirectoryQuota()+"','"+r.getHDFSDirectoryRemaining()+"','"+r.getQueue()+"','"+sdf.format(new Date())+"','"+
+					r.getCreateUserID()+"','"+r.getExpired()+"','"+r.getSubmitJobTimes()+"','"+sdf.format(new Date())+"')";
 			Query query = session.createSQLQuery(sql);
 			query.executeUpdate();
 			tx.commit();
 			
 			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			sql = "insert into ResourceApplication(UserID,AppLimit,Enable,HDFSDirectoryQuota,Queue) values ('"+r.getUserID()+"',0,'T',0,1)";
+			sql = "insert into ResourceApplication(UserID,AppLimit,Enable,HDFSDirectoryQuota,Queue) values ("+r.getId()+",0,'T',0,1)";
 			query = session.createSQLQuery(sql);
 			query.executeUpdate();
 			tx.commit();
@@ -61,13 +58,13 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 	}
 
 	@Override
-	public boolean UpdateResource(String id,long left) {
+	public boolean UpdateResource(long id,long left) {
 		Transaction tx = null;
 		String hql = "";
 		try{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "update ResourceInfo set HDFSDirectoryRemaining='"+left+"' where userID ='"+id+"'";
+			hql = "update ResourceInfo set HDFSDirectoryRemaining='"+left+"' where id ='"+id+"'";
 			Query query = session.createQuery(hql);
 			query.executeUpdate();  
 			tx.commit();
@@ -83,13 +80,13 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 	}
 
 	@Override
-	public ResourceInfoImpl getHDFSDirectoryQuota(String id) {
+	public ResourceInfoImpl getHDFSDirectoryQuota(long id) {
 		Transaction tx = null;
 		String hql = "";
 		try{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "select new ResourceInfo(AppLimit,CurrentAppCount,HDFSDirectory,HDFSDirectoryQuota,HDFSDirectoryRemaining,Queue,CreateTime,CreateUserID,Expired,SubmitJobTimes,LastSubmitTime) from ResourceInfo where userID='"+id+"'";
+			hql = "select new ResourceInfo(AppLimit,CurrentAppCount,HDFSDirectory,HDFSDirectoryQuota,HDFSDirectoryRemaining,Queue,CreateTime,CreateUserID,Expired,SubmitJobTimes,LastSubmitTime) from ResourceInfo where id="+id;
 			Query query = session.createQuery(hql);
 			ResourceInfo resourceInfo = (ResourceInfo)query.uniqueResult();
 			session.flush();
@@ -116,13 +113,13 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 	}
 
 	@Override
-	public boolean AddResourceApp(String id) {
+	public boolean AddResourceApp(long id) {
 		Transaction tx = null;
 		String hql = "";
 		try{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "select new ResourceInfo(AppLimit,CurrentAppCount,HDFSDirectoryQuota,HDFSDirectoryRemaining) from ResourceInfo where userID='"+id+"'";
+			hql = "select new ResourceInfo(AppLimit,CurrentAppCount,HDFSDirectoryQuota,HDFSDirectoryRemaining) from ResourceInfo where id="+id;
 			Query query = session.createQuery(hql);
 			ResourceInfo resourceInfo = (ResourceInfo)query.uniqueResult();
 			session.flush();
@@ -132,7 +129,7 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "update ResourceInfo set CurrentAppCount ='"+(resourceInfo.getCurrentAppCount()+1)+"',LastSubmitTime = '"+sdf.format(new Date())+"' where userID='"+id+"'";
+			hql = "update ResourceInfo set CurrentAppCount ='"+(resourceInfo.getCurrentAppCount()+1)+"',LastSubmitTime = '"+sdf.format(new Date())+"' where id="+id;
 			Query query2 = session.createQuery(hql);
 			query2.executeUpdate();  
 			session.flush();
@@ -149,13 +146,13 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 	}
 
 	@Override
-	public boolean SubResourceApp(String id) {
+	public boolean SubResourceApp(long id) {
 		Transaction tx = null;
 		String hql = "";
 		try{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "select CurrentAppCount from ResourceInfo where userID='"+id+"'";
+			hql = "select CurrentAppCount from ResourceInfo where id="+id;
 			Query query = session.createQuery(hql);
 			int count = (int)query.uniqueResult();
 			session.flush();
@@ -164,7 +161,7 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "update ResourceInfo set CurrentAppCount ='"+(count-1)+"',LastSubmitTime = '"+sdf.format(new Date())+"' where userID='"+id+"'";
+			hql = "update ResourceInfo set CurrentAppCount ='"+(count-1)+"',LastSubmitTime = '"+sdf.format(new Date())+"' where id="+id;
 			Query query2 = session.createQuery(hql);
 			query2.executeUpdate(); 
 			session.flush();
@@ -181,13 +178,13 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 	}
 
 	@Override
-	public boolean AddResourceJobTime(String id) {
+	public boolean AddResourceJobTime(long id) {
 		Transaction tx = null;
 		String hql = "";
 		try{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "select SubmitJobTimes from ResourceInfo where userID='"+id+"'";
+			hql = "select SubmitJobTimes from ResourceInfo where id="+id;
 			Query query = session.createQuery(hql);
 			int times = (int)query.uniqueResult();
 			session.flush();
@@ -195,7 +192,7 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "update ResourceInfo set SubmitJobTimes ='"+(times+1)+"',LastSubmitTime = '"+sdf.format(new Date())+"' where userID='"+id+"'";
+			hql = "update ResourceInfo set SubmitJobTimes ='"+(times+1)+"',LastSubmitTime = '"+sdf.format(new Date())+"' where id="+id;
 			Query query2 = session.createQuery(hql);
 			query2.executeUpdate(); 
 			session.flush();
@@ -212,7 +209,7 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 	}
 
 	@Override
-	public boolean ApplyResource(String userid, String queue, long hdfs, int num) {
+	public boolean ApplyResource(long userid, String queue, long hdfs, int num) {
 		Transaction tx = null;
 		String hql = "";
 		try{
@@ -226,7 +223,7 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 			
 			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "update ResourceApplication set Applimit ='"+num+"',Enable = 'W',HDFSDirectoryQuota ='"+hdfs+"',Queue='"+id+"' where UserID='"+userid+"'";
+			hql = "update ResourceApplication set Applimit ='"+num+"',Enable = 'W',HDFSDirectoryQuota ='"+hdfs+"',Queue='"+id+"' where UserID="+userid;
 			Query query2 = session.createQuery(hql);
 			query2.executeUpdate(); 
 			session.flush();
@@ -243,12 +240,12 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 	}
 
 	@Override
-	public Object[] HDFS(String userID) {
+	public Object[] HDFS(long userID) {
 		Transaction tx = null;
 		try{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			String hql = "select HDFSDirectoryQuota,HDFSDirectoryRemaining from ResourceInfo where userID='"+userID+"'";
+			String hql = "select HDFSDirectoryQuota,HDFSDirectoryRemaining from ResourceInfo where id="+userID;
 			Query query = session.createQuery(hql);
 			Object[] res = (Object[])query.uniqueResult();
 			session.flush();
@@ -321,7 +318,7 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 	}
 
 	@Override
-	public boolean manageApply(String name,char enable) {
+	public boolean manageApply(String admin,String name,char enable) {
 		Transaction tx = null;
 		String hql = "";
 		try{
@@ -329,35 +326,48 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 			tx = session.beginTransaction();
 			hql = "select id from UserInfo where name='"+name+"'";
 			Query query = session.createQuery(hql);
-			String id = (String)query.uniqueResult();
+			long id = (long)query.uniqueResult();
 			session.flush();
 			tx.commit();
 			
 			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "update ResourceApplication set Enable = '"+enable+"' where UserID='"+id+"'";
+			hql = "update ResourceApplication set Enable = '"+enable+"' where UserID="+id;
 			Query query2 = session.createQuery(hql);
 			query2.executeUpdate(); 
+			session.flush();
+			tx.commit();
+			
+			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
+			tx = session.beginTransaction();
+			hql = "select r.AppLimit,r.HDFSDirectoryQuota,r.Queue from ResourceApplication r where UserID="+id;
+			Query query3 = session.createQuery(hql);
+			Object[] val = (Object[])query3.uniqueResult();
 			session.flush();
 			tx.commit();
 			
 			if(enable=='T'){
 				session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 				tx = session.beginTransaction();
-				hql = "select r.AppLimit,r.HDFSDirectoryQuota,r.Queue from ResourceApplication r where UserID='"+id+"'";
-				Query query3 = session.createQuery(hql);
-				Object[] val = (Object[])query3.uniqueResult();
-				session.flush();
-				tx.commit();
-				
-				session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
-				tx = session.beginTransaction();
-				hql = "update ResourceInfo set AppLimit = '"+val[0].toString()+"',HDFSDirectoryQuota='"+val[1].toString()+"',Queue='"+val[2].toString()+"' where UserID='"+id+"'";
+				hql = "update ResourceInfo set AppLimit = '"+val[0].toString()+"',HDFSDirectoryQuota='"+val[1].toString()+"',Queue='"+val[2].toString()+"' where id="+id;
 				Query query4 = session.createQuery(hql);
 				query4.executeUpdate(); 
 				session.flush();
 				tx.commit();
 			}
+			ActionInfoDAO actionInfoDAO = new ActionInfoDAOImpl();
+			String context = "user("+name+")'s applying(applimit:"+val[0].toString()+"个,HDFSDirectoryQuota:"+(Integer.parseInt(val[1].toString())/1048576)+"M,";
+			if(val[2].toString().equals("0"))
+				context += "Queue:default) is ";
+			else if(val[2].toString().equals("1"))
+				context += "Queue:vip1) is ";
+			else
+				context += "Queue:vip2) is ";
+			if(enable=='T')
+				context += "passed!";
+			else 
+				context += "denied!";
+			actionInfoDAO.add(new ActionInfo(admin, new Date(), context,'0'));
 			return true;
 		}catch(Exception e){
 			tx.rollback();
@@ -376,7 +386,7 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 		try{
 			Session session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tr = session.beginTransaction();
-			hql = "select u.name,q.QueueName,r.appLimit,r.hDFSDirectoryQuota from ResourceInfo r join UserInfo u on r.UserID=u.id join QueueInfo q on r.Queue=q.id";
+			hql = "select u.name,q.QueueName,r.appLimit,r.hDFSDirectoryQuota from ResourceInfo r join UserInfo u on r.id=u.id join QueueInfo q on r.Queue=q.id";
 			Query query = session.createSQLQuery(hql);
 			query.setFirstResult((page-1)*10); 
 			query.setMaxResults(10); 
@@ -420,13 +430,13 @@ public class ResourceInfoDAOImpl implements ResourceInfoDAO{
 			tx = session.beginTransaction();
 			hql = "select id from UserInfo where name='"+name+"'";
 			query = session.createQuery(hql);
-			String userid = (String)query.uniqueResult();
+			long userid = (long)query.uniqueResult();
 			session.flush();
 			tx.commit();
 			
 			session = MyHibernateSessionFactory.getSessionFactory().getCurrentSession();
 			tx = session.beginTransaction();
-			hql = "update ResourceInfo set Queue='"+id+"',HDFSDirectoryQuota='"+hdfs+"',AppLimit='"+job+"' where userID ='"+userid+"'";
+			hql = "update ResourceInfo set Queue='"+id+"',HDFSDirectoryQuota='"+hdfs+"',AppLimit='"+job+"' where id ="+userid;
 			query = session.createQuery(hql);
 			query.executeUpdate();  
 			tx.commit();

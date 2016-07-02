@@ -81,6 +81,7 @@ function page(pageNum,that) {
         case 9:
             clearActive();
             $(that).parent().addClass("active");
+            dataManage();
             clearInterval( intervalProcess );
             taskpage = 1;
             break;
@@ -123,7 +124,6 @@ function clearActive(){
 }
 
 function loading(){
-	var boolID = false;
 	var boolName = false;
     Ladda.bind( '.submit button', {
       callback: function( instance ) {
@@ -134,12 +134,11 @@ function loading(){
 	            clearInterval( interval );
 	          }
 	        }, 200 );
-	        if(boolID&&boolName&&$("#addPassword").val()!=""&&$("#addDepartment").val()!=""&&$("#addRole").val()!=""){
+	        if(boolName&&$("#addPassword").val()!=""&&$("#addDepartment").val()!=""&&$("#addRole").val()!=""){
 	        $.ajax({
 	    		url:ADDRESS+'/userInfo/UserInfo_add.action',
 	    		type:'post',
-	    		data:{	"id" : $("#addID").val(),
-						"name" : $("#addName").val(),
+	    		data:{	"name" : $("#addName").val(),
 						"password":$("#addPassword").val(),
 						"department": $("#addDepartment option:selected").val(),
 						"role":$("#addRole option:selected").val()},
@@ -147,7 +146,6 @@ function loading(){
 	    			alert("Error:服务器错误!");
 	    		},
 	    		success:function(data){
-	    			$("#addID").val("");
 	    			$("#addName").val("");
 	    			$("#addPassword").val("");
 	    			$("#addDepartment").val("运营部");
@@ -164,38 +162,6 @@ function loading(){
 	      }
       }
     });
-    $("#addID").blur(function() {
-		var val = $(this).val();
-		val = $.trim(val);
-		var $this = $(this);
-		if (val != "") {
-			$this.nextAll("div.alert").remove();
-			var url = ADDRESS+"/user/User_check.action";
-			var args = {
-				"id" : val
-			};
-			$.post(url, args, function(data) {
-				//表示可用
-				if (data == "1") {
-					$this.after("<div class=\"alert alert-success\">该ID可以使用.</div>");
-					boolID = true;
-				}
-				//不可用
-				else if (data == "0") {
-					$this.after("<div class=\"alert alert-danger\">该ID已被注册.</div>");
-					boolID = false;
-				}
-				//服务器错误
-				else {
-					alert("Error:服务器错误!");
-					boolID = false;
-				}
-			});
-		} else {
-			$(this).val("");
-			boolID = false;
-		}
-	});
 	$("#addName").blur(function() {
 		var val = $(this).val();
 		val = $.trim(val);
@@ -571,11 +537,6 @@ function addUser(){
         "<div class=\"row\">"+
             "<div class=\"col-lg-12\">"+
                 "<div class=\"form-group\">"+
-                    "<label>用户ID<span style='color:red'>*</span></label>"+
-                    "<input class=\"form-control\" placeholder=\"userID\" id=\"addID\">"+
-                    "<p class=\"help-block\">5个字符，可使用字母、数字，需以字母开头</p>"+
-                "</div>"+
-                "<div class=\"form-group\">"+
                     "<label>用户名<span style='color:red'>*</span></label>"+
                     "<input class=\"form-control\" placeholder=\"userName\" id=\"addName\">"+
                     "<p class=\"help-block\">6~18个字符，可使用字母、数字、下划线，需以字母开头</p>"+
@@ -676,10 +637,10 @@ function showUser(page){
 			string += "<div class=\"row\">"+
             "<div class=\"col-lg-12\">"+
             "<table class=\"table table-striped\">"+
-              "<thead><tr><th>ID</th><th>用户名</th><th>角色</th><th>部门</th><th>创建时间</th><th>操作</th><th></th></tr></thead>"+
+              "<thead><tr><th>用户名</th><th>角色</th><th>部门</th><th>创建时间</th><th>操作</th><th></th></tr></thead>"+
               "<tbody>";
 			if(data=="0")
-				string += "<tr><td>空！</td></tr>"+
+				string += "<tr><td colspan='6'>空！</td></tr>"+
 					"</tbody>"+
 				"</table>";
 			else{
@@ -688,7 +649,7 @@ function showUser(page){
 				for(var i=1;i<res.length-1;i++){
 					var temp = res[i].split(",");
 					string += "<tr>"+
-                    "<td>"+temp[0]+"</td>"+
+                    "<td style='display:none'>"+temp[0]+"</td>"+
                     "<td>"+temp[1]+"</td>"+
                     "<td>"+temp[2]+"</td>"+
                     "<td>"+temp[3]+"</td>"+
@@ -874,10 +835,8 @@ function updateUser(that){
         "</div>"+
         "<div class=\"row\">"+
             "<div class=\"col-lg-12\">"+
-                "<div class=\"form-group\">"+
-                    "<label>用户ID</label>"+
-                    "<input class=\"form-control\" placeholder=\"暂时不支持用户ID的更改\" id=\"updateID\" disabled>"+
-                    "<p class=\"help-block\">暂时不支持用户ID的更改</p>"+
+                "<div class=\"form-group\" style='display:none'>"+
+                    "<input class=\"form-control\" id=\"updateID\" disabled>"+
                 "</div>"+
                 "<div class=\"form-group\">"+
                     "<label>用户名</label>"+
@@ -1126,7 +1085,7 @@ function addTask(){
                                         "<input id=\"photoCover\" class=\"input-large\" type=\"text\" style=\"height:30px;\" disabled>"+
                                         "<a class=\"btn\" onclick=\"$(\'input[id=file]\').click();\">Browse</a>"+
                                         "<div class=\"submitJar\">"+
-                                        	"<button class=\"btn btn-primary ladda-button\" data-style=\"expand-right\" style=\"min-width:100px\"><span class=\"ladda-label\" style=\"padding:10px 12px;line-height:24px;font-size:18px;\">上传</span></button>"+
+                                        	"<button class=\"btn btn-primary ladda-button\" data-style=\"expand-right\" style=\"min-width:100px\"><span class=\"ladda-label\" style=\"padding:10px 12px;line-height:24px;font-size:14px;\">上传</span></button>"+
                                         "</div>"+
                                     "</div>"+  
                                 "</div>"+
@@ -1160,7 +1119,7 @@ function addTask(){
                     "<p class=\"help-block\">请填写出完整的地址</p>"+
                 "</div>"+
                 "<div class=\"submitTask\">"+
-                    "<button class=\"btn btn-primary ladda-button\" data-style=\"expand-right\" style=\"min-width:100px\"><span class=\"ladda-label\" style=\"padding:10px 12px;line-height:24px;font-size:18px;\">提交</span></button>"+
+                    "<button class=\"btn btn-primary ladda-button\" data-style=\"expand-right\" style=\"min-width:100px\"><span class=\"ladda-label\" style=\"padding:10px 12px;line-height:24px;font-size:14px;\">提交</span></button>"+
                 "</div>"+
             "</div>"+
         "</div>"+
@@ -1587,17 +1546,17 @@ function resourceStatus(){
     "<div class=\"row\">"+
 	    "<div class=\"col-lg-12\">"+
 		    "<div class=\"panel panel-default\">"+
-		    	"<div class=\"panel-heading\">作业使用情况</div>"+
+		    	"<div class=\"panel-heading\">使用情况</div>"+
 		    	"<div class=\"panel-body\">"+
 		        	"<ul class=\"timeline\">"+
 		            	"<li>"+
 		                	"<div class=\"timeline-badge\"><i class=\"fa fa-check\"></i></div>"+
 		                	"<div class=\"timeline-panel\">"+
 		                    	"<div class=\"timeline-heading\">"+
-		                        	"<h4 class=\"timeline-title\">创建作业时间</h4>"+
+		                        	"创建时间"+
 		                    	"</div>"+
 			                    "<div class=\"timeline-body\">"+
-			                        "<h4 id=\"createJobTime\"></h4>"+
+			                        "<div id=\"createJobTime\"></div>"+
 			                    "</div>"+
 		                    "</div>"+
 		                "</li>"+
@@ -1605,10 +1564,10 @@ function resourceStatus(){
 			            	"<div class=\"timeline-badge info\"><i class=\"fa fa-rocket\"></i></div>"+
 			            	"<div class=\"timeline-panel\">"+
 			                	"<div class=\"timeline-heading\">"+
-			                    	"<h4 class=\"timeline-title\">使用队列</h4>"+
+			                    	"使用队列"+
 			                    "</div>"+
 			                    "<div class=\"timeline-body\">"+
-			                        "<h4 id=\"usedQueue\"></h4>"+
+			                        "<div id=\"usedQueue\"></div>"+
 			                    "</div>"+
 			                "</div>"+
 			            "</li>"+
@@ -1616,10 +1575,10 @@ function resourceStatus(){
 		                	"<div class=\"timeline-badge warning\"><i class=\"fa fa-times\"></i></div>"+
 		                	"<div class=\"timeline-panel\">"+
 		                    	"<div class=\"timeline-heading\">"+
-		                        	"<h4 class=\"timeline-title\">启动作业次数</h4>"+
+		                        	"启动作业次数"+
 		                        "</div>"+
 			                    "<div class=\"timeline-body\">"+
-			                        "<h4 id=\"usedTimes\"></h4>"+
+			                        "<div id=\"usedTimes\"></div>"+
 			                    "</div>"+
 		                    "</div>"+
 		                "</li>"+
@@ -1627,10 +1586,10 @@ function resourceStatus(){
 			            	"<div class=\"timeline-badge danger\"><i class=\"fa fa-tags\"></i></div>"+
 			            	"<div class=\"timeline-panel\">"+
 			                	"<div class=\"timeline-heading\">"+
-			                    	"<h4 class=\"timeline-title\">最后一次启动作业的时间</h4>"+
+			                    	"最近一次运行时间"+
 			                    "</div>"+
 			                    "<div class=\"timeline-body\">"+
-			                        "<h4 id=\"lastUpdateTime\"></h4>"+
+			                        "<div id=\"lastUpdateTime\"></div>"+
 			                    "</div>"+
 			                "</div>"+
 		                "</li>"+
@@ -1948,10 +1907,10 @@ function expand(that){
 	var val = $(that).attr('class');
 	var TempLastNum = val.split(" ");
 	var lastNum = TempLastNum[TempLastNum.length-1];
-	if($('.'+lastNum).length>1){
-		var lengthLastNum = $('.'+lastNum).length;
+	if($('.hdfsroute .'+lastNum).length>1){
+		var lengthLastNum = $('.hdfsroute .'+lastNum).length;
 		for(var i=1;i<lengthLastNum;i++)
-			$('.'+lastNum).eq(1).remove();
+			$('.hdfsroute .'+lastNum).eq(1).remove();
 		return;
 	}
 	var len = TempLastNum.length;
@@ -1965,6 +1924,8 @@ function expand(that){
 			add = bro.html();
 		var temp = val.split(" ");
 		sign = temp[temp.length-2];
+		if(sign=="0")
+			break;
 		bro = $('.'+sign);
 		val = bro.attr('class');
 	}
@@ -1976,6 +1937,10 @@ function expand(that){
   			alert("Error：服务器出错！");
   		},
   		success:function(data){
+  			if(data=="0"){
+  				alert("没有路径！");
+  				return;
+  			}
   			var arr = data.split("|");
   			var res = "";
   			for(var i=0;i<arr.length-1;i++){
@@ -1984,6 +1949,125 @@ function expand(that){
   					res += "<li style='margin-left:"+len*20+"px' class='"+$(that).attr('class')+" "+lastNum+"-"+(i+1)+"' onclick='expand(this)'>"+temp[1]+"</li>";
   				}else{
   					res += "<li style='margin-left:"+len*20+"px' class='"+$(that).attr('class')+" "+lastNum+"-"+(i+1)+"' ><a href='"+temp[2]+"'>"+temp[1]+"</a></li>";
+  				}
+  			}
+  			$(that).after(res);
+  		}
+  	});
+}
+
+function expandPrivate(that){
+	var val = $(that).attr('class');
+	var TempLastNum = val.split(" ");
+	var lastNum = TempLastNum[TempLastNum.length-1];
+	if($('.hdfsroute .'+lastNum).length>1){
+		var lengthLastNum = $('.hdfsroute .'+lastNum).length;
+		for(var i=1;i<lengthLastNum;i++)
+			$('.hdfsroute .'+lastNum).eq(1).remove();
+		return;
+	}
+	var len = TempLastNum.length;
+	var add = "";
+	var sign = "";
+	var bro = $(that);
+	while(val!="0"){
+		if(add!="")
+			add = bro.html()+"/"+add;
+		else
+			add = bro.html();
+		var temp = val.split(" ");
+		sign = temp[temp.length-2];
+		if(sign=="0")
+			break;
+		bro = $('.'+sign);
+		val = bro.attr('class');
+	}
+	$.ajax({
+  		url:ADDRESS+'/resourceInfo/ResourceInfo_HDFSRoute.action',
+  		type:'post',
+  		data:{'add':add},
+  		error:function(){
+  			alert("Error：服务器出错！");
+  		},
+  		success:function(data){
+  			if(data=="0"){
+  				res = "<li class='"+$(that).attr('class')+"' style='margin-left:"+$(that).css("margin-left")+"' onclick='upload(this)'>上传数据到该文件夹下</li>";
+  				$(that).after(res);
+  				return;
+  			}
+  			var arr = data.split("|");
+  			var res = "<li class='"+$(that).attr('class')+"' style='margin-left:"+$(that).css("margin-left")+"' onclick='upload(this)'>上传数据到该文件夹下</li>";
+  			for(var i=0;i<arr.length-1;i++){
+  				var temp = arr[i].split(",");
+  				if(temp[0]==1){
+  					res += "<li style='margin-left:"+len*20+"px' class='"+$(that).attr('class')+" "+lastNum+"-"+(i+1)+"' onclick='expandPrivate(this)'>"+temp[1]+"</li>";
+  				}else{
+  					res += "<li style='margin-left:"+len*20+"px' class='"+$(that).attr('class')+" "+lastNum+"-"+(i+1)+"' >"+
+  					"<a href='"+temp[2]+"'>"+temp[1]+"</a><br/><br/>";
+  					var tempadd = temp[2].split("webhdfs/v1");
+  					tempadd = tempadd[1].split("?");
+  					res += "<span>输入路径为："+tempadd[0]+"</span>"+
+  					"</li>";
+  				}
+  			}
+  			$(that).after(res);
+  		}
+  	});
+}
+
+
+function expandCom(that){
+	var val = $(that).attr('class');
+	var TempLastNum = val.split(" ");
+	var lastNum = TempLastNum[TempLastNum.length-1];
+	if($('.hdfscomroute .'+lastNum).length>1){
+		var lengthLastNum = $('.hdfscomroute .'+lastNum).length;
+		for(var i=1;i<lengthLastNum;i++)
+			$('.hdfscomroute .'+lastNum).eq(1).remove();
+		return;
+	}
+	var len = TempLastNum.length;
+	var add = "";
+	var sign = "";
+	var bro = $(that);
+	while(val!="0"){
+		if(add!="")
+			add = bro.html()+"/"+add;
+		else
+			add = bro.html();
+		var temp = val.split(" ");
+		sign = temp[temp.length-2];
+		if(sign=="0")
+			break;
+		bro = $('.hdfscomroute .'+sign);
+		val = bro.attr('class');
+	}
+	add = "data/"+add;
+	$.ajax({
+  		url:ADDRESS+'/resourceInfo/ResourceInfo_HDFSComRoute.action',
+  		type:'post',
+  		data:{'add':add},
+  		error:function(){
+  			alert("Error：服务器出错！");
+  		},
+  		success:function(data){
+  			if(data=="0"){
+  				alert("没有路径！");
+  				return;
+  			}
+  			var arr = data.split("|");
+  			var res = "";
+  			for(var i=0;i<arr.length-1;i++){
+  				var temp = arr[i].split(",");
+  				if(temp[0]==1){
+  					res += "<li style='margin-left:"+len*20+"px' class='"+$(that).attr('class')+" "+lastNum+"-"+(i+1)+"' onclick='expandCom(this)'>"+temp[1]+"</li>";
+  				}else{
+  					res += "<li style='margin-left:"+len*20+"px' class='"+$(that).attr('class')+" "+lastNum+"-"+(i+1)+"' >"+
+  					"<a href='"+temp[2]+"'>"+temp[1]+"</a><br/><br/>";
+  					var tempadd = temp[2].split("webhdfs/v1");
+  					tempadd = tempadd[1].split("?");
+  					res += "<span>输入路径为："+tempadd[0]+"</span>"+
+  					"</li>";
   				}
   			}
   			$(that).after(res);
@@ -2052,7 +2136,6 @@ function resourceQueue(){
 function manageUserResource(page){
 	$(".userUsage").empty();
 	var string = 
-        "<div class=\"row\">"+
         	"<div class=\"panel panel-default\">"+
         		"<div class=\"panel-heading\">用户</div>"+
         		"<div class=\"panel-body\">";
@@ -2068,7 +2151,7 @@ function manageUserResource(page){
               "<thead><tr><th>用户名</th><th>队列名</th><th>hdfs</th><th>作业数</th><th>操作</th></tr></thead>"+
               "<tbody>";
 			if(data=="0")
-				string += "<tr><td>空！</td></tr>"+
+				string += "<tr><td colspan='5'>空！</td></tr>"+
 					"</tbody>"+
 				"</table>";
 			else{
@@ -2141,10 +2224,9 @@ function manageUserResource(page){
 	              "</div>"+
 		            "</div>"+
 		        "</div>"+
-		        "</div>"+
 		        "</div>";
 			}
-			$("#page-wrapper").append(string);
+			$(".userUsage").append(string);
 		}
 	});
 }
@@ -2230,7 +2312,7 @@ function updateResource(that){
 		success:function(data){
 			var res = data.split("|");
 			var str = "";
-			for(var i=0;i<res.length;i++){
+			for(var i=0;i<res.length-1;i++){
 				str+="<option>"+res[i]+"</option>";
 			}
 			$('#updateQueue').append(str);
@@ -2310,16 +2392,16 @@ function findUser(){
 			string += "<div class=\"row\">"+
             "<div class=\"col-lg-12\">"+
             "<table class=\"table table-striped\">"+
-              "<thead><tr><th>ID</th><th>用户名</th><th>角色</th><th>部门</th><th>创建时间</th><th>操作</th><th></th></tr></thead>"+
+              "<thead><tr><th>用户名</th><th>角色</th><th>部门</th><th>创建时间</th><th>操作</th><th></th></tr></thead>"+
               "<tbody>";
 			if(data=="0")
-				string += "<tr><td>空！</td></tr>"+
+				string += "<tr><td colspan='6'>空！</td></tr>"+
 					"</tbody>"+
 				"</table>";
 			else{
 				var temp = data.split(",");
 				string += "<tr>"+
-                "<td>"+temp[0]+"</td>"+
+                "<td style='display:none'>"+temp[0]+"</td>"+
                 "<td>"+temp[1]+"</td>"+
                 "<td>"+temp[2]+"</td>"+
                 "<td>"+temp[3]+"</td>"+
@@ -2688,7 +2770,7 @@ function showHDFS(){
 		},
 		success:function(data){
 			var arr = data.split("|");
-			var res = "当前已使用:"+parseInt(arr[1])/1048576+"M/"+parseInt(arr[0])/1048576+"M";
+			var res = "当前已使用:"+(parseInt(arr[1])/1048576).toFixed(2)+"M/"+parseInt(arr[0])/1048576+"M";
 			$(".hdfsUse").empty();
 			$(".hdfsUse").html(res);
 		}
@@ -2773,7 +2855,7 @@ function manageApply(page){
               "<thead><tr><th>用户名</th><th>队列名</th><th>hdfs</th><th>作业数</th><th>操作</th><th></th></tr></thead>"+
               "<tbody>";
 			if(data=="0")
-				string += "<tr><td>空！</td></tr>"+
+				string += "<tr><td colspan='6'>空！</td></tr>"+
 					"</tbody>"+
 				"</table>";
 			else{
@@ -2850,9 +2932,154 @@ function manageApply(page){
 		            "</div>"+
 		        "</div>";
 			}
+			string += "<div class=\"row\">"+
+					        "<div class=\"col-lg-12\">"+
+				            	"<h1 class=\"page-header\">审核历史</h1>"+
+				            "</div>"+
+				            "<div class=\"col-lg-12\" id='applyhistory'>"+
+				            "</div>" +
+			            "</div>";
 			$("#page-wrapper").append(string);
+			applyhistory(1);
 		}
 	});
+}
+
+function applyhistory(page){
+	$('#applyhistory').empty();
+	var string = "<table class=\"table table-striped\">"+
+            		"<thead><tr><th>管理员</th><th>时间</th><th>审核记录</th><th>操作</th></tr></thead>"+
+            		"<tbody>";
+	$.ajax({
+		url:ADDRESS+'/resourceInfo/ResourceInfo_applyHistory.action',
+		type:'post',
+		data:{"page" : page},
+		error:function(){
+			alert("Error:服务器错误!");
+		},
+		success:function(data){
+			if(data=='0'){
+				string += "<tr><td colspan='4'>空</td></tr></tbody></table>";
+			}else{
+				var res = data.split(";");
+				var pageSum = res[0];
+				for(var i=1;i<res.length-1;i++){
+					if(res[i].indexOf("passed")>0)
+						string += "<tr class='info'>";
+					else
+						string += "<tr class='danger'>";
+					var temp = res[i].split("~");
+					string += 
+                    "<td>"+temp[0]+"</td>"+
+                    "<td>"+temp[1]+"</td>"+
+                    "<td>"+temp[2]+"</td>"+
+                    "<td class=\"operate\">"+
+                      "<a href=\"####\" onclick=\"delHistory(this)\">删除</a>"+
+                    "</td>"+
+                  "</tr>";
+				}
+				string += "</tbody>"+
+	              "</table>"+
+	              "<div class=\"btn-toolbar pageBtn\" role=\"toolbar\" aria-label=\"page\">"+
+	                "<div class=\"btn-group\" role=\"group\" aria-label=\"fpage\">";
+				if(page==1)
+					string += "<button type=\"button\" class=\"btn btn-default disabled\">上一页</button>";
+				else
+					string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"applyhistory("+(page-1)+")\">上一页</button>";
+				string += "</div>"+
+                "<div class=\"btn-group\" role=\"group\" aria-label=\"spage\">";
+	            if(pageSum>7){
+					if(page<4){
+						for(var i=1;i<=5;i++){
+							if(i!=page)
+								string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"applyhistory("+i+")\">"+i+"</button>";
+							else
+								string += "<button type=\"button\" class=\"btn btn-default disabled\">"+i+"</button>";
+						}
+						string += "<button type=\"button\" class=\"btn btn-default\">……</button>";
+						string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"applyhistory("+pageSum+")\">"+pageSum+"</button>";
+					}else if(page>=4&&page<(pageSum-4)){
+						for(var i=page-2;i<=page+2;i++){
+							if(i!=page)
+								string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"applyhistory("+i+")\">"+i+"</button>";
+							else
+								string += "<button type=\"button\" class=\"btn btn-default disabled\">"+i+"</button>";
+						}
+						string += "<button type=\"button\" class=\"btn btn-default\">……</button>";
+						string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"applyhistory("+pageSum+")\">"+pageSum+"</button>";
+					}else{
+						for(var i=pageSum-6;i<=pageSum;i++){
+							if(i!=page)
+								string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"applyhistory("+i+")\">"+i+"</button>";
+							else
+								string += "<button type=\"button\" class=\"btn btn-default disabled\">"+i+"</button>";
+						}
+					}
+	            }else{
+					for(var i=1;i<=pageSum;i++){
+						if(i!=page)
+							string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"applyhistory("+i+")\">"+i+"</button>";
+						else
+							string += "<button type=\"button\" class=\"btn btn-default disabled\">"+i+"</button>";
+					}
+				}
+	            string += "</div>"+
+                "<div class=\"btn-group\" role=\"group\" aria-label=\"tpage\">";
+	            if(page==pageSum)
+	            	string += "<button type=\"button\" class=\"btn btn-default disabled\">下一页</button>";
+	            else
+	            	string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"applyhistory("+(page+1)+")\">下一页</button>";
+	            string += "</div>"+
+	              "</div>"+
+	              "<div class=\"modal fade\" id=\"myModal11\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">"+
+	              "<div class=\"modal-dialog\">"+
+	                  "<div class=\"modal-content\">"+
+	                      "<div class=\"modal-header\">"+
+	                          "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>"+
+	                          "<h4 class=\"modal-title\" id=\"myModalLabel\">删除成功</h4>"+
+	                      "</div>"+
+	                      "<div class=\"modal-footer\">"+
+	                          "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>"+
+	                      "</div>"+
+	                  "</div>"+
+	              "</div>"+
+	          "</div>"+
+	          "<div class=\"modal fade\" id=\"myModal12\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">"+
+	            "<div class=\"modal-dialog\">"+
+	                "<div class=\"modal-content\">"+
+	                    "<div class=\"modal-header\">"+
+	                        "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>"+
+	                        "<h4 class=\"modal-title\" id=\"myModalLabel\">删除失败</h4>"+
+	                    "</div>"+
+	                    "<div class=\"modal-footer\">"+
+	                        "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>"+
+	                    "</div>"+
+	                "</div>"+
+	            "</div>"+
+	        "</div>";
+			}
+			$('#applyhistory').append(string);    
+		}
+	});
+}
+
+function delHistory(that){
+	var val = $(that).parent().parent().children('td');
+	if(confirm("确定删除?")){
+		var url = ADDRESS+"/resourceInfo/ResourceInfo_delHistory.action";
+		var args = {
+			"user" : val.eq(0).html(),
+			"time" : val.eq(1).html()
+		};
+		$.post(url, args, function(data) {
+			if (data == "1") {
+				$(that).parent().parent().remove();
+				$('#myModal11').modal("show");
+			}else{
+				$('#myModal12').modal("show");
+			}
+		});
+	}
 }
 
 function accept(that){
@@ -2883,4 +3110,136 @@ function refuse(that){
 			$(that).parent().parent().remove();
 		}
 	});
+}
+
+function dataManage(){
+    $("#page-wrapper").empty();
+    var string = 
+        "<div class=\"row\">"+
+            "<div class=\"col-lg-12\">"+
+                "<h1 class=\"page-header\">数据管理</h1>"+
+            "</div>"+
+        "</div>"+
+        "<div class=\"row\">"+
+	        "<div class=\"col-lg-12\">"+
+		        "<div class=\"panel panel-default\">"+
+		            "<div class=\"panel-heading\">已有数据</div>"+
+		            "<div class=\"panel-body\">"+
+		            	"<h4>个人路径</h4>"+
+			            "<ul class='hdfsroute'>"+
+			            	"<li class='0 0-1' onclick='expandPrivate(this)'>input</li>"+
+			            "</ul>"+
+			            "<h4>公共路径</h4>"+
+			            "<ul class='hdfscomroute'>"+
+			            	"<li class='0' onclick='expandCom(this)'>share</li>"+
+			            "</ul>"+  
+		            "</div>"+
+		        "</div>"+
+		    "</div>"+
+	    "</div>"+
+        "<div class=\"modal fade\" id=\"myModal9\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">"+
+	        "<div class=\"modal-dialog\">"+
+	            "<div class=\"modal-content\">"+
+	                "<div class=\"modal-header\">"+
+	                    "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>"+
+	                    "<h4 class=\"modal-title\" id=\"myModalLabel\">数据上传</h4>"+
+	                "</div>"+
+	                "<div class=\"modal-body\">"+
+		                "<div class=\"form-group\">"+
+		                    "<label>子目录路径(选填)</label>"+
+		                    "<input class=\"form-control\" placeholder=\"没填则默认上传到在该路径下\" id=\"uploadroute\">"+
+		                    "<p class=\"help-block\">可填一个或多个子目录，格式如\"/test/t1\",若不存在会自动创建</p>"+
+		                "</div>"+
+		                "<label>选择要上传的文件<span style='color:red'>*</span></label>"+
+			            "<div class=\"tab-pane fade in active\">"+
+	                    "<input id=\"file\" name=\"file\" type=\"file\" style=\"display:none\">"+
+	                    "<div class=\"input-append\">"+
+	                        "<input id=\"photoCover\" class=\"input-large\" type=\"text\" style=\"height:30px;\" disabled>"+
+	                        "<a class=\"btn\" onclick=\"$(\'input[id=file]\').click();\">Browse</a>"+
+	                    "</div>"+  
+	                "<div class=\"modal-footer\">"+
+	                	"<button class=\"btn btn-primary ladda-button\" data-style=\"expand-right\" style=\"min-width:100px\"><span class=\"ladda-label\" style=\"padding:12px 6px;font-size:14px;\">上传</span></button>"+
+	                    "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">关闭</button>"+
+	                "</div>"+
+	            "</div>"+
+	        "</div>"+
+	    "</div>"+
+	    "<div class=\"modal fade\" id=\"myModal10\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"myModalLabel\" aria-hidden=\"true\">"+
+	        "<div class=\"modal-dialog\">"+
+	            "<div class=\"modal-content\">"+
+	                "<div class=\"modal-header\">"+
+	                    "<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>"+
+	                    "<h4 class=\"modal-title\" id=\"myModalLabel\">上传成功</h4>"+
+	                "</div>"+
+	                "<div class=\"modal-body\">您已成功上传该数据</div>"+
+	                "<div class=\"modal-footer\">"+
+	                    "<button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>"+
+	                "</div>"+
+	            "</div>"+
+	        "</div>"+
+	    "</div>";
+	$("#page-wrapper").append(string);
+	$('input[id=file]').change(function() {
+        $('#photoCover').val($(this).val());
+    });
+}
+
+function upload(that){
+	var add = "";
+	var bro = $(that).prev();
+	var val = bro.attr('class');
+	while(val!="0 0-1"){
+		if(add!="")
+			add = bro.html()+"/"+add;
+		else
+			add = bro.html();
+		var temp = val.split(" ");
+		sign = temp[temp.length-2];
+		bro = $('.'+sign);
+		val = bro.attr('class');
+	}
+	add = "/"+add;
+	$('#uploadroute').val(add);
+	$('#myModal9').modal('show');
+	Ladda.bind( '.modal-footer .ladda-button', {
+	      callback: function( instance ) {
+		        var progress = 0;
+		        var interval = setInterval( function() {
+		          if( progress === 1 ) {
+		            instance.stop();
+		            clearInterval( interval );
+		          }
+		        }, 200 );
+		        if($('#photoCover').val()==""){
+	        		alert("请选择要上传的文件！");
+	        		progress = 1;
+		  	      }else{
+			  	      $.ajaxFileUpload(
+			  		        {
+			  		            url:ADDRESS+"/inputFileUpload/InputFileUploadAction.action", //用于文件上传的服务器端请求地址
+			  		            secureuri: false, //是否需要安全协议，一般设置为false
+			  		            fileElementId: "file", //文件上传域的ID
+			  		            dataType: 'json', //返回值类型 一般设置为json
+			  		            data:{'input':$('#uploadroute').val()},
+			  		            success: function (data, status)  //服务器成功响应处理函数
+			  		            {
+			  		            	progress = 1;
+			  		            	$('#uploadroute').val("");
+			  		            	$('input[id=file]').val("");
+			  		            	$('#photoCover').val("");
+			  		            	$('#myModal10').modal('show');
+			  		            },
+			  		            error: function (data, status, e)//服务器响应失败处理函数
+			  		            {
+			  		            	progress = 1;
+			  		            	alert("Error:服务器错误!");
+			  		            }
+			  		        }
+			  		    );
+		  	      }
+	      }
+    });
+	$('input[id=file]').change(function() {
+        $('#photoCover').val($(this).val());
+    });
 }
