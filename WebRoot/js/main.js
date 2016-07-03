@@ -114,7 +114,7 @@ function page(pageNum,that) {
         case 15:
             clearInterval( intervalProcess );
             taskpage = 1;
-            manageApply(1);
+            resourceVerify(1);
             break;
     }
 }
@@ -2832,26 +2832,41 @@ function queueChange(val){
 	});
 }
 
-function manageApply(page){
+function resourceVerify(){
 	$("#page-wrapper").empty();
 	var string = 
         "<div class=\"row\">"+
             "<div class=\"col-lg-12\">"+
-                "<h1 class=\"page-header\">资源审核</h1>"+
+                "<h1 class=\"page-header\">待审核队列</h1>"+
             "</div>"+
-        "</div>";
+            "<div class=\"col-lg-12\" id='applymanage'>"+
+		    "</div>" +
+        "</div>"+
+        "<div class=\"row\">"+
+	        "<div class=\"col-lg-12\">"+
+		    	"<h1 class=\"page-header\">审核历史</h1>"+
+		    "</div>"+
+		    "<div class=\"col-lg-12\" id='applyhistory'>"+
+		    "</div>" +
+		"</div>";
+	$("#page-wrapper").append(string);
+	manageApply(1);
+	applyhistory(1);
+}
+
+function manageApply(page){
+	$("#applymanage").empty();
+	var string = "";
     $.ajax({
 		url:ADDRESS+'/resourceInfo/ResourceInfo_confirm.action',
 		type:'post',
 		data:{'page':page},
 		error:function(){
 			string+="<div>出错！</div>";
-			$("#page-wrapper").append(string);
+			$("#applymanage").append(string);
 		},
 		success:function(data){
-			string += "<div class=\"row\">"+
-            "<div class=\"col-lg-12\">"+
-            "<table class=\"table table-striped\">"+
+			string += "<table class=\"table table-striped\">"+
               "<thead><tr><th>用户名</th><th>队列名</th><th>hdfs</th><th>作业数</th><th>操作</th><th></th></tr></thead>"+
               "<tbody>";
 			if(data=="0")
@@ -2928,19 +2943,9 @@ function manageApply(page){
 	            else
 	            	string += "<button type=\"button\" class=\"btn btn-default\" onclick=\"manageApply("+(page+1)+")\">下一页</button>";
 	            string += "</div>"+
-	              "</div>"+
-		            "</div>"+
-		        "</div>";
+	              "</div>";
 			}
-			string += "<div class=\"row\">"+
-					        "<div class=\"col-lg-12\">"+
-				            	"<h1 class=\"page-header\">审核历史</h1>"+
-				            "</div>"+
-				            "<div class=\"col-lg-12\" id='applyhistory'>"+
-				            "</div>" +
-			            "</div>";
-			$("#page-wrapper").append(string);
-			applyhistory(1);
+			$("#applymanage").append(string);
 		}
 	});
 }
